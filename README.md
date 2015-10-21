@@ -1,2 +1,2 @@
 # pando-embeded-framework
-todo
+the middleware between network data package and hardware driver.
