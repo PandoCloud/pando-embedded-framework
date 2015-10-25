@@ -10,11 +10,10 @@
  *********************************************************/
 
 #include "pando_storage_interface.h"
-#include "spi_flash.h"
-#include "mem.h"
-#include "osapi.h"
-#include "user_interface.h"
+#include "../../peripherl/driver/stmflash.h"
+#include "../../sys/lib/log.h"
 
+#define PANDO_CONFIG_ADDRESS
 #define PANDO_CONFIG_SEC (0x7E)
 #define DATAPAIR_KEY_LEN (32)
 #define DATAPAIR_VALUE_LEN (96)
@@ -29,60 +28,50 @@ struct data_pair
 
 static struct data_pair * head = NULL;
 
-static void ICACHE_FLASH_ATTR
-save_data_to_flash()
+static void save_data_to_flash()
 {
-    PRINTF("saving data to flash...\n");
-    spi_flash_erase_sector(PANDO_CONFIG_SEC);
+    PD_LOG("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
-    spi_flash_write((PANDO_CONFIG_SEC * SPI_FLASH_SEC_SIZE),
-        (uint32 *)&magic, sizeof(int32));
+    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     struct data_pair * cur;
     int32 cnt = 0;
     for(cur=head; cur!=NULL; cur=cur->next) 
     {
-        spi_flash_write((PANDO_CONFIG_SEC * SPI_FLASH_SEC_SIZE)
-            + sizeof(int32) + sizeof(int32)
-            + (cnt * sizeof(struct data_pair)),
-            (uint32 *)cur, sizeof(struct data_pair));
+    	STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + (cnt * sizeof(struct data_pair)),
+            (uint16 *)cur, sizeof(struct data_pair));
         cnt ++;
     }
-    spi_flash_write((PANDO_CONFIG_SEC * SPI_FLASH_SEC_SIZE) + sizeof(int32),
-        (uint32 *)&cnt, sizeof(int32));
-    PRINTF("done...\n");
+    STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32),
+        (uint16 *)&cnt, sizeof(int32));
+    PD_LOG("done...\n");
 }
 
-void ICACHE_FLASH_ATTR
-load_data_from_flash()
+void load_data_from_flash()
 {
-    PRINTF("loading config data from flash...\n");
+    PD_LOG("loading config data from flash...\n");
     int32 cnt, i;
     int32 magic = 0;
-    spi_flash_read(PANDO_CONFIG_SEC * SPI_FLASH_SEC_SIZE,
-        (uint32 *)&magic, sizeof(int32));
-    PRINTF("read magic : %x\n", magic);
+    STMFLASH_Read(PANDO_CONFIG_ADDRESS, (uint16 *)&magic, sizeof(int32));
+    PD_LOG("read magic : %x\n", magic);
     if(magic != PANDO_CONFIG_MAGIC)
     {
-        PRINTF("flash config data not initialized!\n");
+        PD_LOG("flash config data not initialized!\n");
         return;
     }
-    spi_flash_read(PANDO_CONFIG_SEC * SPI_FLASH_SEC_SIZE + sizeof(int32),
-        (uint32 *)&cnt, sizeof(int32));
-    PRINTF("reading config from flash , key count : %d...\n", cnt);
+    STMFLASH_Read(PANDO_CONFIG_ADDRESS + sizeof(int32), (uint16 *)&cnt, sizeof(int32));
+    PD_LOG("reading config from flash , key count : %d...\n", cnt);
     for(i=0; i<cnt; i++) 
     {
         struct data_pair * p = (struct data_pair * )os_malloc(sizeof(struct data_pair));
-        spi_flash_read(PANDO_CONFIG_SEC * SPI_FLASH_SEC_SIZE
-            + sizeof(int32) + sizeof(int32) + sizeof(struct data_pair)*i,
-            (uint32 *)p, sizeof(struct data_pair));
+        STMFLASH_Read(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + sizeof(struct data_pair)*i,
+            (uint16 *)p, sizeof(struct data_pair));
         p->next = head;
         head = p;
     }
-    PRINTF("done...\n");
+    PD_LOG("done...\n");
 }
 
-static struct data_pair * ICACHE_FLASH_ATTR
-find_pair_by_key(char * key){
+static struct data_pair * find_pair_by_key(char * key){
     struct data_pair * p;
     for( p=head; p!=NULL; p=p->next ) 
     {
@@ -102,8 +91,7 @@ find_pair_by_key(char * key){
  * Returns      : the save result
 *******************************************************************************/
 
-SET_RESULT ICACHE_FLASH_ATTR
-pando_data_set(char* key, char* value)
+SET_RESULT pando_data_set(char* key, char* value)
 {
     struct data_pair * p;
     p = find_pair_by_key(key);
@@ -111,7 +99,7 @@ pando_data_set(char* key, char* value)
     {
         // key exist, update value.
         os_strncpy(p->val, value, DATAPAIR_VALUE_LEN);
-        PRINTF("key %s updated...\n", key, p->val);
+        PD_LOG("key %s updated...\n", key, p->val);
     } else {
         // key not exist, create a new pair.
         struct data_pair * p = (struct data_pair * )os_malloc(sizeof(struct data_pair));
@@ -119,7 +107,7 @@ pando_data_set(char* key, char* value)
         os_strncpy(p->val, value, DATAPAIR_VALUE_LEN);
         p->next = head;
         head = p;
-        PRINTF("key %s created..., value %s \n", key, p->val);
+        PD_LOG("key %s created..., value %s \n", key, p->val);
     }
     save_data_to_flash();
 }
@@ -131,8 +119,7 @@ pando_data_set(char* key, char* value)
  * Returns      : the pointer of the value. NULL if not exist
 *******************************************************************************/
 
-char * ICACHE_FLASH_ATTR
-pando_data_get(char* key)
+char * pando_data_get(char* key)
 {
     struct data_pair * p;
     p = find_pair_by_key(key);
@@ -150,8 +137,7 @@ pando_data_get(char* key)
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
 
-uint16 ICACHE_FLASH_ATTR
-pando_storage_space_left()
+uint16 pando_storage_space_left()
 {
 
 }
@@ -162,9 +148,8 @@ pando_storage_space_left()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
-pando_storage_clean()
+void pando_storage_clean()
 {
-	spi_flash_erase_sector(PANDO_CONFIG_SEC);
+
 }
 

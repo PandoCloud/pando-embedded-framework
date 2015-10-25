@@ -12,7 +12,7 @@
 #include "../protocol/sub_device_protocol.h"
 #include "pando_system_time.h"
 #include "pando_zero_device.h"
-#include "user_interface.h"
+#include "../../sys/lib/c_types.h"
 
 #define COMMON_COMMAND_UPGRADE 65529
 #define COMMON_COMMAND_REBOOT  65535
@@ -24,7 +24,7 @@
  * Parameters   : uint.
  * Returns      : none.
 *******************************************************************************/
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 zero_device_data_process(uint8_t * buffer, uint16_t length)
 {
 	struct pando_command cmd_body;
@@ -62,7 +62,7 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
  * Parameters   : none.
  * Returns      : none.
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_zero_device_init(void)
 {
 	on_subdevice_channel_recv(PANDO_CHANNEL_PORT_0, zero_device_data_process);

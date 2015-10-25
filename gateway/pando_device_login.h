@@ -11,24 +11,14 @@
 #ifndef __PANDO_DEVICE_LOGIN_H
 #define __PANDO_DEVICE_LOGIN_H
 
-typedef enum {
-    LOGIN_OK = 0,
-    ERR_NOT_REGISTERED,
-    ERR_LOGIN_FAIL,
-} PANDO_LOGIN_RESULT;
-
-/*
- * "login_callback" is a callback function invoked when device login is finished.
- * "result" returns the register return code.
- */
-typedef void (* login_callback)(PANDO_LOGIN_RESULT result);
+#include "gateway_defs.h"
 
  /******************************************************************************
  * FunctionName : pando_device_login
  * Description  : try login device using pando cloud device register api.
- * Parameters   : login callback function
+ * Parameters   : the specify login callback function.
  * Returns      : 
 *******************************************************************************/
-void pando_device_login(login_callback callback);
+void pando_device_login(gateway_callback callback);
 
 #endif

@@ -11,23 +11,14 @@
 #ifndef __PANDO_DEVICE_REGISTER_H
 #define __PANDO_DEVICE_REGISTER_H
 
-typedef enum {
-    REGISTER_OK = 0,
-    ERR_REGISTER_FAIL
-} PANDO_REGISTER_RESULT;
-
-/*
- * "register_callback" is a callback function invoked when device register is finished.
- * "result" returns the register return code.
- */
-typedef void (* register_callback)(PANDO_REGISTER_RESULT result);
+#include "gateway_defs.h"
 
  /******************************************************************************
  * FunctionName : pando_device_register
  * Description  : register pando device using pando cloud device register api.
- * Parameters   : register callback function
+ * Parameters   : the specify callback function.
  * Returns      : 
 *******************************************************************************/
-void pando_device_register(register_callback callback);
+void pando_device_register(gateway_callback callback);
 
 #endif

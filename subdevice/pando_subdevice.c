@@ -1,6 +1,6 @@
 #include "pando_subdevice.h"
-#include "c_types.h"
-#include "user_interface.h"
+#include "../sys/lib/c_types.h"
+#include "../sys/lib/log.h"
 #include "gateway/pando_channel.h"
 #include "protocol/common_functions.h"
 #include "protocol/sub_device_protocol.h"
@@ -9,7 +9,7 @@
 #define CMD_QUERY_STATUS (65528)
 
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 decode_data(struct sub_device_buffer *device_buffer)
 {
 	struct pando_property data_body;
@@ -22,7 +22,7 @@ decode_data(struct sub_device_buffer *device_buffer)
 		pando_object* obj = find_pando_object(data_body.property_num);
 		if( NULL == obj )
 		{
-			PRINTF("object [%d] not found in list\n", data_body.property_num);
+			PD_LOG("object [%d] not found in list\n", data_body.property_num);
 		}
 
 		obj->unpack(object_param);
@@ -30,14 +30,14 @@ decode_data(struct sub_device_buffer *device_buffer)
 
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 send_current_status()
 {
 	struct sub_device_buffer* data_buffer;
 	data_buffer = create_data_package(0);
 	if(NULL == data_buffer)
 	{
-		PRINTF("create data package error\n");
+		PD_LOG("create data package error\n");
 		return;
 	}
 
@@ -47,7 +47,7 @@ send_current_status()
 		PARAMS* params =  create_params_block();
 		if (params == NULL)
 		{
-			PRINTF("Create params block failed.\n");
+			PD_LOG("Create params block failed.\n");
 			return ;
 		}
 		obj->pack(params);
@@ -55,7 +55,7 @@ send_current_status()
 
 		if (ret != 0)
 		{
-			PRINTF("add_next_property failed.");
+			PD_LOG("add_next_property failed.");
 		}
 
 
@@ -69,19 +69,19 @@ send_current_status()
 	delete_device_package(data_buffer);
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 decode_command(struct sub_device_buffer *device_buffer)
 {
 	struct pando_command cmd_body;
 	PARAMS *cmd_param = get_sub_device_command(device_buffer, &cmd_body);
 	if(CMD_QUERY_STATUS == cmd_body.command_id)
 	{
-		PRINTF("receive a get request\n");
+		PD_LOG("receive a get request\n");
 		send_current_status();
 	}
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 {
 	if(NULL == buffer)
@@ -89,7 +89,7 @@ pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 		return;
 	}
 
-	PRINTF("subdevive receive a package: \n");
+	PD_LOG("subdevive receive a package: \n");
 	show_package(buffer, length);
 
 	struct sub_device_buffer *device_buffer = (struct sub_device_buffer *)pd_malloc(sizeof(struct sub_device_buffer));
@@ -108,7 +108,7 @@ pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 		decode_command(device_buffer);
 		break;
 	default:
-		PRINTF("unsuported paload type : %d", payload_type);
+		PD_LOG("unsuported paload type : %d", payload_type);
 		break;
 	}
 

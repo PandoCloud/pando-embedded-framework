@@ -1,5 +1,4 @@
 #include "pando_channel.h"
-#include "user_interface.h"
 
 #define MAX_CHAN_LEN 8
 
@@ -12,19 +11,19 @@ struct pando_channel
 
 static struct pando_channel channels[MAX_CHAN_LEN];
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 on_subdevice_channel_recv(PANDO_CHANNEL_NAME name, channel_recv_callback cb)
 {
     channels[name].subdevice_cb = cb;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 on_device_channel_recv(PANDO_CHANNEL_NAME name, channel_recv_callback cb)
 {
     channels[name].device_cb = cb;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 channel_send_to_subdevice(PANDO_CHANNEL_NAME name, uint8_t * buffer, uint16_t length)
 {
     if(channels[name].subdevice_cb != NULL ){
@@ -32,7 +31,7 @@ channel_send_to_subdevice(PANDO_CHANNEL_NAME name, uint8_t * buffer, uint16_t le
     }
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 channel_send_to_device(PANDO_CHANNEL_NAME name, uint8_t * buffer, uint16_t length)
 {
     PRINTF("send package to device\n");

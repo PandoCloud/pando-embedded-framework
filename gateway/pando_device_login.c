@@ -1,28 +1,24 @@
 #include "pando_device_login.h"
-#include "../../util/httpclient.h"
+#include "../../sys/network/at/net_http.h"
 #include "pando_storage_interface.h"
-#include "user_interface.h"
-#include "c_types.h"
-#include "osapi.h"
-#include "mem.h"
-#include "json/jsontree.h"
-#include "json/jsonparse.h"
-#include "../../util/converter.h"
+#include "../../sys/lib/c_types.h"
+#include "../../sys/lib/log.h"
 #include "../../user/device_config.h"
-#include "gateway_defs.h"
+#include "../../sys/util/json/jsontree.h"
+#include "../../sys/network/at/net_http.h"
 
 #define MAX_BUF_LEN 256
 #define KEY_BUF_LEN 64
 #define MSG_BUF_LEN 32
 #define ACCESS_TOKEN_LEN 16
 
-static login_callback device_login_callback = NULL;
+static gateway_callback device_login_callback = NULL;
 static char * request = NULL;
 
 extern uint8 pando_device_token[ACCESS_TOKEN_LEN];
 
-static void ICACHE_FLASH_ATTR
-http_callback_login(char * response, int http_status, char * full_response)
+static void FUNCTION_ATTRIBUTE
+http_callback_login(char * response)
 {
     if(request != NULL)
     {
@@ -32,7 +28,7 @@ http_callback_login(char * response, int http_status, char * full_response)
     
     if(response == NULL)
     {
-        device_login_callback(ERR_LOGIN_FAIL);
+        device_login_callback(PANDO_LOGIN_FAIL);
         return;
     }
     
@@ -92,7 +88,7 @@ http_callback_login(char * response, int http_status, char * full_response)
         PRINTF("device login failed: %s\n", message);
         if(device_login_callback != NULL) 
         {
-            device_login_callback(ERR_NOT_REGISTERED);
+            device_login_callback(PANDO_LOGIN_FAIL);
         }
         return;
     }
@@ -106,20 +102,20 @@ http_callback_login(char * response, int http_status, char * full_response)
     pando_data_set(DATANAME_ACCESS_TOKEN, access_token);
     if(device_login_callback != NULL) 
     {
-        device_login_callback(LOGIN_OK);
+        device_login_callback(PANDO_LOGIN_OK);
     }
 }
 
 /******************************************************************************
  * FunctionName : pando_device_login
  * Description  : try login device using pando cloud device register api.
- * Parameters   : login callback function
+ * Parameters   : the specify login callback function
  * Returns      :
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
-pando_device_login(login_callback callback)
+void FUNCTION_ATTRIBUTE
+pando_device_login(gateway_callback callback)
 {
-    PRINTF("begin login device...\n");
+    PD_LOG("begin login device...\n");
 
     if(callback != NULL)
     {
@@ -134,8 +130,8 @@ pando_device_login(login_callback callback)
     if(str_device_id == NULL || str_device_secret == NULL) 
     {
         // has not registered
-        PRINTF("login failed ! device has not been registerd...\n");
-        device_login_callback(ERR_NOT_REGISTERED);
+        PD_LOG("login failed ! device has not been registerd...\n");
+        device_login_callback(PANDO_NOT_REGISTERED);
         return;
     }
 
