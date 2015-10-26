@@ -1,5 +1,5 @@
-# embeded-framework-summary
-the main responsibilities of the pando-embeded-framwork:  
+# embedded-framework-summary
+the main responsibilities of the pando-embedded-framwork:  
  
 - maintain the main gateway business, such as, register, login, access, etc.  
 - abstract the common interface of hardware, define the device operation object.  
