@@ -27,7 +27,7 @@
 typedef void(*gateway_callback)(sint8_t result);
 
 #define PANDO_REGISTER_OK      0
-#define PANDO_LOGIN_OK        0
+#define PANDO_LOGIN_OK         0
 #define PANDO_REGISTER_FAIL   -1
 #define PANDO_NOT_REGISTERED  -2
 #define PANDO_LOGIN_FAIL      -3

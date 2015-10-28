@@ -27,38 +27,37 @@ static GATEWAY_STATUS gateway_status;
 *******************************************************************************/
 void gateway_cb(sint8 result)
 {
-	switch(gateway_status)
-	{
-		case GATEWAY_LOGIN:
-			if(result == PANDO_NOT_REGISTERED)
-			{
-				gateway_status = GATEWAY_REGISTER;
-				pando_device_register(gateway_cb);
-			}
-			else if(result == PANDO_LOGIN_OK)
-			{
-				gateway_status = GATEWAY_ACCESS;
-				pando_cloud_access(gateway_cb);
-			}
-			else
-			{
-				gateway_error_process();
-			}
-		break;
-		case GATEWAY_REGISTER:
-			if(result == PANDO_REGISTER_OK)
-			{
-				pando_cloud_access(gateway_cb);
-			}
-			else
-			{
-				gateway_error_process();
-			}
-		break;
-		default:
-			gateway_error_process();
-
-	}
+    switch(gateway_status)
+    {
+        case GATEWAY_LOGIN:
+            if(result == PANDO_NOT_REGISTERED)
+            {
+                gateway_status = GATEWAY_REGISTER;
+                pando_device_register(gateway_cb);
+            }
+            else if(result == PANDO_LOGIN_OK)
+            {
+                gateway_status = GATEWAY_ACCESS;
+                pando_cloud_access(gateway_cb);
+            }
+            else
+            {
+                gateway_error_process();
+            }
+        break;
+        case GATEWAY_REGISTER:
+            if(result == PANDO_REGISTER_OK)
+            {
+                pando_cloud_access(gateway_cb);
+            }
+            else
+            {
+                gateway_error_process();
+            }
+        break;
+        default:
+            gateway_error_process();
+    }
 }
 
 /******************************************************************************
@@ -70,8 +69,8 @@ void gateway_cb(sint8 result)
 *******************************************************************************/
 static void gprs_connect_check()
 {
-	gateway_status = GATEWAY_LOGIN;
-	pando_device_login(gateway_cb);
+    gateway_status = GATEWAY_LOGIN;
+    pando_device_login(gateway_cb);
 }
 
 /******************************************************************************
@@ -83,8 +82,8 @@ static void gprs_connect_check()
 static void FUNCTION_ATTRIBUTE
 gateway_error_process()
 {
-	timer2_init(3, gprs_connect_check);
-	timer2_start();
+    timer2_init(3, gprs_connect_check);
+    timer2_start();
 }
 
 
@@ -96,18 +95,17 @@ gateway_error_process()
 *******************************************************************************/
 void pando_gateway_init()
 {
-    PD_LOG("PANDO gateway initial....\n");
+    pd_printf("PANDO gateway initial....\n");
 
     gateway_status = GATEWAY_INIT;
 
     load_data_from_flash();
 
-	pando_system_time_init();
+    pando_system_time_init();
 
-	pando_zero_device_init();
+    pando_zero_device_init();
 
-	os_timer_disarm(&wifi_check_timer);
-	os_timer_setfn(&wifi_check_timer, (os_timer_func_t *)gprs_check, NULL);
-	os_timer_arm(&wifi_check_timer, 3000, 1);
+    os_timer_disarm(&wifi_check_timer);
+    os_timer_setfn(&wifi_check_timer, (os_timer_func_t *)gprs_check, NULL);
+    os_timer_arm(&wifi_check_timer, 3000, 1);
 }
-

@@ -1,8 +1,7 @@
 #include "pando_device_login.h"
 #include "../../sys/network/at/net_http.h"
 #include "pando_storage_interface.h"
-#include "../../sys/lib/c_types.h"
-#include "../../sys/lib/log.h"
+#include "platform/include/c_types.h"
 #include "../../user/device_config.h"
 #include "../../sys/util/json/jsontree.h"
 #include "../../sys/network/at/net_http.h"
@@ -22,8 +21,8 @@ http_callback_login(char * response)
 {
     if(request != NULL)
     {
-    	os_free(request);
-    	request = NULL;
+        pd_free(request);
+        request = NULL;
     }
     
     if(response == NULL)
@@ -32,10 +31,10 @@ http_callback_login(char * response)
         return;
     }
     
-    PRINTF("response=%s\n(end)\n", response);
+    pd_printf("response=%s\n(end)\n", response);
     
     struct jsonparse_state json_state;
-    jsonparse_setup(&json_state, response, os_strlen(response));
+    jsonparse_setup(&json_state, response, pd_strlen(response));
     int code;
     char message[MSG_BUF_LEN];
     char access_token[ACCESS_TOKEN_LEN*2 + 16];
@@ -85,7 +84,7 @@ http_callback_login(char * response)
 
     if(code != 0)
     {
-        PRINTF("device login failed: %s\n", message);
+        pd_printf("device login failed: %s\n", message);
         if(device_login_callback != NULL) 
         {
             device_login_callback(PANDO_LOGIN_FAIL);
@@ -96,7 +95,7 @@ http_callback_login(char * response)
     hex2bin(pando_device_token, access_token);
 
 
-    PRINTF("device login success, access_addr : %s\n", access_addr);
+    pd_printf("device login success, access_addr : %s\n", access_addr);
 
     pando_data_set(DATANAME_ACCESS_ADDR, access_addr);
     pando_data_set(DATANAME_ACCESS_TOKEN, access_token);
@@ -115,7 +114,7 @@ http_callback_login(char * response)
 void FUNCTION_ATTRIBUTE
 pando_device_login(gateway_callback callback)
 {
-    PD_LOG("begin login device...\n");
+    pd_printf("begin login device...\n");
 
     if(callback != NULL)
     {
@@ -130,7 +129,7 @@ pando_device_login(gateway_callback callback)
     if(str_device_id == NULL || str_device_secret == NULL) 
     {
         // has not registered
-        PD_LOG("login failed ! device has not been registerd...\n");
+        pd_printf("login failed ! device has not been registerd...\n");
         device_login_callback(PANDO_NOT_REGISTERED);
         return;
     }
@@ -145,12 +144,12 @@ pando_device_login(gateway_callback callback)
     JSONTREE_OBJECT_EXT(device_info, 
         JSONTREE_PAIR("device_id", &json_device_id),
         JSONTREE_PAIR("device_secret", &json_device_secret),
-    	JSONTREE_PAIR("protocol", &json_protocol));
+        JSONTREE_PAIR("protocol", &json_protocol));
 
-    request = (char *)os_malloc(MAX_BUF_LEN);
+    request = (char *)pd_malloc(MAX_BUF_LEN);
     int ret = pando_json_print(&device_info, request, MAX_BUF_LEN);
 
-    PRINTF("device login request:::\n%s\n(end)\n", request);
+    pd_printf("device login request:::\n%s\n(end)\n", request);
 
     http_post(PANDO_API_URL
         "/v1/devices/authentication",
@@ -158,7 +157,7 @@ pando_device_login(gateway_callback callback)
         http_callback_login);    
     if(request != NULL)
     {
-    	os_free(request);
-    	request = NULL;
+        pd_free(request);
+        request = NULL;
     }
 }

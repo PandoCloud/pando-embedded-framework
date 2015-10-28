@@ -11,7 +11,7 @@
 #ifndef __PANDO_STORAGE_INTERFACE_H__
 #define __PANDO_STORAGE_INTERFACE_H__
 
-#include "c_types.h"
+#include "platform/include/c_types.h"
 
 typedef enum {
     CHANGE_SAVE_OK = 0,
@@ -28,10 +28,7 @@ typedef enum {
                   value -- the value of the parameter. 
  * Returns      : the save result
 *******************************************************************************/
-
 SET_RESULT pando_data_set(char* key, char* value);
-
-
 
 /******************************************************************************
  * FunctionName : pando_data_get
@@ -39,7 +36,6 @@ SET_RESULT pando_data_set(char* key, char* value);
  * Parameters   : key -- the parameter
  * Returns      : the pointer of the value. NULL if not exist
 *******************************************************************************/
-
 char * pando_data_get(char* key);
 
 /******************************************************************************
@@ -48,7 +44,6 @@ char * pando_data_get(char* key);
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-
 uint16 pando_storage_space_left();
 
 /******************************************************************************

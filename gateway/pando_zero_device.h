@@ -18,8 +18,6 @@
  * Parameters   : none.
  * Returns      : none.
 *******************************************************************************/
-
 void pando_zero_device_init(void);
-
 
 #endif /* APP_PANDO_GATEWAY_PANDO_ZERO_DEVICE_H_ */

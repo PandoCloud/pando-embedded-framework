@@ -12,13 +12,13 @@
 #ifndef __PANDO_GATEWAY_H__
 #define __PANDO_GATEWAY_H__
 
-#include"../../sys/lib/c_types.h"
+#include "platform/include/c_types.h"
 
 typedef enum {
-	GATEWAY_INIT = 0,
-	GATEWAY_REGISTER,
-	GATEWAY_LOGIN,
-	GATEWAY_ACCESS
+    GATEWAY_INIT = 0,
+    GATEWAY_REGISTER,
+    GATEWAY_LOGIN,
+    GATEWAY_ACCESS
 }GATEWAY_STATUS;
 
 /******************************************************************************

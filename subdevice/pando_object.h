@@ -12,19 +12,19 @@
 #ifndef PANDO_OBJECTS_H_
 #define PANDO_OBJECTS_H_
 
-#include "c_types.h"
+#include "platform/include/c_types.h"
 #include "protocol/sub_device_protocol.h"
 
 typedef struct TLVs PARAMS;
 
 typedef struct {
-	uint8 no;
-	void (*pack)(PARAMS*);
-	void (*unpack)(PARAMS*);
+    uint8 no;
+    void (*pack)(PARAMS*);
+    void (*unpack)(PARAMS*);
 }pando_object;
 
 typedef struct {
-	uint8 cur;
+    uint8 cur;
 }pando_objects_iterator;
 
 /******************************************************************************
