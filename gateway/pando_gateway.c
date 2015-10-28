@@ -17,7 +17,6 @@
 
 extern load_data_from_flash();
 
-static os_timer_t wifi_check_timer;
 static GATEWAY_STATUS gateway_status;
 /******************************************************************************
  * FunctionName : gateway_cb
@@ -25,7 +24,8 @@ static GATEWAY_STATUS gateway_status;
  * Parameters   : the gateway flow return value.
  * Returns      : none
 *******************************************************************************/
-void gateway_cb(sint8 result)
+void FUNCTION_ATTRIBUTE
+gateway_cb(sint8 result)
 {
     switch(gateway_status)
     {
@@ -67,7 +67,8 @@ void gateway_cb(sint8 result)
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-static void gprs_connect_check()
+static void FUNCTION_ATTRIBUTE
+gprs_connect_check()
 {
     gateway_status = GATEWAY_LOGIN;
     pando_device_login(gateway_cb);
@@ -93,7 +94,8 @@ gateway_error_process()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void pando_gateway_init()
+void FUNCTION_ATTRIBUTE
+pando_gateway_init()
 {
     pd_printf("PANDO gateway initial....\n");
 
@@ -105,7 +107,5 @@ void pando_gateway_init()
 
     pando_zero_device_init();
 
-    os_timer_disarm(&wifi_check_timer);
-    os_timer_setfn(&wifi_check_timer, (os_timer_func_t *)gprs_check, NULL);
-    os_timer_arm(&wifi_check_timer, 3000, 1);
+    gprs_connect_check();
 }
