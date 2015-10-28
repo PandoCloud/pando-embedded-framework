@@ -109,6 +109,3 @@ pando_gateway_init()
 
     gprs_connect_check();
 }
-_setfn(&wifi_check_timer, (os_timer_func_t *)gprs_check, NULL);
-    os_timer_arm(&wifi_check_timer, 3000, 1);
-}
