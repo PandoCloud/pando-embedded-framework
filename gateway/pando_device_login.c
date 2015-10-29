@@ -1,10 +1,9 @@
 #include "pando_device_login.h"
-#include "../../sys/network/at/net_http.h"
 #include "pando_storage_interface.h"
 #include "platform/include/c_types.h"
 #include "../../user/device_config.h"
-#include "../../sys/util/json/jsontree.h"
-#include "../../sys/network/at/net_http.h"
+#include "lib/json/jsontree.h"
+#include "platform/include/pando_net_http.h"
 
 #define MAX_BUF_LEN 256
 #define KEY_BUF_LEN 64

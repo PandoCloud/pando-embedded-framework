@@ -13,7 +13,7 @@
 #include "pando_device_login.h"
 #include "pando_cloud_access.h"
 #include "gateway_defs.h"
-#include "../../peripherl/driver/timer2.h"
+#include "platform/include/pando_timer.h"
 
 extern load_data_from_flash();
 
@@ -83,10 +83,12 @@ gprs_connect_check()
 static void FUNCTION_ATTRIBUTE
 gateway_error_process()
 {
-    timer2_init(3, gprs_connect_check);
-    timer2_start();
+    pd_timer st_timer;
+    st_timer.interval = 3000;
+    st_timer.repeated = 0;
+    timer1_init(st_timer);
+    timer1_start();
 }
-
 
 /******************************************************************************
  * FunctionName : pando_gateway_init

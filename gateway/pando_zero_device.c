@@ -9,10 +9,10 @@
  *     Modification:
  *********************************************************/
 #include "pando_channel.h"
-#include "../protocol/sub_device_protocol.h"
+#include "protocol/sub_device_protocol.h"
 #include "pando_system_time.h"
 #include "pando_zero_device.h"
-#include "../../sys/lib/c_types.h"
+#include "platform/include/c_types.h"
 
 #define COMMON_COMMAND_UPGRADE 65529
 #define COMMON_COMMAND_REBOOT  65535
