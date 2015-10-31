@@ -1,5 +1,5 @@
 #include "pando_subdevice.h"
-#include "gateway/pando_channel.h"
+#include "lib/pando_channel.h"
 #include "protocol/common_functions.h"
 #include "protocol/sub_device_protocol.h"
 #include "pando_object.h"
@@ -58,7 +58,7 @@ send_current_status()
     }
     delete_pando_objects_iterator(it);
 
-    channel_send_to_device(PANDO_CHANNEL_PORT_1, data_buffer->buffer, data_buffer->buffer_length);
+    channel_send_to_device(1, data_buffer->buffer, data_buffer->buffer_length);
     show_package(data_buffer->buffer, data_buffer->buffer_length);
     delete_device_package(data_buffer);
 }

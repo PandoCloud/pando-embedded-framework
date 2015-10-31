@@ -21,4 +21,12 @@
 *******************************************************************************/
 void pando_cloud_access(gateway_callback callback);
 
+/******************************************************************************
+ * FunctionName : pando_recv_publish_data
+ * Description  : pando publish data handler
+ * Parameters   : the buffer and length
+ * Returns      : 
+*******************************************************************************/
+void pando_recv_publish_data(uint8* buffer, uint16 length);
+
 #endif

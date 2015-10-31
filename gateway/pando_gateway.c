@@ -107,7 +107,5 @@ pando_gateway_init()
 
     pando_system_time_init();
 
-    pando_zero_device_init();
-
     gprs_connect_check();
 }

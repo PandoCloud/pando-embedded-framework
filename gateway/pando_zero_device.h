@@ -13,11 +13,11 @@
 #define APP_PANDO_GATEWAY_PANDO_ZERO_DEVICE_H_
 
 /******************************************************************************
- * FunctionName : ipando_zero_device_init
- * Description  : initialize the zero device(zero device is the gateway itself).
- * Parameters   : none.
+ * FunctionName : zero_device_data_process.
+ * Description  : process the received data of zero device(zero device is the gateway itself).
+ * Parameters   : uint.
  * Returns      : none.
 *******************************************************************************/
-void pando_zero_device_init(void);
+void zero_device_data_process(uint8_t * buffer, uint16_t length)
 
 #endif /* APP_PANDO_GATEWAY_PANDO_ZERO_DEVICE_H_ */

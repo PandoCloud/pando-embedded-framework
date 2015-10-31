@@ -2,7 +2,7 @@
 #include "pando_storage_interface.h"
 #include "platform/include/c_types.h"
 #include "gateway_defs.h"
-#include "pando_channel.h"
+#include "lib/pando_channel.h"
 #include "pando_system_time.h"
 #include "mqtt/mqtt.h"
 #include "protocol/sub_device_protocol.h"
@@ -49,7 +49,7 @@ static void init_gateway_info()
     pando_protocol_init(gateway_info);
 }
 
-static void pando_publish_data_channel1(uint8* buffer, uint16 length)
+static void pando_recv_publish_data(uint8* buffer, uint16 length)
 {
     struct pando_buffer *gateway_data_buffer = NULL;
     uint16_t buf_len = 0;
@@ -160,12 +160,12 @@ static void mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, 
     if(sub_device_id == 1 || sub_device_id == 65535) //65535 is broadcast id.
     {
         pd_printf("transfer data to sub device: %d\n", sub_device_id);
-        channel_send_to_subdevice(PANDO_CHANNEL_PORT_1, device_buffer->buffer,device_buffer->buffer_length);
+        channel_send_to_subdevice(1, device_buffer->buffer,device_buffer->buffer_length);
     }
 
     else if(sub_device_id == 0)
     {
-        channel_send_to_subdevice(PANDO_CHANNEL_PORT_0, device_buffer->buffer,device_buffer->buffer_length);
+        channel_send_to_subdevice(0, device_buffer->buffer,device_buffer->buffer_length);
     }
     delete_device_package(device_buffer);
 }
@@ -180,8 +180,6 @@ static void mqtt_published_cb(uint32_t *arg)
 static void mqtt_connect_cb(uint32_t* arg)
 {
     pd_printf("MQTT: Connected\r\n");
-    MQTT_Client* client = (MQTT_Client*)arg;
-    on_device_channel_recv(PANDO_CHANNEL_PORT_1, pando_publish_data_channel1);
 }
 
 static voids mqtt_disconnect_cb(uint32_t* arg)

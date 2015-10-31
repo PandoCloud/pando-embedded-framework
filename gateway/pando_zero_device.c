@@ -8,7 +8,7 @@
  *     Author:
  *     Modification:
  *********************************************************/
-#include "pando_channel.h"
+#include "lib/pando_channel.h"
 #include "protocol/sub_device_protocol.h"
 #include "pando_system_time.h"
 #include "pando_zero_device.h"
@@ -53,16 +53,4 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
         show_package((uint8*)(&time), sizeof(time));
         pando_set_system_time(time);
     }
-}
-
-/******************************************************************************
- * FunctionName : ipando_zero_device_init
- * Description  : initialize the zero device(zero device is the gateway itself).
- * Parameters   : none.
- * Returns      : none.
-*******************************************************************************/
-void FUNCTION_ATTRIBUTE
-pando_zero_device_init(void)
-{
-    on_subdevice_channel_recv(PANDO_CHANNEL_PORT_0, zero_device_data_process);
 }
