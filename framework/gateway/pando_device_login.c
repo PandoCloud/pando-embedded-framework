@@ -1,6 +1,6 @@
 #include "pando_device_login.h"
 #include "pando_storage_interface.h"
-#include "platform/include/c_types.h"
+#include "platform/include/pando_types.h"
 #include "../../user/device_config.h"
 #include "lib/json/jsontree.h"
 #include "platform/include/pando_net_http.h"

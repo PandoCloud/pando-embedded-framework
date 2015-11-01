@@ -12,7 +12,7 @@
 #ifndef _PANDO_TIMER_H_
 #define _PANDO_TIMER_H_
 
-#include "c_types.h"
+#include "pando_types.h"
 
 //define the timer structure
 struct pd_timer

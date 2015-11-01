@@ -12,7 +12,7 @@
 #include "protocol/sub_device_protocol.h"
 #include "pando_system_time.h"
 #include "pando_zero_device.h"
-#include "platform/include/c_types.h"
+#include "platform/include/pando_types.h"
 
 #define COMMON_COMMAND_UPGRADE 65529
 #define COMMON_COMMAND_REBOOT  65535

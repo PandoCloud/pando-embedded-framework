@@ -1,5 +1,5 @@
 /*********************************************************
- * File name: c_types.h
+ * File name: pando_types.h
  * Author: xiaoxiao
  * Versions: 1.0
  * Description: declare the types.

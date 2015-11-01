@@ -3,7 +3,7 @@
 
 #ifdef ESP8266_PLANTFORM
 
-#include "c_types.h"
+#include "pando_types.h"
 #include "mem.h"
 #include "osapi.h"
 #include "../gateway/pando_system_time.h"

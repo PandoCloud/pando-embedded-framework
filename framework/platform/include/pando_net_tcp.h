@@ -12,7 +12,7 @@
 #ifndef _PANDO_NET_TCP_H_
 #define _PANDO_NET_TCP_H_
 
-#include "c_types.h"
+#include "pando_types.h"
 
 struct net_tcp_addr {
     char ip[16];
