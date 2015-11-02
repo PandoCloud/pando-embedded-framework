@@ -10,7 +10,8 @@
  *********************************************************/
 
 #include "pando_storage_interface.h"
-#include "../../peripherl/driver/stmflash.h"
+#include "platform/include/pando_types.h"
+//#include "../../peripherl/driver/stmflash.h"
 
 #define PANDO_CONFIG_ADDRESS
 #define PANDO_CONFIG_SEC (0x7E)
@@ -29,11 +30,11 @@ static struct data_pair * head = NULL;
 
 static void save_data_to_flash()
 {
-    pd_printf("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
-    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     struct data_pair * cur;
     int32 cnt = 0;
+    pd_printf("saving data to flash...\n");
+//    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     for(cur=head; cur!=NULL; cur=cur->next) 
     {
         STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + (cnt * sizeof(struct data_pair)),
@@ -47,10 +48,10 @@ static void save_data_to_flash()
 
 void load_data_from_flash()
 {
-    pd_printf("loading config data from flash...\n");
     int32 cnt, i;
     int32 magic = 0;
-    STMFLASH_Read(PANDO_CONFIG_ADDRESS, (uint16 *)&magic, sizeof(int32));
+    pd_printf("loading config data from flash...\n");
+//    STMFLASH_Read(PANDO_CONFIG_ADDRESS, (uint16 *)&magic, sizeof(int32));
     pd_printf("read magic : %x\n", magic);
     if(magic != PANDO_CONFIG_MAGIC)
     {

@@ -30,6 +30,9 @@ static void FUNCTION_ATTRIBUTE
 send_current_status()
 {
     struct sub_device_buffer* data_buffer;
+    pando_object* obj;
+    pando_objects_iterator* it;
+    int ret;
     data_buffer = create_data_package(0);
     if(NULL == data_buffer)
     {
@@ -37,8 +40,8 @@ send_current_status()
         return;
     }
 
-    pando_object* obj = NULL;
-    pando_objects_iterator* it = create_pando_objects_iterator();
+    obj = NULL;
+    it = create_pando_objects_iterator();
     while((obj = pando_objects_iterator_next(it))){
         PARAMS* params =  create_params_block();
         if (params == NULL)
@@ -47,7 +50,7 @@ send_current_status()
             return;
         }
         obj->pack(params);
-        int ret = add_next_property(data_buffer, obj->no, params);
+        ret = add_next_property(data_buffer, obj->no, params);
 
         if (ret != 0)
         {
@@ -78,6 +81,8 @@ decode_command(struct sub_device_buffer *device_buffer)
 void FUNCTION_ATTRIBUTE
 pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 {
+    struct sub_device_buffer *device_buffer;
+    uint16 payload_type;
     if(NULL == buffer)
     {
         return;
@@ -86,13 +91,13 @@ pando_subdevice_recv(uint8_t * buffer, uint16_t length)
     pd_printf("subdevive receive a package: \n");
     show_package(buffer, length);
 
-    struct sub_device_buffer *device_buffer = (struct sub_device_buffer *)pd_malloc(sizeof(struct sub_device_buffer));
+    device_buffer = (struct sub_device_buffer *)pd_malloc(sizeof(struct sub_device_buffer));
     device_buffer->buffer_length = length;
     device_buffer->buffer = (uint8 *)pd_malloc(length);
 
     pd_memcpy(device_buffer->buffer, buffer, length);
 
-    uint16 payload_type = get_sub_device_payloadtype(device_buffer);
+    payload_type = get_sub_device_payloadtype(device_buffer);
 
     switch (payload_type) {
     case PAYLOAD_TYPE_DATA:

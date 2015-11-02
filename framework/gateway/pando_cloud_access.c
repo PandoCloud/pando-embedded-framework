@@ -206,32 +206,36 @@ static void mqtt_error_cb(uint32_t* arg)
 *******************************************************************************/
 void pando_cloud_access(gateway_callback callback)
 {
+    char* access_addr;
+    int port;
+    uint8 ip_string[16];
+    char* str_device_id;
+    int device_id;
+    char access_token_str[64];
+    char* token_str;
     pd_printf("PANDO: begin access cloud...\n");
-
     pd_printf("before access:\n");
     if(callback != NULL)
     {
         error_callback = callback;
     }
 
-    char* access_addr = pando_data_get(DATANAME_ACCESS_ADDR);
+    access_addr = pando_data_get(DATANAME_ACCESS_ADDR);
     if( NULL == access_addr )
     {
         pd_printf("no access server address found...\n");
-        return error_callback(PANDO_ACCESS_ERR);
+        return;
     }
 
-    int port;
-    uint8 ip_string[16];
     /*if(0 != (conv_addr_str(access_addr, ip_string, &port)))
     {
         pd_printf("wrong access server address...\n");
         return error_callback(PANDO_ACCESS_ERR);
     }*/
 
-    char* str_device_id = pando_data_get(DATANAME_DEVICE_ID);
+    str_device_id = pando_data_get(DATANAME_DEVICE_ID);
 
-    int device_id = atol(str_device_id); // TODO: device id is 64bit, atol not support.
+    device_id = atol(str_device_id); // TODO: device id is 64bit, atol not support.
     //pd_printf(str_device_id_hex, "%x", device_id);
 
     init_gateway_info();
@@ -240,8 +244,8 @@ void pando_cloud_access(gateway_callback callback)
 
     //MQTT_Connect(&mqtt_client);
 
-    char access_token_str[64];
-    char* token_str = pando_data_get(DATANAME_ACCESS_TOKEN);
+    
+    token_str = pando_data_get(DATANAME_ACCESS_TOKEN);
     //pd_memcpy(access_token_str, token_str, pd_strlen(token_str));
     //MQTT_InitClient(&mqtt_client, str_device_id_hex, "", access_token_str, 30, 1);
     //MQTT_OnConnected(&mqtt_client, mqtt_connect_cb);

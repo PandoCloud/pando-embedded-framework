@@ -1,4 +1,4 @@
-﻿//  Copyright (c) 2014 Pando. All rights reserved.
+//  Copyright (c) 2014 Pando. All rights reserved.
 //  PtotoBuf:   ProtocolBuffer.h
 //
 //  Create By TangWenhan On 14/12/24.
@@ -100,9 +100,9 @@ int FUNCTION_ATTRIBUTE pando_protocol_encode(struct pando_buffer *pdbuf, uint16_
         return -1;
     }
 
-    pd_memcpy(payload_type, &(header->payload_type), sizeof(header->payload_type));
+    pd_memcpy((void*)payload_type, (void*)&(header->payload_type), sizeof(header->payload_type));
     *payload_type = net16_to_host(*payload_type);
-    pd_memcpy(&(sub_device_header.flags), &(header->flags), sizeof(header->flags));
+    pd_memcpy((void*)&(sub_device_header.flags), (void*)&(header->flags), sizeof(header->flags));
 	sub_device_header.flags = net16_to_host(sub_device_header.flags);	
 	
 	if (init_pdbin_header(&m_header, &sub_device_header))
@@ -299,12 +299,13 @@ char *FUNCTION_ATTRIBUTE pando_protocol_get_uri(struct pando_buffer *pdbuf)
 //pdbuf points to the buffer contains command from server ,it's big endian.
 uint16_t FUNCTION_ATTRIBUTE pando_protocol_get_payload_type(struct pando_buffer *pdbuf)
 {
+    struct device_header *gateway_header;
 	if (pdbuf == NULL)
 	{
 		return -1;
 	}
 
-	struct device_header *gateway_header = (struct device_header *)(pdbuf->buffer + pdbuf->offset);
+	gateway_header = (struct device_header *)(pdbuf->buffer + pdbuf->offset);
 	return net16_to_host(gateway_header->payload_type);
 }
 

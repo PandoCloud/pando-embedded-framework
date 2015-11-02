@@ -17,9 +17,9 @@ extern "C"
 #else
 
 #include <stdio.h>
-#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include "platform/include/pando_types.h"
 
 #endif
 

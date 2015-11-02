@@ -13,7 +13,7 @@
 
 #define MAX_OBJECTS 16
 
-static pando_object s_pando_object_list[MAX_OBJECTS] = {};
+static pando_object s_pando_object_list[MAX_OBJECTS];
 static int s_pando_object_list_idx = 0;
 
 void FUNCTION_ATTRIBUTE

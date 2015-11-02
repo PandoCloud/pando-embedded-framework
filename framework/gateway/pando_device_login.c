@@ -1,7 +1,8 @@
 #include "pando_device_login.h"
 #include "pando_storage_interface.h"
+#include "platform/include/pando_sys.h"
 #include "platform/include/pando_types.h"
-#include "../../user/device_config.h"
+//#include "../../user/device_config.h"
 #include "lib/json/jsontree.h"
 #include "platform/include/pando_net_http.h"
 
@@ -18,6 +19,12 @@ extern uint8 pando_device_token[ACCESS_TOKEN_LEN];
 static void FUNCTION_ATTRIBUTE
 http_callback_login(char * response)
 {
+    struct jsonparse_state json_state;
+    int code;
+    char message[MSG_BUF_LEN];
+    char access_token[ACCESS_TOKEN_LEN*2 + 16];
+    char access_addr[KEY_BUF_LEN];
+    int type;
     if(request != NULL)
     {
         pd_free(request);
@@ -32,15 +39,9 @@ http_callback_login(char * response)
     
     pd_printf("response=%s\n(end)\n", response);
     
-    struct jsonparse_state json_state;
     jsonparse_setup(&json_state, response, pd_strlen(response));
-    int code;
-    char message[MSG_BUF_LEN];
-    char access_token[ACCESS_TOKEN_LEN*2 + 16];
-    char access_addr[KEY_BUF_LEN];
 
     access_token[ACCESS_TOKEN_LEN*2] = '\0';
-    int type;
     while ((type = jsonparse_next(&json_state)) != 0)
     {
         if (type == JSON_TYPE_PAIR_NAME) 
@@ -113,15 +114,18 @@ http_callback_login(char * response)
 void FUNCTION_ATTRIBUTE
 pando_device_login(gateway_callback callback)
 {
+    char * str_device_id = NULL;
+    char * str_device_secret = NULL;
+    int device_id;
+    struct jsontree_int json_device_id;
+    struct jsontree_string json_device_secret;
+    struct jsontree_string json_protocol;
     pd_printf("begin login device...\n");
 
     if(callback != NULL)
     {
         device_login_callback = callback;
     }
-
-    char * str_device_id = NULL;
-    char * str_device_secret = NULL;
     
     str_device_id = pando_data_get(DATANAME_DEVICE_ID);
     str_device_secret = pando_data_get(DATANAME_DEVICE_SECRET);
@@ -133,12 +137,12 @@ pando_device_login(gateway_callback callback)
         return;
     }
 
-    int device_id = atol(str_device_id);
+    device_id = atol(str_device_id);
 
     // try login via HTTP
-    struct jsontree_int json_device_id = JSONTREE_INT(device_id);
-    struct jsontree_string json_device_secret = JSONTREE_STRING(str_device_secret);
-    struct jsontree_string json_protocol = JSONTREE_STRING("mqtt");
+    json_device_id = JSONTREE_INT(device_id);
+    json_device_secret = JSONTREE_STRING(str_device_secret);
+    json_protocol = JSONTREE_STRING("mqtt");
 
     JSONTREE_OBJECT_EXT(device_info, 
         JSONTREE_PAIR("device_id", &json_device_id),

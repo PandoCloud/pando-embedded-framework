@@ -6,7 +6,7 @@
 #include "pando_types.h"
 #include "mem.h"
 #include "osapi.h"
-#include "../gateway/pando_system_time.h"
+//#include "../gateway/pando_system_time.h"
 
 // for #pragma pack(ALIGNED_LENGTH), for example, esp8266 should be 1
 #define ALIGNED_LENGTH   1
@@ -25,7 +25,7 @@
 #define pd_memset os_memset
 
 #else
-#include <stdint.h>
+#include "platform/include/pando_types.h"
 
 #define ALIGNED_LENGTH 1
 

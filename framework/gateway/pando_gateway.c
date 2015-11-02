@@ -13,7 +13,8 @@
 #include "pando_device_login.h"
 #include "pando_cloud_access.h"
 #include "gateway_defs.h"
-#include "../../platform/include/pando_timer.h"
+#include "platform/include/pando_sys.h"
+//#include "../../platform/include/pando_timer.h"
 
 extern load_data_from_flash();
 

@@ -1,7 +1,7 @@
 #include "gateway/pando_channel.h"
-#include "pando_subdevice.h"
+#include "subdevice/pando_subdevice.h"
 #include "pando_framework.h"
-#include "pando_types.h"
+#include "platform/include/pando_types.h"
 #include "gateway/pando_gateway.h"
 
 void FUNCTION_ATTRIBUTE
