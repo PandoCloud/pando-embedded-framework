@@ -3,5 +3,5 @@
 
 int main(void)
 {
-	pando_framework_init();
+    pando_framework_init();
 }
