@@ -9,8 +9,8 @@
  *     Modification:
  *********************************************************/
 
-#ifndef _C_TYPES_H_
-#define _C_TYPES_H_
+#ifndef _PANDO_TYPES_H_
+#define _PANDO_TYPES_H_
 
 typedef unsigned char       uint8_t;
 typedef signed char         sint8_t;
@@ -54,6 +54,9 @@ typedef double              double64;
 
 typedef unsigned int        size_t;
 
+//define data handler callback
+typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
+
 #ifndef NULL
 #define NULL (void *)0
 #endif /* NULL */
@@ -73,4 +76,4 @@ typedef unsigned char   bool;
 
 #endif /* !__cplusplus */
 
-#endif /* _C_TYPES_H_ */
+#endif /* _PANDO_TYPES_H_ */
