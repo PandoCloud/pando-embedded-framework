@@ -42,7 +42,7 @@
 
 #endif
 
-uint64_t pd_get_timestamp();
+uint64_t pd_get_timestamp(void);
 
 #endif
 

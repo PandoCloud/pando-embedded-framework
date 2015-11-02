@@ -12,8 +12,9 @@
 #ifndef __GATEWAY_DEFS_H__
 #define __GATEWAY_DEFS_H__
 
-#define PANDO_API_URL "https://api.pandocloud.com"
+#include "pando_types.h"
 
+#define PANDO_API_URL "https://api.pandocloud.com"
 #define DATANAME_DEVICE_ID "pando_device_id"
 #define DATANAME_DEVICE_SECRET "pando_device_secret"
 #define DATANAME_DEVICE_KEY "pando_device_key"

@@ -31,7 +31,7 @@ struct pd_timer
  * Parameters   : timer_cfg: the pointer to timer config.
  * Returns      : 
  ******************************************************************************/
-void timer1_init(pd_timer *timer_cfg);
+void timer1_init(struct pd_timer *timer_cfg);
 
 /******************************************************************************
  * FunctionName : timer1_start

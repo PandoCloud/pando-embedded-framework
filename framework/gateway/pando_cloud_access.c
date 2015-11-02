@@ -1,10 +1,10 @@
-﻿#include "pando_cloud_access.h"
+#include "pando_cloud_access.h"
 #include "pando_storage_interface.h"
 #include "platform/include/pando_types.h"
 #include "gateway_defs.h"
 #include "pando_channel.h"
-#include "pando_system_time.h"
-#include "mqtt/mqtt.h"
+//#include "pando_system_time.h"
+//#include "mqtt/mqtt.h"
 #include "protocol/sub_device_protocol.h"
 #include "protocol/pando_protocol.h"
 
@@ -14,10 +14,10 @@
 gateway_callback error_callback = NULL;
 uint8 pando_device_token[DEVICE_TOKEN_LEN];
 
-MQTT_Client mqtt_client;
+//MQTT_Client mqtt_client;
 static uint8 str_device_id_hex[17];
 
-static int conv_addr_str(const char * ip_str, uint8 * str_ip_addr, int * port)
+/*static int conv_addr_str(const char * ip_str, uint8 * str_ip_addr, int * port)
 {
     ip_addr_t ip_addr;
     char * colon = NULL;
@@ -35,7 +35,7 @@ static int conv_addr_str(const char * ip_str, uint8 * str_ip_addr, int * port)
     pd_strncpy(str_port_addr, colon+1, PORT_STR_LEN);
     *port = atoi(str_port_addr);
     return 0;
-}
+}*/
 
 static void init_gateway_info()
 {
@@ -49,7 +49,7 @@ static void init_gateway_info()
     pando_protocol_init(gateway_info);
 }
 
-static void pando_publish_data_channel1(uint8* buffer, uint16 length)
+/*static void pando_publish_data_channel1(uint8* buffer, uint16 length)
 {
     struct pando_buffer *gateway_data_buffer = NULL;
     uint16_t buf_len = 0;
@@ -91,9 +91,9 @@ static void pando_publish_data_channel1(uint8* buffer, uint16 length)
     }
     MQTT_Publish(&mqtt_client, topic, gateway_data_buffer->buffer, gateway_data_buffer->buff_len, 1, 0);
     pando_buffer_delete(gateway_data_buffer);
-}
+}*/
 
-static void mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *data, uint32_t data_len)
+/*static void mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *data, uint32_t data_len)
 {
     pd_printf("mqtt topic length: %d\n", topic_len);
     pd_printf("mqtt data length: %d\n", data_len);
@@ -168,27 +168,27 @@ static void mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, 
         channel_send_to_subdevice(PANDO_CHANNEL_PORT_0, device_buffer->buffer,device_buffer->buffer_length);
     }
     delete_device_package(device_buffer);
-}
+}*/
 
-static void mqtt_published_cb(uint32_t *arg)
+/*static void mqtt_published_cb(uint32_t *arg)
 {
     pd_printf("MQTT: Published\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
 
-}
+}*/
 
-static void mqtt_connect_cb(uint32_t* arg)
+/*static void mqtt_connect_cb(uint32_t* arg)
 {
     pd_printf("MQTT: Connected\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
     on_device_channel_recv(PANDO_CHANNEL_PORT_1, pando_publish_data_channel1);
-}
+}*/
 
-static voids mqtt_disconnect_cb(uint32_t* arg)
+/*static voids mqtt_disconnect_cb(uint32_t* arg)
 {
     pd_printf("MQTT: Disconnected\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
-}
+}*/
 static void mqtt_error_cb(uint32_t* arg)
 {
     pd_printf("MQTT: connecting error\r\n");
@@ -209,7 +209,6 @@ void pando_cloud_access(gateway_callback callback)
     pd_printf("PANDO: begin access cloud...\n");
 
     pd_printf("before access:\n");
-    pd_printf("available heap size:%d\n", system_get_free_heap_size());
     if(callback != NULL)
     {
         error_callback = callback;
@@ -224,34 +223,32 @@ void pando_cloud_access(gateway_callback callback)
 
     int port;
     uint8 ip_string[16];
-    if(0 != (conv_addr_str(access_addr, ip_string, &port)))
+    /*if(0 != (conv_addr_str(access_addr, ip_string, &port)))
     {
         pd_printf("wrong access server address...\n");
         return error_callback(PANDO_ACCESS_ERR);
-    }
+    }*/
 
     char* str_device_id = pando_data_get(DATANAME_DEVICE_ID);
 
     int device_id = atol(str_device_id); // TODO: device id is 64bit, atol not support.
-    pd_printf(str_device_id_hex, "%x", device_id);
+    //pd_printf(str_device_id_hex, "%x", device_id);
 
     init_gateway_info();
 
-    MQTT_InitConnection(&mqtt_client, ip_string, port, 0);
+    //MQTT_InitConnection(&mqtt_client, ip_string, port, 0);
 
-    MQTT_Connect(&mqtt_client);
+    //MQTT_Connect(&mqtt_client);
 
     char access_token_str[64];
     char* token_str = pando_data_get(DATANAME_ACCESS_TOKEN);
-    pd_memcpy(access_token_str, token_str, pd_strlen(token_str));
-    MQTT_InitClient(&mqtt_client, str_device_id_hex, "", access_token_str, 30, 1);
-    MQTT_OnConnected(&mqtt_client, mqtt_connect_cb);
-    MQTT_OnDisconnected(&mqtt_client, mqtt_disconnect_cb);
-    MQTT_OnPublished(&mqtt_client, mqtt_published_cb);
-    MQTT_OnData(&mqtt_client, mqtt_data_cb);
-    MQTT_OnConnect_Error(&mqtt_client, mqtt_error_cb);
-    pd_printf("before mqtt connect:\n");
-    pd_printf("available heap size:%d\n", system_get_free_heap_size());
-    MQTT_Connect(&mqtt_client);
+    //pd_memcpy(access_token_str, token_str, pd_strlen(token_str));
+    //MQTT_InitClient(&mqtt_client, str_device_id_hex, "", access_token_str, 30, 1);
+    //MQTT_OnConnected(&mqtt_client, mqtt_connect_cb);
+    //MQTT_OnDisconnected(&mqtt_client, mqtt_disconnect_cb);
+    //MQTT_OnPublished(&mqtt_client, mqtt_published_cb);
+    //MQTT_OnData(&mqtt_client, mqtt_data_cb);
+    //MQTT_OnConnect_Error(&mqtt_client, mqtt_error_cb);
+    //MQTT_Connect(&mqtt_client);
     // to consider: reconnect.
 }

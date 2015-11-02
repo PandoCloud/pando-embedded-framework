@@ -1,0 +1,185 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+F:\gateway-gprs\project\stm32_gprs_1.0.uvproj
+Project File Date:  11/02/2015
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+compiling pando_channel.c...
+compiling pando_cloud_access.c...
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(51): error:  #256: invalid redeclaration of type name "int32_t" (declared at line 23 of "..\framework\platform\include\pando_types.h")
+  typedef   signed           int int32_t;
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(57): error:  #256: invalid redeclaration of type name "uint32_t" (declared at line 21 of "..\framework\platform\include\pando_types.h")
+  typedef unsigned           int uint32_t;
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c(221): error:  #118: a void function may not return a value
+          return error_callback(PANDO_ACCESS_ERR);
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c(224): warning:  #177-D: variable "port" was declared but never referenced
+      int port;
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c(225): warning:  #177-D: variable "ip_string" was declared but never referenced
+      uint8 ip_string[16];
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c(243): warning:  #177-D: variable "access_token_str" was declared but never referenced
+      char access_token_str[64];
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c(18): warning:  #177-D: variable "str_device_id_hex" was declared but never referenced
+  static uint8 str_device_id_hex[17];
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c(192): warning:  #177-D: function "mqtt_error_cb" was declared but never referenced
+  static void mqtt_error_cb(uint32_t* arg)
+F:\gateway-gprs\framework\gateway\pando_cloud_access.c: 5 warnings, 3 errors
+compiling pando_device_login.c...
+F:\gateway-gprs\framework\gateway\pando_device_login.c(4): error:  #5: cannot open source input file "../../user/device_config.h": No such file or directory
+  #include "../../user/device_config.h"
+F:\gateway-gprs\framework\gateway\pando_device_login.c: 0 warnings, 1 error
+compiling pando_device_register.c...
+F:\gateway-gprs\framework\gateway\pando_device_register.c(4): error:  #5: cannot open source input file "../../user/device_config.h": No such file or directory
+  #include "../../user/device_config.h"
+F:\gateway-gprs\framework\gateway\pando_device_register.c: 0 warnings, 1 error
+compiling pando_gateway.c...
+F:\gateway-gprs\framework\gateway\pando_gateway.c(18): warning:  #1295-D: Deprecated declaration load_data_from_flash - give arg types
+  extern load_data_from_flash();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(18): error:  #260-D: explicit type is missing ("int" assumed)
+  extern load_data_from_flash();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(45): warning:  #223-D: function "gateway_error_process" declared implicitly
+                  gateway_error_process();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(55): warning:  #223-D: function "gateway_error_process" declared implicitly
+                  gateway_error_process();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(59): warning:  #223-D: function "gateway_error_process" declared implicitly
+              gateway_error_process();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(84): error:  #159: declaration is incompatible with previous "gateway_error_process" (declared at line 45)
+  gateway_error_process()
+F:\gateway-gprs\framework\gateway\pando_gateway.c(89): error:  #167: argument of type "struct pd_timer" is incompatible with parameter of type "struct pd_timer *"
+      timer1_init(st_timer);
+F:\gateway-gprs\framework\gateway\pando_gateway.c(102): warning:  #223-D: function "pd_printf" declared implicitly
+      pd_printf("PANDO gateway initial....\n");
+F:\gateway-gprs\framework\gateway\pando_gateway.c(108): warning:  #223-D: function "pando_system_time_init" declared implicitly
+      pando_system_time_init();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(110): warning:  #223-D: function "pando_zero_device_init" declared implicitly
+      pando_zero_device_init();
+F:\gateway-gprs\framework\gateway\pando_gateway.c(84): warning:  #177-D: function "gateway_error_process" was declared but never referenced
+  gateway_error_process()
+F:\gateway-gprs\framework\gateway\pando_gateway.c: 8 warnings, 3 errors
+compiling pando_storage_interface.c...
+F:\gateway-gprs\framework\gateway\pando_storage_interface.c(13): error:  #5: cannot open source input file "../../peripherl/driver/stmflash.h": No such file or directory
+  #include "../../peripherl/driver/stmflash.h"
+F:\gateway-gprs\framework\gateway\pando_storage_interface.c: 0 warnings, 1 error
+compiling pando_zero_device.c...
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(51): error:  #256: invalid redeclaration of type name "int32_t" (declared at line 23 of "..\framework\platform\include\pando_types.h")
+  typedef   signed           int int32_t;
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(57): error:  #256: invalid redeclaration of type name "uint32_t" (declared at line 21 of "..\framework\platform\include\pando_types.h")
+  typedef unsigned           int uint32_t;
+F:\gateway-gprs\framework\gateway\pando_zero_device.c(13): error:  #5: cannot open source input file "pando_system_time.h": No such file or directory
+  #include "pando_system_time.h"
+F:\gateway-gprs\framework\gateway\pando_zero_device.c: 0 warnings, 3 errors
+compiling jsonparse.c...
+F:\gateway-gprs\framework\lib\json\jsonparse.h(35): error:  #5: cannot open source input file "contiki-conf.h": No such file or directory
+  #include "contiki-conf.h"
+F:\gateway-gprs\framework\lib\json\jsonparse.c: 0 warnings, 1 error
+compiling jsontree.c...
+F:\gateway-gprs\framework\lib\json\jsontree.h(43): error:  #5: cannot open source input file "contiki-conf.h": No such file or directory
+  #include "contiki-conf.h"
+F:\gateway-gprs\framework\lib\json\jsontree.c: 0 warnings, 1 error
+compiling common_functions.c...
+compiling pando_endian.c...
+compiling pando_machine.c...
+F:\gateway-gprs\framework\protocol\pando_machine.c(2): error:  #5: cannot open source input file "sys/time.h": No such file or directory
+  #include <sys/time.h>
+F:\gateway-gprs\framework\protocol\pando_machine.c: 0 warnings, 1 error
+compiling pando_protocol.c...
+F:\gateway-gprs\framework\protocol\pando_protocol.c(103): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(payload_type, &(header->payload_type), sizeof(header->payload_type));
+F:\gateway-gprs\framework\protocol\pando_protocol.c(105): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "void *restrict"
+      pd_memcpy(&(sub_device_header.flags), &(header->flags), sizeof(header->flags));
+F:\gateway-gprs\framework\protocol\pando_protocol.c(105): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(&(sub_device_header.flags), &(header->flags), sizeof(header->flags));
+F:\gateway-gprs\framework\protocol\pando_protocol.c(304): warning:  #68-D: integer conversion resulted in a change of sign
+                return -1;
+F:\gateway-gprs\framework\protocol\pando_protocol.c: 1 warning, 3 errors
+compiling sub_device_protocol.c...
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(155): warning:  #177-D: variable "need_length" was declared but never referenced
+      uint8_t need_length;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(177): warning:  #177-D: variable "tlv_length" was declared but never referenced
+      uint8_t tlv_length;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(345): warning:  #68-D: integer conversion resulted in a change of sign
+          return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(347): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(&count, &(params_block->count), sizeof(count));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(354): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(&type, &(params_in->type), sizeof(params_in->type));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(369): warning:  #68-D: integer conversion resulted in a change of sign
+          return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(372): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(&type, &(params_in->type), sizeof(params_in->type));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(378): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+          pd_memcpy(&length, &(params_in->length), sizeof(params_in->length));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(365): warning:  #177-D: variable "value_pos" was declared but never referenced
+      void *value_pos = NULL;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(398): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(type, &(params_in->type), sizeof(params_in->type));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(404): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+          pd_memcpy(length, &(params_in->length), sizeof(params_in->length));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(454): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+      pd_memcpy(type, &(params_in->type), sizeof(params_in->type));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(460): error:  #167: argument of type "__packed uint16_t *" is incompatible with parameter of type "const void *restrict"
+          pd_memcpy(length, &(params_in->length), sizeof(params_in->length));
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(544): warning:  #68-D: integer conversion resulted in a change of sign
+                return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(568): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(572): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(576): warning:  #68-D: integer conversion resulted in a change of sign
+              return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(577): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(580): warning:  #68-D: integer conversion resulted in a change of sign
+      return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(591): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(596): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(604): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(608): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(612): warning:  #68-D: integer conversion resulted in a change of sign
+              return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(613): warning:  #111-D: statement is unreachable
+              break;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(616): warning:  #68-D: integer conversion resulted in a change of sign
+      return -1;
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(339): warning:  #177-D: function "get_tlv_count" was declared but never referenced
+  uint16_t get_tlv_count(struct TLVs *params_block)
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c(389): warning:  #177-D: function "get_tlv_value" was declared but never referenced
+  struct TLV * FUNCTION_ATTRIBUTE get_tlv_value(struct TLV *params_in, void *value)
+F:\gateway-gprs\framework\protocol\sub_device_protocol.c: 20 warnings, 8 errors
+compiling pando_object.c...
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(51): error:  #256: invalid redeclaration of type name "int32_t" (declared at line 23 of "..\framework\platform/include/pando_types.h")
+  typedef   signed           int int32_t;
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(57): error:  #256: invalid redeclaration of type name "uint32_t" (declared at line 21 of "..\framework\platform/include/pando_types.h")
+  typedef unsigned           int uint32_t;
+F:\gateway-gprs\framework\subdevice\pando_object.c(16): error:  #29: expected an expression
+  static pando_object s_pando_object_list[MAX_OBJECTS] = {};
+F:\gateway-gprs\framework\subdevice\pando_object.c: 0 warnings, 3 errors
+compiling pando_subdevice.c...
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(51): error:  #256: invalid redeclaration of type name "int32_t" (declared at line 23 of "..\framework\platform/include/pando_types.h")
+  typedef   signed           int int32_t;
+C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h(57): error:  #256: invalid redeclaration of type name "uint32_t" (declared at line 21 of "..\framework\platform/include/pando_types.h")
+  typedef unsigned           int uint32_t;
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c(18): warning:  #1293-D: assignment in condition
+      while((object_param = get_sub_device_property(device_buffer, &data_body))){
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c(13): warning:  #177-D: variable "buf_end" was declared but never referenced
+      uint8_t *buf_end = device_buffer->buffer + device_buffer->buffer_length;
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c(14): warning:  #177-D: variable "tlv_type" was declared but never referenced
+      uint16_t tlv_type, tlv_length;
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c(14): warning:  #177-D: variable "tlv_length" was declared but never referenced
+      uint16_t tlv_type, tlv_length;
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c(15): warning:  #177-D: variable "value" was declared but never referenced
+      uint8_t *value = NULL;
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c(42): warning:  #1293-D: assignment in condition
+      while((obj = pando_objects_iterator_next(it))){
+F:\gateway-gprs\framework\subdevice\pando_subdevice.c: 6 warnings, 2 errors
+compiling pando_framework.c...
+".\stm32_gprs_1.0" - 31 Error(s), 40 Warning(s).
+Target not created

@@ -1,4 +1,4 @@
-﻿//  Copyright (c) 2014 Pando. All rights reserved.
+//  Copyright (c) 2014 Pando. All rights reserved.
 //  PtotoBuf:   ProtocolBuffer.h
 //
 //  Brief:
@@ -96,7 +96,7 @@ int pando_protocol_decode(struct pando_buffer *pdbuf, uint16_t payload_type);
 /* 网关获取command的序列号，用于反馈机制
  * 得到的是最近一次decode的command的序列
  */
-uint64_t pando_protocol_get_cmd_sequence();
+uint64_t pando_protocol_get_cmd_sequence(void);
 
 /* 获取或设置子设备ID，必须传入payload的起始位置
 */

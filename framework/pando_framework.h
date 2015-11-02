@@ -11,6 +11,6 @@
 #ifndef PANDO_FRAMEWORK_H_
 #define PANDO_FRAMEWORK_H_
 
-void pando_framework_init();
+void pando_framework_init(void);
 
 #endif /* PANDO_FRAMEWORK_H_ */

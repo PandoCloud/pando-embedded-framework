@@ -171,14 +171,14 @@ struct TLVs * FUNCTION_ATTRIBUTE create_params_block()
 
 int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_type, uint16_t next_length, void *next_value)
 {
-	uint16_t type;
+    uint16_t type;
     uint16_t conver_length;
     uint8_t need_length;
     uint8_t tlv_length;
-	uint8_t tmp_value[8];
+		uint8_t tmp_value[8];
     uint8_t *tlv_position;
-	struct TLVs *new_property_block = NULL;
-	uint16_t current_count = net16_to_host(params_block->count);	//鐢变簬create鐨勬椂鍊欏氨瀵硅鍊艰繘琛屼簡绔浆鎹紝鍥犳闇�瑕佸洖杞�
+	  struct TLVs *new_property_block = NULL;
+	  uint16_t current_count = net16_to_host(params_block->count);	//鐢变簬create鐨勬椂鍊欏氨瀵硅鍊艰繘琛屼簡绔浆鎹紝鍥犳闇�瑕佸洖杞�
 
     need_length = is_tlv_need_length(next_type);
     if (1 == need_length)
@@ -199,14 +199,14 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
     }
     
 	//淇℃伅鍖烘墿瀹�
-	if (current_tlv_block_size + next_length + sizeof(struct TLV) 
+    if (current_tlv_block_size + next_length + sizeof(struct TLV) 
         - (!need_length) * sizeof(next_length) > tlv_block_buffer_size)
-	{
-		tlv_block_buffer_size = tlv_block_buffer_size + DEFAULT_TLV_BLOCK_SIZE + next_length;
-		new_property_block = (struct TLVs *)pd_malloc(tlv_block_buffer_size);
-		pd_memcpy(new_property_block, params_block, current_tlv_block_size);
-		pd_free(params_block);
-		params_block = new_property_block;
+	 {
+		    tlv_block_buffer_size = tlv_block_buffer_size + DEFAULT_TLV_BLOCK_SIZE + next_length;
+		    new_property_block = (struct TLVs *)pd_malloc(tlv_block_buffer_size);
+		    pd_memcpy(new_property_block, params_block, current_tlv_block_size);
+		    pd_free(params_block);
+		    params_block = new_property_block;
 	} 
 
 	current_count++;

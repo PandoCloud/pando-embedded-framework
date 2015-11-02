@@ -1,8 +1,10 @@
 #include "gateway/pando_channel.h"
 #include "pando_subdevice.h"
 #include "pando_framework.h"
+#include "pando_types.h"
+#include "gateway/pando_gateway.h"
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_framework_init()
 {
     pando_gateway_init();

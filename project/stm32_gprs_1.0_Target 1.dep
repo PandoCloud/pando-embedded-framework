@@ -1,0 +1,124 @@
+Dependencies for Project 'stm32_gprs_1.0', Target 'Target 1': (DO NOT MODIFY !)
+F (F:\gateway-gprs\example\stm32\main.c)(0x56372F89)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\main.o --omf_browse .\main.crf --depend .\main.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (..\framework\pando_framework.h)(0x56373259)
+F (F:\gateway-gprs\framework\gateway\pando_channel.c)(0x56372FEF)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_channel.o --omf_browse .\pando_channel.crf --depend .\pando_channel.d)
+I (F:\gateway-gprs\framework\gateway\pando_channel.h)(0x56372F5A)
+I (..\framework\platform\include\pando_types.h)(0x563727BF)
+F (F:\gateway-gprs\framework\gateway\pando_cloud_access.c)(0x563741FC)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_cloud_access.o --omf_browse .\pando_cloud_access.crf --depend .\pando_cloud_access.d)
+I (F:\gateway-gprs\framework\gateway\pando_cloud_access.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\gateway\gateway_defs.h)(0x563732E7)
+I (..\framework\platform\include\pando_types.h)(0x563727BF)
+I (F:\gateway-gprs\framework\gateway\pando_storage_interface.h)(0x5637335B)
+I (F:\gateway-gprs\framework\gateway\pando_channel.h)(0x56372F5A)
+I (..\framework\protocol/sub_device_protocol.h)(0x563741EA)
+I (..\framework\protocol/common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (..\framework\protocol/pando_machine.h)(0x56374395)
+I (..\framework\protocol/pando_endian.h)(0x5636D32E)
+I (..\framework\protocol/pando_protocol.h)(0x563741F5)
+F (F:\gateway-gprs\framework\gateway\pando_device_login.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_device_login.o --omf_browse .\pando_device_login.crf --depend .\pando_device_login.d)
+I (F:\gateway-gprs\framework\gateway\pando_device_login.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\gateway\gateway_defs.h)(0x563732E7)
+I (..\framework\platform\include\pando_types.h)(0x563727BF)
+I (F:\gateway-gprs\framework\gateway\pando_storage_interface.h)(0x5637335B)
+F (F:\gateway-gprs\framework\gateway\pando_device_register.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_device_register.o --omf_browse .\pando_device_register.crf --depend .\pando_device_register.d)
+I (F:\gateway-gprs\framework\gateway\pando_device_register.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\gateway\gateway_defs.h)(0x563732E7)
+I (..\framework\platform\include\pando_types.h)(0x563727BF)
+I (F:\gateway-gprs\framework\gateway\pando_storage_interface.h)(0x5637335B)
+F (F:\gateway-gprs\framework\gateway\pando_gateway.c)(0x563708B0)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_gateway.o --omf_browse .\pando_gateway.crf --depend .\pando_gateway.d)
+I (F:\gateway-gprs\framework\gateway\pando_gateway.h)(0x563742E5)
+I (..\framework\platform/include/pando_types.h)(0x563727BF)
+I (F:\gateway-gprs\framework\gateway\pando_device_register.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\gateway\gateway_defs.h)(0x563732E7)
+I (F:\gateway-gprs\framework\gateway\pando_device_login.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\gateway\pando_cloud_access.h)(0x5636D32E)
+I (..\framework\platform\include\../../platform/include/pando_timer.h)(0x563727BE)
+F (F:\gateway-gprs\framework\gateway\pando_storage_interface.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_storage_interface.o --omf_browse .\pando_storage_interface.crf --depend .\pando_storage_interface.d)
+I (F:\gateway-gprs\framework\gateway\pando_storage_interface.h)(0x5637335B)
+I (..\framework\platform/include/pando_types.h)(0x563727BF)
+F (F:\gateway-gprs\framework\gateway\pando_zero_device.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_zero_device.o --omf_browse .\pando_zero_device.crf --depend .\pando_zero_device.d)
+I (F:\gateway-gprs\framework\gateway\pando_channel.h)(0x56372F5A)
+I (..\framework\platform\include\pando_types.h)(0x563727BF)
+I (..\framework\protocol/sub_device_protocol.h)(0x563741EA)
+I (..\framework\protocol/common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (..\framework\protocol/pando_machine.h)(0x56374395)
+I (..\framework\protocol/pando_endian.h)(0x5636D32E)
+F (F:\gateway-gprs\framework\lib\json\jsonparse.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\jsonparse.o --omf_browse .\jsonparse.crf --depend .\jsonparse.d)
+I (F:\gateway-gprs\framework\lib\json\jsonparse.h)(0x5636D32E)
+F (F:\gateway-gprs\framework\lib\json\jsontree.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\jsontree.o --omf_browse .\jsontree.crf --depend .\jsontree.d)
+I (F:\gateway-gprs\framework\lib\json\jsontree.h)(0x5636D32E)
+F (F:\gateway-gprs\framework\protocol\common_functions.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\common_functions.o --omf_browse .\common_functions.crf --depend .\common_functions.d)
+I (F:\gateway-gprs\framework\protocol\common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (F:\gateway-gprs\framework\protocol\pando_machine.h)(0x56374395)
+F (F:\gateway-gprs\framework\protocol\pando_endian.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_endian.o --omf_browse .\pando_endian.crf --depend .\pando_endian.d)
+I (F:\gateway-gprs\framework\protocol\pando_endian.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\protocol\common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (F:\gateway-gprs\framework\protocol\pando_machine.h)(0x56374395)
+F (F:\gateway-gprs\framework\protocol\pando_machine.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_machine.o --omf_browse .\pando_machine.crf --depend .\pando_machine.d)
+I (C:\Keil_v5\ARM\ARMCC\include\time.h)(0x52FDD27E)
+F (F:\gateway-gprs\framework\protocol\pando_protocol.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_protocol.o --omf_browse .\pando_protocol.crf --depend .\pando_protocol.d)
+I (F:\gateway-gprs\framework\protocol\pando_protocol.h)(0x563741F5)
+I (F:\gateway-gprs\framework\protocol\common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (F:\gateway-gprs\framework\protocol\pando_machine.h)(0x56374395)
+I (F:\gateway-gprs\framework\protocol\sub_device_protocol.h)(0x563741EA)
+I (F:\gateway-gprs\framework\protocol\pando_endian.h)(0x5636D32E)
+F (F:\gateway-gprs\framework\protocol\sub_device_protocol.c)(0x56374339)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\sub_device_protocol.o --omf_browse .\sub_device_protocol.crf --depend .\sub_device_protocol.d)
+I (F:\gateway-gprs\framework\protocol\sub_device_protocol.h)(0x563741EA)
+I (F:\gateway-gprs\framework\protocol\common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (F:\gateway-gprs\framework\protocol\pando_machine.h)(0x56374395)
+I (F:\gateway-gprs\framework\protocol\pando_endian.h)(0x5636D32E)
+F (F:\gateway-gprs\framework\subdevice\pando_object.c)(0x5636D32E)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_object.o --omf_browse .\pando_object.crf --depend .\pando_object.d)
+I (F:\gateway-gprs\framework\subdevice\pando_object.h)(0x5637439F)
+I (..\framework\platform/include/pando_types.h)(0x563727BF)
+I (..\framework\protocol/sub_device_protocol.h)(0x563741EA)
+I (..\framework\protocol/common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (..\framework\protocol/pando_machine.h)(0x56374395)
+I (..\framework\protocol/pando_endian.h)(0x5636D32E)
+F (F:\gateway-gprs\framework\subdevice\pando_subdevice.c)(0x56374482)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_subdevice.o --omf_browse .\pando_subdevice.crf --depend .\pando_subdevice.d)
+I (F:\gateway-gprs\framework\subdevice\pando_subdevice.h)(0x5636D32E)
+I (..\framework\platform/include/pando_types.h)(0x563727BF)
+I (..\framework\gateway/pando_channel.h)(0x56372F5A)
+I (..\framework\protocol/common_functions.h)(0x563741DE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
+I (..\framework\protocol/pando_machine.h)(0x56374395)
+I (..\framework\protocol/sub_device_protocol.h)(0x563741EA)
+I (..\framework\protocol/pando_endian.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\subdevice\pando_object.h)(0x5637439F)
+F (F:\gateway-gprs\framework\pando_framework.c)(0x563742D3)(--c99 -c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\CoreSupport -I..\sys\driver\STM32F10x_StdPeriph_Lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\sys\driver\STM32F10x_StdPeriph_Lib\STM32F10x_StdPeriph_Driver\inc -I..\framework\platform\include -I..\framework -I..\framework\protocol -I..\framework\subdevice-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -o .\pando_framework.o --omf_browse .\pando_framework.crf --depend .\pando_framework.d)
+I (F:\gateway-gprs\framework\gateway\pando_channel.h)(0x56372F5A)
+I (..\framework\platform\include\pando_types.h)(0x563727BF)
+I (..\framework\subdevice\pando_subdevice.h)(0x5636D32E)
+I (F:\gateway-gprs\framework\pando_framework.h)(0x56373259)
+I (F:\gateway-gprs\framework\gateway\pando_gateway.h)(0x563742E5)

@@ -49,7 +49,7 @@ pando_object* find_pando_object(int8 no);
  * Parameters   : .
  * Returns      : .
 *******************************************************************************/
-pando_objects_iterator* create_pando_objects_iterator();
+pando_objects_iterator* create_pando_objects_iterator(void);
 void delete_pando_objects_iterator(pando_objects_iterator*);
 pando_object* pando_objects_iterator_next(pando_objects_iterator*);
 
