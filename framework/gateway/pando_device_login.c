@@ -2,9 +2,12 @@
 #include "pando_storage_interface.h"
 #include "platform/include/pando_sys.h"
 #include "platform/include/pando_types.h"
-//#include "../../user/device_config.h"
+#include "lib/converter.h"
+#include "lib/json/jsonparse.h"
 #include "lib/json/jsontree.h"
+#include "lib/pando_json.h"
 #include "platform/include/pando_net_http.h"
+#include "platform/incluce/pando_timer.h"
 
 #define MAX_BUF_LEN 256
 #define KEY_BUF_LEN 64
@@ -154,7 +157,7 @@ pando_device_login(gateway_callback callback)
 
     pd_printf("device login request:::\n%s\n(end)\n", request);
 
-    http_post(PANDO_API_URL
+    net_http_post(PANDO_API_URL
         "/v1/devices/authentication",
         request,
         http_callback_login);    
