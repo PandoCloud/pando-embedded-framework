@@ -32,19 +32,19 @@ static void save_data_to_flash()
 {
     pd_printf("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
-    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
+    //STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     struct data_pair * cur;
     int32 cnt = 0;
     pd_printf("saving data to flash...\n");
 //    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     for(cur=head; cur!=NULL; cur=cur->next) 
     {
-        STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + (cnt * sizeof(struct data_pair)),
-            (uint16 *)cur, sizeof(struct data_pair));
+        //STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + (cnt * sizeof(struct data_pair)),
+            //(uint16 *)cur, sizeof(struct data_pair));
         cnt ++;
     }
-    STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32),
-        (uint16 *)&cnt, sizeof(int32));
+    //STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32),
+        //(uint16 *)&cnt, sizeof(int32));
     pd_printf("done...\n");
 }
 

@@ -149,7 +149,7 @@ pando_device_login(gateway_callback callback)
         JSONTREE_PAIR("protocol", &json_protocol));
 
     request = (char *)pd_malloc(MAX_BUF_LEN);
-    int ret = pando_json_print(&device_info, request, MAX_BUF_LEN);
+    int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
 
     pd_printf("device login request:::\n%s\n(end)\n", request);
 

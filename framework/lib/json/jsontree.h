@@ -112,7 +112,7 @@ struct jsontree_array {
     jsontree_pair_##name }
 
 #define JSONTREE_OBJECT_EXT(name, ...)                                  \
-  static struct jsontree_pair jsontree_pair_##name[] = {__VA_ARGS__};   \
+  struct jsontree_pair jsontree_pair_##name[] = {__VA_ARGS__};   \
   struct jsontree_object name = {                                       \
     JSON_TYPE_OBJECT,							\
     sizeof(jsontree_pair_##name)/sizeof(struct jsontree_pair),          \

@@ -138,7 +138,7 @@ void pando_device_register(gateway_callback callback)
     str_device_serial[DEVICE_SERIAL_BUF_LEN - 1] = 0;
     pd_printf("device_serial:%s\n", str_device_serial);
     // try register device via HTTP
-    struct jsontree_string json_product_key = JSONTREE_STRING(PANDO_PRODUCT_KEY);
+    struct jsontree_string json_product_key = JSONTREE_STRING("");
     struct jsontree_string json_device_code = JSONTREE_STRING(str_device_serial);
     struct jsontree_int json_device_type = JSONTREE_INT(1);
     struct jsontree_string json_device_module = JSONTREE_STRING(PANDO_DEVICE_MODULE);
@@ -151,7 +151,7 @@ void pando_device_register(gateway_callback callback)
         JSONTREE_PAIR("device_module", &json_device_module),
         JSONTREE_PAIR("version", &json_version));
     request = (char *)pd_malloc(MAX_BUF_LEN);
-    int ret = pando_json_print(&device_info, request, MAX_BUF_LEN);
+    int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
 
     pd_printf("device register request:::\n%s\n(end)\n", request);
 
