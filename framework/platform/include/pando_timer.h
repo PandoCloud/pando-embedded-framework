@@ -28,10 +28,10 @@ struct pd_timer
 /******************************************************************************
  * FunctionName : timer1_init
  * Description  : init timer1.
- * Parameters   : timer_cfg: the pointer to timer config.
+ * Parameters   : timer_cfg: the config timer.
  * Returns      : 
  ******************************************************************************/
-void timer1_init(struct pd_timer *timer_cfg);
+void timer1_init(struct pd_timer timer_cfg);
 
 /******************************************************************************
  * FunctionName : timer1_start

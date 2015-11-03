@@ -300,13 +300,13 @@ char *FUNCTION_ATTRIBUTE pando_protocol_get_uri(struct pando_buffer *pdbuf)
 uint16_t FUNCTION_ATTRIBUTE pando_protocol_get_payload_type(struct pando_buffer *pdbuf)
 {
     struct device_header *gateway_header;
-	if (pdbuf == NULL)
-	{
-		return -1;
-	}
+    if (pdbuf == NULL)
+    {
+        return -1;
+    }
 
-	gateway_header = (struct device_header *)(pdbuf->buffer + pdbuf->offset);
-	return net16_to_host(gateway_header->payload_type);
+    gateway_header = (struct device_header *)(pdbuf->buffer + pdbuf->offset);
+    return net16_to_host(gateway_header->payload_type);
 }
 
 int FUNCTION_ATTRIBUTE is_pando_file_command(struct pando_buffer *pdbuf)

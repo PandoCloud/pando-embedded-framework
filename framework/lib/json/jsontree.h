@@ -41,7 +41,7 @@
 #define JSONTREE_H_
 
 //#include "contiki-conf.h"
-#include "framework\platform\include\pando_types.h"
+#include "platform\include\pando_types.h"
 #include "json.h"
 
 #ifdef JSONTREE_CONF_MAX_DEPTH

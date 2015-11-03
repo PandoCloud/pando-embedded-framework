@@ -18,13 +18,6 @@ static char* request = NULL;
 
 static void http_callback_register(char * response)
 {
-    struct jsonparse_state json_state;
-    uint8 code;
-    char message[MSG_BUF_LEN];
-    long device_id;
-    char device_secret[KEY_BUF_LEN];
-    char device_key[KEY_BUF_LEN];
-    int type;
     if(request != NULL)
     {
         pd_free(request);
@@ -36,13 +29,22 @@ static void http_callback_register(char * response)
         pd_printf("http request failed\n");
         if(device_register_callback != NULL)
         {
-            return;
+            device_register_callback(PANDO_REGISTER_FAIL);
+			return;
         }
     }
 
     pd_printf("response=%s\n(end)\n", response);
 
+    struct jsonparse_state json_state;
     jsonparse_setup(&json_state, response, pd_strlen(response));
+    uint8 code;
+    char message[MSG_BUF_LEN];
+    long device_id;
+    char device_secret[KEY_BUF_LEN];
+    char device_key[KEY_BUF_LEN];
+
+    int type;
     while ((type = jsonparse_next(&json_state)) != 0)
     {
         if (type == JSON_TYPE_PAIR_NAME) 
@@ -94,7 +96,8 @@ static void http_callback_register(char * response)
         pd_printf("device register failed: %s\n", message);
         if(device_register_callback != NULL) 
         {
-          return;
+			device_register_callback(PANDO_REGISTER_FAIL);
+			return;
         }
     }
 
@@ -115,15 +118,6 @@ static void http_callback_register(char * response)
 
 void pando_device_register(gateway_callback callback)
 {
-    char * str_device_id = NULL;
-    char * str_device_secret = NULL;
-    char * str_device_key = NULL;
-    char str_device_serial[DEVICE_SERIAL_BUF_LEN];
-    struct jsontree_string json_product_key;
-    struct jsontree_string json_device_code;
-    struct jsontree_int json_device_type;
-    struct jsontree_string json_device_module;
-    struct jsontree_string json_version;
     pd_printf("PANDO begin register device...\n");
 
     if(callback != NULL)
@@ -131,18 +125,24 @@ void pando_device_register(gateway_callback callback)
         device_register_callback = callback;
     }
 
+    char * str_device_id = NULL;
+    char * str_device_secret = NULL;
+    char * str_device_key = NULL;
     str_device_id = pando_data_get(DATANAME_DEVICE_ID);
     str_device_secret = pando_data_get(DATANAME_DEVICE_SECRET);
     str_device_key = pando_data_get(DATANAME_DEVICE_KEY);
-    gprs_get_imei(char* str_device_serial);
+
+    char str_device_serial[DEVICE_SERIAL_BUF_LEN];
+	// TODO: device unique indentify will be delivered by the framwork_init.
+    //gprs_get_imei(char* str_device_serial);
     str_device_serial[DEVICE_SERIAL_BUF_LEN - 1] = 0;
     pd_printf("device_serial:%s\n", str_device_serial);
     // try register device via HTTP
-    json_product_key = JSONTREE_STRING(PANDO_PRODUCT_KEY);
-    json_device_code = JSONTREE_STRING(str_device_serial);
-    json_device_type = JSONTREE_INT(1);
-    json_device_module = JSONTREE_STRING(PANDO_DEVICE_MODULE);
-    json_version = JSONTREE_STRING(PANDO_SDK_VERSION);
+    struct jsontree_string json_product_key = JSONTREE_STRING(PANDO_PRODUCT_KEY);
+    struct jsontree_string json_device_code = JSONTREE_STRING(str_device_serial);
+    struct jsontree_int json_device_type = JSONTREE_INT(1);
+    struct jsontree_string json_device_module = JSONTREE_STRING(PANDO_DEVICE_MODULE);
+    struct jsontree_string json_version = JSONTREE_STRING(PANDO_SDK_VERSION);
     
     JSONTREE_OBJECT_EXT(device_info, 
         JSONTREE_PAIR("product_key", &json_product_key),

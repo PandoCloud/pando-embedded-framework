@@ -30,7 +30,9 @@ static struct data_pair * head = NULL;
 
 static void save_data_to_flash()
 {
+    pd_printf("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
+    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     struct data_pair * cur;
     int32 cnt = 0;
     pd_printf("saving data to flash...\n");
@@ -48,17 +50,20 @@ static void save_data_to_flash()
 
 void load_data_from_flash()
 {
+    pd_printf("loading config data from flash...\n");
     int32 cnt, i;
     int32 magic = 0;
     pd_printf("loading config data from flash...\n");
-//    STMFLASH_Read(PANDO_CONFIG_ADDRESS, (uint16 *)&magic, sizeof(int32));
+	//TODO: add system data storage interface.
+    //STMFLASH_Read(PANDO_CONFIG_ADDRESS, (uint16 *)&magic, sizeof(int32));
     pd_printf("read magic : %x\n", magic);
     if(magic != PANDO_CONFIG_MAGIC)
     {
         pd_printf("flash config data not initialized!\n");
         return;
     }
-    STMFLASH_Read(PANDO_CONFIG_ADDRESS + sizeof(int32), (uint16 *)&cnt, sizeof(int32));
+	////TODO: add system data storage interface.
+    //STMFLASH_Read(PANDO_CONFIG_ADDRESS + sizeof(int32), (uint16 *)&cnt, sizeof(int32));
     pd_printf("reading config from flash , key count : %d...\n", cnt);
     for(i=0; i<cnt; i++) 
     {
