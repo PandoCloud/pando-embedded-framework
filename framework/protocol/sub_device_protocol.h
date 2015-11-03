@@ -105,7 +105,7 @@ struct sub_device_base_params
 int init_sub_device(struct sub_device_base_params base_params);
 
 //鍦ㄥ垱寤烘暟鎹寘鎴栬�呬簨浠跺寘鍓嶏紝鍏堝垱寤哄ソ鍙傛暟鐨勪俊鎭尯, 鍚屾椂娣诲姞绗竴涓弬鏁帮紝寰呬俊鎭尯琚玞reate_event绛夊嚱鏁版垚鍔熶娇鐢ㄥ悗锛岃灏嗕俊鎭尯delete
-struct TLVs *create_params_block();
+struct TLVs *create_params_block(void);
 
 //鍒涘缓浜嬩欢鍖咃紝杩斿洖缂撳啿鍖猴紝
 //鏁版嵁鍙戦�佸畬鎴愬悗锛岃灏嗚繑鍥炵殑缂撳啿鍖篸elete鎺�

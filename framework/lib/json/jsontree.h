@@ -40,7 +40,8 @@
 #ifndef JSONTREE_H_
 #define JSONTREE_H_
 
-#include "contiki-conf.h"
+//#include "contiki-conf.h"
+#include "platform\include\pando_types.h"
 #include "json.h"
 
 #ifdef JSONTREE_CONF_MAX_DEPTH
@@ -98,6 +99,7 @@ struct jsontree_array {
   struct jsontree_value **values;
 };
 
+#define JSONTREE_INT(num) {JSON_TYPE_INT, (num)}
 #define JSONTREE_STRING(text) {JSON_TYPE_STRING, (text)}
 #define JSONTREE_PAIR(name, value) {(name), (struct jsontree_value *)(value)}
 #define JSONTREE_CALLBACK(output, set) {JSON_TYPE_CALLBACK, (output), (set)}
@@ -110,7 +112,7 @@ struct jsontree_array {
     jsontree_pair_##name }
 
 #define JSONTREE_OBJECT_EXT(name, ...)                                  \
-  static struct jsontree_pair jsontree_pair_##name[] = {__VA_ARGS__};   \
+  struct jsontree_pair jsontree_pair_##name[] = {__VA_ARGS__};   \
   struct jsontree_object name = {                                       \
     JSON_TYPE_OBJECT,							\
     sizeof(jsontree_pair_##name)/sizeof(struct jsontree_pair),          \

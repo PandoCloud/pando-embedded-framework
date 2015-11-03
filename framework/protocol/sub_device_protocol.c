@@ -171,14 +171,14 @@ struct TLVs * FUNCTION_ATTRIBUTE create_params_block()
 
 int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_type, uint16_t next_length, void *next_value)
 {
-	uint16_t type;
+    uint16_t type;
     uint16_t conver_length;
     uint8_t need_length;
     uint8_t tlv_length;
-	uint8_t tmp_value[8];
+    uint8_t tmp_value[8];
     uint8_t *tlv_position;
-	struct TLVs *new_property_block = NULL;
-	uint16_t current_count = net16_to_host(params_block->count);	//鐢变簬create鐨勬椂鍊欏氨瀵硅鍊艰繘琛屼簡绔浆鎹紝鍥犳闇�瑕佸洖杞�
+    struct TLVs *new_property_block = NULL;
+    uint16_t current_count = net16_to_host(params_block->count);	//鐢变簬create鐨勬椂鍊欏氨瀵硅鍊艰繘琛屼簡绔浆鎹紝鍥犳闇�瑕佸洖杞�
 
     need_length = is_tlv_need_length(next_type);
     if (1 == need_length)
@@ -199,15 +199,15 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
     }
     
 	//淇℃伅鍖烘墿瀹�
-	if (current_tlv_block_size + next_length + sizeof(struct TLV) 
+    if (current_tlv_block_size + next_length + sizeof(struct TLV) 
         - (!need_length) * sizeof(next_length) > tlv_block_buffer_size)
-	{
-		tlv_block_buffer_size = tlv_block_buffer_size + DEFAULT_TLV_BLOCK_SIZE + next_length;
-		new_property_block = (struct TLVs *)pd_malloc(tlv_block_buffer_size);
-		pd_memcpy(new_property_block, params_block, current_tlv_block_size);
-		pd_free(params_block);
-		params_block = new_property_block;
-	} 
+    {
+        tlv_block_buffer_size = tlv_block_buffer_size + DEFAULT_TLV_BLOCK_SIZE + next_length;
+        new_property_block = (struct TLVs *)pd_malloc(tlv_block_buffer_size);
+        pd_memcpy(new_property_block, params_block, current_tlv_block_size);
+        pd_free(params_block);
+        params_block = new_property_block;
+    } 
 
 	current_count++;
 	tlv_position = (uint8_t *)params_block + current_tlv_block_size;
@@ -344,14 +344,14 @@ uint16_t get_tlv_count(struct TLVs *params_block)
     {
         return -1;
     }
-    pd_memcpy(&count, &(params_block->count), sizeof(count));
+    pd_memcpy((void*)(&count), (void*)(&(params_block->count)), sizeof(count));
     return count;
 }
 
 uint16_t FUNCTION_ATTRIBUTE get_tlv_type(struct TLV *params_in)
 {
     uint16_t type = 0;
-    pd_memcpy(&type, &(params_in->type), sizeof(params_in->type));
+    pd_memcpy((void*)(&type), (void*)(&(params_in->type)), sizeof(params_in->type));
     type = net16_to_host(type);
     return type;
 }
@@ -369,13 +369,13 @@ uint16_t FUNCTION_ATTRIBUTE get_tlv_len(struct TLV *params_in)
         return -1;
     }
     
-    pd_memcpy(&type, &(params_in->type), sizeof(params_in->type));
+    pd_memcpy((void*)(&type), (void*)(&(params_in->type)), sizeof(params_in->type));
     type = net16_to_host(type);
     
     need_length = is_tlv_need_length(type);
     if (need_length == 1)
     {        
-        pd_memcpy(&length, &(params_in->length), sizeof(params_in->length));
+        pd_memcpy((void*)(&length), (void*)(&(params_in->length)), sizeof(params_in->length));
         length = net16_to_host(length);
     }
     else
@@ -395,15 +395,15 @@ struct TLV * FUNCTION_ATTRIBUTE get_tlv_value(struct TLV *params_in, void *value
     uint16_t *type = &type_p;
     uint16_t *length = &length_p;
 
-    pd_memcpy(type, &(params_in->type), sizeof(params_in->type));
+    pd_memcpy((void*)type, (void*)(&(params_in->type)), sizeof(params_in->type));
     *type = net16_to_host(*type);
     
     need_length = is_tlv_need_length(*type);
     if (need_length == 1)
     {        
-        pd_memcpy(length, &(params_in->length), sizeof(params_in->length));
+        pd_memcpy((void*)length, (void*)(&(params_in->length)), sizeof(params_in->length));
         *length = net16_to_host(*length);
-        pd_memcpy(value, params_in->value, *length);
+        pd_memcpy((void*)value, (void*)(params_in->value), *length);
     }
     else
     {
@@ -451,21 +451,21 @@ struct TLV * FUNCTION_ATTRIBUTE get_tlv_param(struct TLV *params_in, uint16_t *t
     uint8_t need_length;
     void *value_pos = NULL;
 
-    pd_memcpy(type, &(params_in->type), sizeof(params_in->type));
+    pd_memcpy((void*)type, (void*)(&(params_in->type)), sizeof(params_in->type));
     *type = net16_to_host(*type);
     
     need_length = is_tlv_need_length(*type);
     if (need_length == 1)
     {        
-        pd_memcpy(length, &(params_in->length), sizeof(params_in->length));
+        pd_memcpy((void*)length, (void*)(&(params_in->length)), sizeof(params_in->length));
         *length = net16_to_host(*length);
-        pd_memcpy(value, params_in->value, *length);
+        pd_memcpy((void*)value, (void*)(params_in->value), *length);
     }
     else
     {
         *length = get_type_length(*type);
         value_pos = (uint8_t *)params_in + sizeof(params_in->type);
-        pd_memcpy(value, value_pos, *length);
+        pd_memcpy((void*)value, (void*)value_pos, *length);
         switch (*type)
         {
             case TLV_TYPE_FLOAT64:

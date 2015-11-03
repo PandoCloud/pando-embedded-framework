@@ -12,6 +12,10 @@
 #ifndef _PANDO_SYS_H_
 #define _PANDO_SYS_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define pd_malloc       malloc
 #define pd_free         free
 

@@ -66,6 +66,12 @@ typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
 #define REG_SET_BIT(_r, _b)  (*(volatile uint32_t*)(_r) |= (_b))
 #define REG_CLR_BIT(_r, _b)  (*(volatile uint32_t*)(_r) &= ~(_b))
 
+#ifdef ESP8266_PLANTFORM
+#define FUNCTION_ATTRIBUTE ICACHE_FLASH_ATTR
+#else
+#define FUNCTION_ATTRIBUTE
+#endif
+
 #ifndef __cplusplus
 typedef unsigned char   bool;
 #define BOOL            bool
@@ -77,3 +83,4 @@ typedef unsigned char   bool;
 #endif /* !__cplusplus */
 
 #endif /* _PANDO_TYPES_H_ */
+

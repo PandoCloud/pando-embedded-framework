@@ -13,11 +13,16 @@
 #include "pando_device_login.h"
 #include "pando_cloud_access.h"
 #include "gateway_defs.h"
+#include "platform/include/pando_sys.h"
+#include "pando_zero_device.h"
 #include "platform/include/pando_timer.h"
 
-extern load_data_from_flash();
+//extern load_data_from_flash();
 
 static GATEWAY_STATUS gateway_status;
+
+static void gateway_error_process();
+
 /******************************************************************************
  * FunctionName : gateway_cb
  * Description  : the gateway callback function.
@@ -83,7 +88,7 @@ gprs_connect_check()
 static void FUNCTION_ATTRIBUTE
 gateway_error_process()
 {
-    pd_timer st_timer;
+    struct pd_timer st_timer;
     st_timer.interval = 3000;
     st_timer.repeated = 0;
     timer1_init(st_timer);
@@ -103,9 +108,9 @@ pando_gateway_init()
 
     gateway_status = GATEWAY_INIT;
 
-    load_data_from_flash();
+    //load_data_from_flash();
 
-    pando_system_time_init();
+    //pando_system_time_init();
 
     pando_zero_device_init();
 

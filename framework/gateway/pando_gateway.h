@@ -27,6 +27,6 @@ typedef enum {
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void pando_gateway_init();
+void pando_gateway_init(void);
 
 #endif

@@ -1,8 +1,11 @@
 #include "pando_device_login.h"
 #include "pando_storage_interface.h"
+#include "platform/include/pando_sys.h"
 #include "platform/include/pando_types.h"
-#include "../../user/device_config.h"
+#include "lib/converter.h"
+#include "lib/json/jsonparse.h"
 #include "lib/json/jsontree.h"
+#include "lib/pando_json.h"
 #include "platform/include/pando_net_http.h"
 
 #define MAX_BUF_LEN 256
@@ -146,11 +149,11 @@ pando_device_login(gateway_callback callback)
         JSONTREE_PAIR("protocol", &json_protocol));
 
     request = (char *)pd_malloc(MAX_BUF_LEN);
-    int ret = pando_json_print(&device_info, request, MAX_BUF_LEN);
+    int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
 
     pd_printf("device login request:::\n%s\n(end)\n", request);
 
-    http_post(PANDO_API_URL
+    net_http_post(PANDO_API_URL
         "/v1/devices/authentication",
         request,
         http_callback_login);    

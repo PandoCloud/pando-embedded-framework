@@ -44,7 +44,7 @@ char * pando_data_get(char* key);
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-uint16 pando_storage_space_left();
+uint16 pando_storage_space_left(void);
 
 /******************************************************************************
  * FunctionName : pando_storage_clean.
@@ -52,7 +52,6 @@ uint16 pando_storage_space_left();
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
-pando_storage_clean();
+void pando_storage_clean(void);
 
 #endif

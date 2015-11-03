@@ -10,7 +10,7 @@
  *********************************************************/
 #include "pando_channel.h"
 #include "protocol/sub_device_protocol.h"
-#include "pando_system_time.h"
+//#include "pando_system_time.h"
 #include "pando_zero_device.h"
 #include "platform/include/pando_types.h"
 

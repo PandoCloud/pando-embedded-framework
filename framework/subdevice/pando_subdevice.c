@@ -15,7 +15,7 @@ decode_data(struct sub_device_buffer *device_buffer)
     uint8_t *value = NULL;
 
     PARAMS *object_param = NULL;
-    while(object_param = get_sub_device_property(device_buffer, &data_body)){
+    while((object_param = get_sub_device_property(device_buffer, &data_body))){
         pando_object* obj = find_pando_object(data_body.property_num);
         if( NULL == obj )
         {
@@ -39,7 +39,7 @@ send_current_status()
 
     pando_object* obj = NULL;
     pando_objects_iterator* it = create_pando_objects_iterator();
-    while(obj = pando_objects_iterator_next(it)){
+    while((obj = pando_objects_iterator_next(it))){
         PARAMS* params =  create_params_block();
         if (params == NULL)
         {
