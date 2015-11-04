@@ -2,9 +2,9 @@
 #introduction
 When connecting a hardware device to the internet, we need a cloud, a device, and a gateway. We have to code in the device to get the date of the real word by hardware driver, code in the gateway to connect our device to the cloud and send date to the cloud by network, code in the cloud to deal with the business. We have to do so much, on the other hand, because of the variety of gateway and device, we have to implement the save business on different platform, such as, esp8266, 5350, stm32, ardunio, and so on.  
 The structure of conneting things to the internet is like below:    
-![normal-IOT-structure](image/normal-IOT-structure.jpg)  
+![normal-IOT-structure](doc/image/normal-IOT-structure.jpg)  
 pando-embedded-framwork is different in that, it abstracts the common gateway business, such as register, login, access, and so on, leave the driver interface to be implemented on different platform; on the other hand, it abstracts the device common operations.  
-![pando-IOT_structure](image/pando-IOT_structure.jpg)
+![pando-IOT_structure](doc/image/pando-IOT-structure.jpg)  
 #directory structure  
     -doc
     -framework
