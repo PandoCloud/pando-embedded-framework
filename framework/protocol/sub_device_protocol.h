@@ -1,7 +1,13 @@
-//  Copyright (c) 2015 Pando. All rights reserved.
-//  PtotoBuf:   ProtocolBuffer.h
-//
-//  Create By ZhaoWenwu On 15/01/24.
+/*******************************************************
+ * File name：sub_device_protocol.h
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: APIs for sub device.
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
 
 #ifndef SUB_DEVICE_PROTOCOL_TOOL_H
 #define SUB_DEVICE_PROTOCOL_TOOL_H
@@ -37,17 +43,22 @@ extern "C"
 
 #pragma pack(1)
 
+/* a device packet is made up with header and payload */
 struct device_header
 {
-    uint8_t  magic;         /* 寮�濮嬫爣蹇� (0x34) */
-    uint8_t  crc;           /* 鏍￠獙鍜� */
-    uint16_t payload_type;  /* 杞借嵎绫诲瀷 */
-    uint16_t payload_len;   /* 杞借嵎闀垮害 */
-    uint16_t flags;         /* 鏍囧織浣� */
-    uint32_t frame_seq;     /* 甯у簭鍒� */
+    uint8_t  magic;         /* magic number (0x34) */
+    uint8_t  crc;           /* crc of whole packet with crc is zero */
+    uint16_t payload_type;  /* type of packet, event, command, data */
+    uint16_t payload_len;   /* length of packet without header */
+    uint16_t flags;         /* flags for extending protocol  */
+    uint32_t frame_seq;     /* frame sequence between device and gateway */
 };
 
-/*TLV淇℃伅鍖猴紝鍖呭惈count*/
+/* TLV contains the real information of payload.
+   There are 13 types, such as int8, unint16, length is sizeof the type. 
+   If type such as int32 can present length of itself, TLV is made up of type 
+   and value.
+*/
 struct TLV 
 {
 	uint16_t type;
@@ -55,35 +66,37 @@ struct TLV
 	uint8_t value[];
 };
 
+/* Count presents packet how many tlv informations in a packet */
 struct TLVs
 {
     uint16_t count;
     //struct TLV tlv[];
 };
 
-/*鍛戒护锛屼簨浠跺拰鏁版嵁鍏蜂綋鐨勬暟鎹粨鏋�*/
+/* Payload of command */
 struct pando_command
 {
-	uint16_t sub_device_id;   /* 瀛愯澶嘔D */
-	uint16_t command_id;      /* 鍛戒护ID */
-	uint16_t priority;        /* 浼樺厛绾� */
-	struct TLVs params[1];          /* 鍙傛暟 */
+	uint16_t sub_device_id;   /* ID of device */
+	uint16_t command_num;     /* different command number presents different operation */
+	uint16_t priority;        /* device should handle high priority command first */
+	struct TLVs params[1];    /* params for command operation */
 };
 
+/* Payload of event */
 struct pando_event
 {
-	uint16_t sub_device_id;   /* 瀛愯澶嘔D */
-	uint16_t event_num;        /* 浜嬩欢ID */
-    uint16_t priority;
-	struct TLVs params[1];          /* 鍙傛暟 */
+	uint16_t sub_device_id;   /* ID of device */
+	uint16_t event_num;       /* Different event number presents different type event */
+    uint16_t priority;        /* Device should report high priority event first */
+	struct TLVs params[1];    /* Params for event to report */
 };
 
-/*灞炴�х殑瀹氫箟*/
+/* Payload of data */
 struct pando_property
 {
-	uint16_t sub_device_id;   /* 瀛愯澶嘔D */
-	uint16_t property_num;	/* 灞炴�х紪鍙� */
-	struct TLVs params[1];          /* 鍙傛暟 */
+	uint16_t sub_device_id;   /* ID of device */
+	uint16_t property_num;	  /* Different property number presents different type data property */
+	struct TLVs params[1];    /* Params for data to report */
 };
 
 struct sub_device_buffer
@@ -101,49 +114,170 @@ struct sub_device_base_params
 #pragma pack()
 
 
-//鍒濆鍖栧瓙璁惧妯″潡
+/*******************************************************
+ * Description: Initialize sequence number to 0, it's unnecessary now.
+ * param
+        base_params: sequence of data, event, command.
+ * return: 0 if success, -1 if failed.
+ *********************************************************/
 int init_sub_device(struct sub_device_base_params base_params);
 
-//鍦ㄥ垱寤烘暟鎹寘鎴栬�呬簨浠跺寘鍓嶏紝鍏堝垱寤哄ソ鍙傛暟鐨勪俊鎭尯, 鍚屾椂娣诲姞绗竴涓弬鏁帮紝寰呬俊鎭尯琚玞reate_event绛夊嚱鏁版垚鍔熶娇鐢ㄥ悗锛岃灏嗕俊鎭尯delete
-struct TLVs *create_params_block(void);
+/*******************************************************
+ * Description: Create a block buffer before adding tlv params. 
+        It's necessary to delete the buffer when complete creating package.
+ * param
+ * return: Buffer of params block.
+ *********************************************************/
+struct TLVs *create_params_block();
 
-//鍒涘缓浜嬩欢鍖咃紝杩斿洖缂撳啿鍖猴紝
-//鏁版嵁鍙戦�佸畬鎴愬悗锛岃灏嗚繑鍥炵殑缂撳啿鍖篸elete鎺�
+/*******************************************************
+ * Description: Create package buffer, need add params block to finish package.
+ * param
+        flags: Extend for new features.
+ * return: Buffer of package.
+ *********************************************************/
 struct sub_device_buffer *create_command_package(uint16_t flags);
+
+/*******************************************************
+ * Description: Create package buffer, need add params block to finish package.
+ * param
+        flags: Extend for new features.
+ * return: Buffer of package.
+ *********************************************************/
 struct sub_device_buffer *create_event_package(uint16_t flags);
+
+/*******************************************************
+ * Description: Create package buffer, need add params block to finish package.
+ * param
+        flags: Extend for new features.
+ * return: Buffer of package.
+ *********************************************************/
 struct sub_device_buffer *create_data_package(uint16_t flags);
 
-uint16_t get_sub_device_payloadtype(struct sub_device_buffer *package);
-
+/*******************************************************
+ * Description: Calculate payload length and crc to finish package construct.
+ * param
+        package_buf: buffer contains device package.
+ * return:
+ *********************************************************/
 int finish_package(struct sub_device_buffer *package_buf);
 
-
+/*******************************************************
+ * Description: Add data params block and property number to package.
+ * param
+        data_package: buffer contains device package.
+        property_num: property number, indicate data type.
+        next_data_params: all data params, count means how many params.
+ * return: 0 if success, -1 if failed. 
+ *********************************************************/
 int add_next_property(struct sub_device_buffer *data_package, uint16_t property_num, 
     struct TLVs *next_data_params);
+
+/*******************************************************
+ * Description: Add command params block, priority and command number to package.
+ * param
+        command_package: buffer contains device package.
+        command_num: command number, indicate command type.
+        priority: high priority command should be processed first.
+        command_params: all command params, count means how many params.
+ * return: 0 if success, -1 if failed.
+ *********************************************************/
 int add_command(struct sub_device_buffer *command_package, uint16_t command_num,
     uint16_t priority, struct TLVs *command_params);
+
+/*******************************************************
+ * Description: Add event params block, priority and event number to package.
+ * param
+    out:
+        event_package: buffer contains device package.
+    in:
+        event_num: event number, indicate event type.
+        priority: high priority event should be uploaded to server first.
+        event_params: all event params, count means how many params.
+ * return: 0 if success, -1 if failed.
+
+ *********************************************************/
 int add_event(struct sub_device_buffer *event_package, uint16_t event_num,
     uint16_t priority, struct TLVs *event_params);
 
-
-//瑙ｆ瀽鍛戒护鍖�,command_body浼犲嚭command_id銆佸弬鏁颁釜鏁扮瓑淇℃伅,杩斿洖绗竴涓弬鏁扮殑鎸囬拡锛岀敤浜巊et_tlv_param鑾峰彇鍙傛暟
+/*******************************************************
+ * Description: Get command from device buffer directly.
+ * param
+    in:
+        device_buffer: buffer contains device package.
+    out:
+        command_body: include command number, priority and sub device id.
+ * return: 0 if success, -1 if failed.
+ *********************************************************/
 struct TLVs *get_sub_device_command(struct sub_device_buffer *device_buffer, struct pando_command *command_body);
+
+/*******************************************************
+ * Description: Get event from device buffer directly.
+ * param
+    in:
+        device_buffer: buffer contains device package.
+    out:
+        event_body: include event number, priority and sub device id. 
+ * return: 0 if success, -1 if failed.
+ *********************************************************/
 struct TLVs *get_sub_device_event(struct sub_device_buffer *device_buffer, struct pando_event *event_body);
 
-//get data's property id and property num with property_body, return tlv param block
+/*******************************************************
+ * Description: Get data from device buffer directly, this function should be called 
+    repeatedly to get all data property.
+ * param
+    in:
+       device_buffer: buffer contains device package.
+    out:
+        property_body: include data property number and sub device id.
+ * return: If all properties have been processed, return NULL, else return data params block.
+ *********************************************************/
 struct TLVs *get_sub_device_property(struct sub_device_buffer *device_buffer, struct pando_property *property_body);
 
+/*******************************************************
+ * Description: Get type of package from device buffer directly.
+ * param
+    in:
+       device_buffer: buffer contains device package.
+    out:
+ * return: Type of package.
+ *********************************************************/
+uint16_t get_sub_device_payloadtype(struct sub_device_buffer *package);
 
-//鍒犻櫎瀛愯澶囩紦鍐插尯锛屽鏋滀负鍙傛暟鍒涘缓杩囦俊鎭尯锛岃繕闇�瑕佸垹闄や俊鎭尯
+/*******************************************************
+ * Description: Delete device buffer after package has been sent to server.
+ * param
+    in:
+        device_buffer: buffer contains device package.
+    out:
+ * return:
+ *********************************************************/
 void delete_device_package(struct sub_device_buffer *device_buffer);
+
+/*******************************************************
+ * Description:
+ * param
+ * return:
+ *********************************************************/
 void delete_params_block(struct TLVs *params_block);
 
+/*******************************************************
+ * Description: Judge the command has file to process.
+ * param
+    in:
+        device_buffer: buffer contains device package.
+ * return: 1 if command with file, else 0.
+ *********************************************************/
 int is_device_file_command(struct sub_device_buffer *device_buffer);
 
-
-
-// tlv operation functions, maybe need move to other file.
-// you must decode all the tlv params, otherwise can't decode next packet correctly.  
+/*******************************************************
+ * Description: Functions to get param from params block, all params must be decode 
+    in order, it's not reentrant.
+ * param
+    in:
+        params: params block.
+ * return: param to be process.
+ *********************************************************/
 uint8_t     get_next_uint8(struct TLVs *params);
 uint16_t    get_next_uint16(struct TLVs *params);
 uint32_t    get_next_uint32(struct TLVs *params);
@@ -158,21 +292,29 @@ uint8_t     get_next_bool(struct TLVs *params);
 void        *get_next_uri(struct TLVs *params, uint16_t *length);
 void        *get_next_bytes(struct TLVs *params, uint16_t *length);
 
-//澶氭璋冪敤鐩磋嚦娣诲姞瀹屾墍鏈夊弬鏁�
+/*******************************************************
+ * Description: Functions to add param into params block.
+ * param
+    in:
+        next_value: value to be added.
+    out: 
+        params_block: 
+ * return: 0 if success, -1 if failed.
+ *********************************************************/
 int add_next_param(struct TLVs *params_block, uint16_t next_type, uint16_t next_length, void *next_value);
-int    add_next_uint8(struct TLVs *params, uint8_t next_value);
-int    add_next_uint16(struct TLVs *params, uint16_t next_value);
-int    add_next_uint32(struct TLVs *params, uint32_t next_value);
-int    add_next_uint64(struct TLVs *params, uint64_t next_value);
-int    add_next_int8(struct TLVs *params, int8_t next_value);
-int    add_next_int16(struct TLVs *params, int16_t next_value);
-int    add_next_int32(struct TLVs *params, int32_t next_value);
-int    add_next_int64(struct TLVs *params, int64_t next_value);
-int    add_next_float32(struct TLVs *params, float next_value);
-int    add_next_float64(struct TLVs *params, double next_value);
-int    add_next_bool(struct TLVs *params, uint8_t next_value);
-int    add_next_uri(struct TLVs *params, uint16_t length, void *next_value);
-int    add_next_bytes(struct TLVs *params, uint16_t length, void *next_value);
+int add_next_uint8(struct TLVs *params, uint8_t next_value);
+int add_next_uint16(struct TLVs *params, uint16_t next_value);
+int add_next_uint32(struct TLVs *params, uint32_t next_value);
+int add_next_uint64(struct TLVs *params, uint64_t next_value);
+int add_next_int8(struct TLVs *params, int8_t next_value);
+int add_next_int16(struct TLVs *params, int16_t next_value);
+int add_next_int32(struct TLVs *params, int32_t next_value);
+int add_next_int64(struct TLVs *params, int64_t next_value);
+int add_next_float32(struct TLVs *params, float next_value);
+int add_next_float64(struct TLVs *params, double next_value);
+int add_next_bool(struct TLVs *params, uint8_t next_value);
+int add_next_uri(struct TLVs *params, uint16_t length, void *next_value);
+int add_next_bytes(struct TLVs *params, uint16_t length, void *next_value);
 
 #ifdef __cplusplus
 }

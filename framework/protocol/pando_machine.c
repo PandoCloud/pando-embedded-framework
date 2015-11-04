@@ -1,4 +1,15 @@
-#include <time.h>
+/*******************************************************
+ * File name: pando_machine.c
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: APIs related to different machine platform, 
+     Such as basic IO operation and some common functions.
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
+ #include <time.h>
 
 #include "pando_machine.h"
 

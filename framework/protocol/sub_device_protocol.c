@@ -1,7 +1,14 @@
-//  Copyright (c) 2015 Pando. All rights reserved.
-//  PtotoBuf:   ProtocolBuffer.h
-//
-//  Create By ZhaoWenwu On 15/01/24.
+/*******************************************************
+ * File name：sub_device_protocol.c
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: APIs for sub device.
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
+
 
 #include "sub_device_protocol.h"
 
@@ -22,9 +29,9 @@ struct property_indicator
 
 static struct property_indicator s_current_property;
 static struct params_block_indicator s_current_param;
-struct sub_device_base_params base_params;	//瀛愯澶囩殑鍩烘湰鍙傛暟
-static uint16_t current_tlv_block_size = 0;	//褰撳墠淇℃伅鍖虹殑澶у皬锛屽寘鍚玞ount鐨勫ぇ灏�
-static uint16_t tlv_block_buffer_size;
+struct sub_device_base_params base_params;	//Basic param of sub device
+static uint16_t current_tlv_block_size = 0;	//Current params block size, include count.
+static uint16_t tlv_block_buffer_size;      //Size of buffer pre-malloced to contain params block.
 
 static uint16_t get_tlv_count(struct TLVs *params_block);
 static uint16_t  get_tlv_type(struct TLV *params_in);
@@ -154,7 +161,7 @@ struct TLVs * FUNCTION_ATTRIBUTE create_params_block()
 	struct TLVs *tlv_block = NULL;
     uint8_t need_length;
 
-	current_tlv_block_size = 0;		//纭繚姣忔鏂板缓tlv淇℃伅鍖烘椂锛屼俊鎭尯澶у皬鐨勮鏁伴兘鏄纭殑
+	current_tlv_block_size = 0;
 
     tlv_block_buffer_size = DEFAULT_TLV_BLOCK_SIZE;
 	tlv_block = (struct TLVs *)pd_malloc(tlv_block_buffer_size);
@@ -163,8 +170,8 @@ struct TLVs * FUNCTION_ATTRIBUTE create_params_block()
 	{
 		return NULL;
 	}
-	tlv_block->count = 0;	//鍒濆鍖栦釜鏁颁负0
-	current_tlv_block_size = sizeof(struct TLVs);		//娌℃湁娣诲姞param鏃讹紝block鐨勫唴瀛樺崰鐢ㄥぇ灏忎粎浠呮槸涓暟
+	tlv_block->count = 0;	//init tlv number to 0 when create
+	current_tlv_block_size = sizeof(struct TLVs);		//size of block equals sizeof count when no param added.
 
 	return tlv_block;
 }
@@ -177,8 +184,8 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
     uint8_t tlv_length;
     uint8_t tmp_value[8];
     uint8_t *tlv_position;
-    struct TLVs *new_property_block = NULL;
-    uint16_t current_count = net16_to_host(params_block->count);	//鐢变簬create鐨勬椂鍊欏氨瀵硅鍊艰繘琛屼簡绔浆鎹紝鍥犳闇�瑕佸洖杞�
+	struct TLVs *new_property_block = NULL;
+	uint16_t current_count = net16_to_host(params_block->count);	//count has been changed endian when create params block
 
     need_length = is_tlv_need_length(next_type);
     if (1 == need_length)
@@ -198,8 +205,8 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
         return -1;
     }
     
-	//淇℃伅鍖烘墿瀹�
-    if (current_tlv_block_size + next_length + sizeof(struct TLV) 
+	//extend buffer when default buffer is not enough to add new param
+	if (current_tlv_block_size + next_length + sizeof(struct TLV) 
         - (!need_length) * sizeof(next_length) > tlv_block_buffer_size)
     {
         tlv_block_buffer_size = tlv_block_buffer_size + DEFAULT_TLV_BLOCK_SIZE + next_length;
@@ -212,10 +219,10 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
 	current_count++;
 	tlv_position = (uint8_t *)params_block + current_tlv_block_size;
 
-	//灏哻ount淇濆瓨涓虹綉缁滃瓧鑺傚簭锛屼究浜庡垱寤轰簨浠舵垨鏁版嵁鍖呮椂鐩存帴璧嬪��
+	//change count into net endian
 	params_block->count = host16_to_net(current_count);
 	
-	//澶嶅埗tlv鍐呭锛屽苟澶у皬绔浆鎹�,淇tlv闀垮害鍜宼ype鐨勮缃柟寮忥紝瑙ｅ喅璺ㄥ瓧閿欒
+	//content of tlv need to be copied, otherwise when variable is not aligned.
 	type = host16_to_net(next_type);
 	pd_memcpy(tlv_position, &type, sizeof(type));
     tlv_position += sizeof(type);
@@ -323,12 +330,11 @@ struct TLVs * FUNCTION_ATTRIBUTE get_sub_device_command(
 {
 	struct pando_command *tmp_body = (struct pando_command *)(device_buffer->buffer + DEV_HEADER_LEN);
 
-	//闇�瑕佸鍖呭ご杩涜鏍￠獙锛屽皻鏈紪鍐�
 	struct device_header *head = (struct device_header *)device_buffer->buffer;
 	base_params.command_sequence = net32_to_host(head->frame_seq);
     command_body->sub_device_id = net16_to_host(tmp_body->sub_device_id);
 
-	command_body->command_id = net16_to_host(tmp_body->command_id);
+	command_body->command_num = net16_to_host(tmp_body->command_num);
 	command_body->priority = net16_to_host(tmp_body->priority);
 	command_body->params->count = net16_to_host(tmp_body->params->count);
 	

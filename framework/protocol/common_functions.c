@@ -1,3 +1,14 @@
+/*******************************************************
+ * File name: common_functions.c
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: Common APIs for all platforms.
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
+ 
 #include "common_functions.h"
 
 void FUNCTION_ATTRIBUTE show_package(uint8_t *buffer, uint16_t length)

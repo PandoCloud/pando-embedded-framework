@@ -1,7 +1,14 @@
-//  Copyright (c) 2014 Pando. All rights reserved.
-//  PtotoBuf:   ProtocolBuffer.h
-//
-//  Create By TangWenhan On 14/12/24.
+/*******************************************************
+ * File name: pando_protocol.c
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: APIs for access device layer to manipulate packets.
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
+
 
 #include "pando_protocol.h"
 
@@ -14,7 +21,7 @@ static int FUNCTION_ATTRIBUTE init_pdbin_header(struct mqtt_bin_header *bin_head
 typedef long long unsigned int llui;
 
 struct protocol_base protocol_tool_base_params;
-static int file_cmd_sequence;	//也许会改成数组
+static int file_cmd_sequence;	//need to be array when there are sub devices more than one.
 
 struct pando_buffer * FUNCTION_ATTRIBUTE pando_buffer_create(int length, int offset)
 {

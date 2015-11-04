@@ -1,7 +1,15 @@
-//  Copyright (c) 2015 Pando. All rights reserved.
-//  PtotoBuf:   ProtocolBuffer.h
-//
-//  Create By ZhaoWenwu On 15/01/24.
+/*******************************************************
+ * File name: pando_endian.h
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: APIs to change endian between net and host machine.
+     Net is big endian, host endian depends machine. 
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
+
 
 #ifndef PANDO_ENDIAN_H
 #define PANDO_ENDIAN_H
@@ -13,7 +21,6 @@ extern "C"
 
 #include "common_functions.h"
 
-//大小端转换函数
 uint16_t net16_to_host(uint16_t A);
 uint32_t net32_to_host(uint32_t A);
 uint64_t net64_to_host(uint64_t A);

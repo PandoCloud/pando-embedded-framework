@@ -1,7 +1,14 @@
-//  Copyright (c) 2014 Pando. All rights reserved.
-//  Platform:   common_functions.h
-//
-//  Create By ZhaoWenwu On 15/05/17.
+/*******************************************************
+ * File name: common_functions.h
+ * Author:    Zhao Wenwu
+ * Versions:  0.1
+ * Description: Common APIs for all platforms.
+ * History:
+ *   1.Date:
+ *     Author:
+ *     Modification:    
+ *********************************************************/
+
 
 
 #ifndef PLATFORM_FUNCTIONS_H
