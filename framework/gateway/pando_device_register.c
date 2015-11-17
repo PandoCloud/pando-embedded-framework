@@ -1,11 +1,11 @@
 #include "pando_device_register.h"
 #include "pando_storage_interface.h"
-#include "platform/include/pando_sys.h"
-#include "platform/include/pando_types.h"
-#include "lib/json/jsonparse.h"
-#include "lib/json/jsontree.h"
-#include "lib/pando_json.h"
-#include "platform/include/pando_net_http.h"
+#include "../platform/include/pando_sys.h"
+#include "c_types.h"
+#include "../lib/json/jsonparse.h"
+#include "../lib/json/jsontree.h"
+#include "../lib/pando_json.h"
+#include "../platform/include/pando_net_http.h"
 
 #define MAX_BUF_LEN 256
 #define DEVICE_SERIAL_BUF_LEN 16
@@ -15,8 +15,9 @@
 
 static gateway_callback device_register_callback = NULL;
 static char* request = NULL;
-
-static void http_callback_register(char * response)
+/*
+static void ICACHE_FLASH_ATTR
+http_callback_register(char * response)
 {
     if(request != NULL)
     {
@@ -114,9 +115,10 @@ static void http_callback_register(char * response)
     {
         device_register_callback(PANDO_REGISTER_OK);
     }
-}
+}*/
 
-void pando_device_register(gateway_callback callback)
+void ICACHE_FLASH_ATTR
+pando_device_register(gateway_callback callback)
 {
     pd_printf("PANDO begin register device...\n");
 
@@ -155,10 +157,10 @@ void pando_device_register(gateway_callback callback)
 
     pd_printf("device register request:::\n%s\n(end)\n", request);
 
-    net_http_post(PANDO_API_URL
-        "/v1/devices/registration",
-        request,
-        http_callback_register);    
+  //  net_http_post(PANDO_API_URL
+  //      "/v1/devices/registration",
+  //      request,
+  //      http_callback_register);
 
     if(request != NULL)
     {

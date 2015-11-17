@@ -12,7 +12,7 @@
 #ifndef _PANDO_NET_HTTP_H_
 #define _PANDO_NET_HTTP_H_
 
-#include "pando_types.h"
+#include "c_types.h"
 
 typedef void (* http_callback)(char* response);
 

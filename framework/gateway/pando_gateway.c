@@ -13,9 +13,10 @@
 #include "pando_device_login.h"
 #include "pando_cloud_access.h"
 #include "gateway_defs.h"
-#include "platform/include/pando_sys.h"
+#include "../platform/include/pando_sys.h"
 #include "pando_zero_device.h"
-#include "platform/include/pando_timer.h"
+#include "../platform/include/pando_timer.h"
+//#include "../protocol/pando_machine.h"
 
 //extern load_data_from_flash();
 
@@ -29,7 +30,8 @@ static void gateway_error_process();
  * Parameters   : the gateway flow return value.
  * Returns      : none
 *******************************************************************************/
-void FUNCTION_ATTRIBUTE
+
+void ICACHE_FLASH_ATTR
 gateway_cb(sint8 result)
 {
     switch(gateway_status)
@@ -72,11 +74,11 @@ gateway_cb(sint8 result)
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-static void FUNCTION_ATTRIBUTE
+static void ICACHE_FLASH_ATTR
 gprs_connect_check()
 {
     gateway_status = GATEWAY_LOGIN;
-    pando_device_login(gateway_cb);
+    //pando_device_login(gateway_cb);
 }
 
 /******************************************************************************
@@ -85,7 +87,7 @@ gprs_connect_check()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-static void FUNCTION_ATTRIBUTE
+static void ICACHE_FLASH_ATTR
 gateway_error_process()
 {
     struct pd_timer st_timer;
@@ -101,7 +103,7 @@ gateway_error_process()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void FUNCTION_ATTRIBUTE
+void ICACHE_FLASH_ATTR
 pando_gateway_init()
 {
     pd_printf("PANDO gateway initial....\n");
@@ -114,5 +116,5 @@ pando_gateway_init()
 
     pando_zero_device_init();
 
-    gprs_connect_check();
+    //gprs_connect_check();
 }

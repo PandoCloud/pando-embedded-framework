@@ -10,7 +10,9 @@
  *********************************************************/
 
 #include "pando_storage_interface.h"
-#include "platform/include/pando_types.h"
+#include "c_types.h"
+#include "../platform/include/pando_sys.h"
+
 //#include "../../peripherl/driver/stmflash.h"
 
 #define PANDO_CONFIG_ADDRESS
@@ -28,7 +30,8 @@ struct data_pair
 
 static struct data_pair * head = NULL;
 
-static void save_data_to_flash()
+static void ICACHE_FLASH_ATTR
+save_data_to_flash()
 {
     pd_printf("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
@@ -48,7 +51,8 @@ static void save_data_to_flash()
     pd_printf("done...\n");
 }
 
-void load_data_from_flash()
+void ICACHE_FLASH_ATTR
+load_data_from_flash()
 {
     pd_printf("loading config data from flash...\n");
     int32 cnt, i;
@@ -76,7 +80,8 @@ void load_data_from_flash()
     pd_printf("done...\n");
 }
 
-static struct data_pair * find_pair_by_key(char * key){
+static struct data_pair * ICACHE_FLASH_ATTR
+find_pair_by_key(char * key){
     struct data_pair * p;
     for( p=head; p!=NULL; p=p->next ) 
     {
@@ -95,7 +100,8 @@ static struct data_pair * find_pair_by_key(char * key){
                   value -- the value of the parameter. 
  * Returns      : the save result
 *******************************************************************************/
-SET_RESULT pando_data_set(char* key, char* value)
+SET_RESULT ICACHE_FLASH_ATTR
+pando_data_set(char* key, char* value)
 {
     struct data_pair * p;
     p = find_pair_by_key(key);
@@ -122,7 +128,8 @@ SET_RESULT pando_data_set(char* key, char* value)
  * Parameters   : key -- the parameter
  * Returns      : the pointer of the value. NULL if not exist
 *******************************************************************************/
-char * pando_data_get(char* key)
+char * ICACHE_FLASH_ATTR
+pando_data_get(char* key)
 {
     struct data_pair * p;
     p = find_pair_by_key(key);
@@ -139,7 +146,8 @@ char * pando_data_get(char* key)
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-uint16 pando_storage_space_left()
+uint16 ICACHE_FLASH_ATTR
+pando_storage_space_left()
 {
 
 }
@@ -150,7 +158,8 @@ uint16 pando_storage_space_left()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void pando_storage_clean()
+void ICACHE_FLASH_ATTR
+pando_storage_clean()
 {
 
 }

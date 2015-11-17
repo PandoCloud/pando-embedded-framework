@@ -12,18 +12,19 @@
  #include <time.h>
 
 #include "pando_machine.h"
+#include "c_types.h"
 
 #ifdef ESP8266_PLANTFORM
 
-uint64_t FUNCTION_ATTRIBUTE pd_get_timestamp()
+uint64_t ICACHE_FLASH_ATTR pd_get_timestamp()
 {
 	uint64_t time_now;
-	time_now = pando_get_system_time();
+	//time_now = pando_get_system_time();
 	return time_now;
 }
 
 #else
-uint64_t FUNCTION_ATTRIBUTE pd_get_timestamp()
+uint64_t ICACHE_FLASH_ATTR pd_get_timestamp()
 {
 /*
     struct timeval now;

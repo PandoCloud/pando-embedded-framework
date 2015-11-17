@@ -18,7 +18,7 @@
  *                hex_str --
  * Returns      : none.
 *******************************************************************************/
-static uint8_t FUNCTION_ATTRIBUTE
+static uint8_t ICACHE_FLASH_ATTR
 char2bin(char a)
 {
     uint8_t n;
@@ -40,7 +40,7 @@ char2bin(char a)
  *                hex_str --
  * Returns      : none.
 *******************************************************************************/
-void FUNCTION_ATTRIBUTE
+void ICACHE_FLASH_ATTR
 hex2bin(uint8 * dst, char * hex_str)
 {
     char * p = NULL;
@@ -51,7 +51,7 @@ hex2bin(uint8 * dst, char * hex_str)
     }
 }
 
-const char* FUNCTION_ATTRIBUTE
+const char* ICACHE_FLASH_ATTR
 u32_to_str(unsigned int val)
 {
     /* Maximum number of decimal digits in u32 is 10 */

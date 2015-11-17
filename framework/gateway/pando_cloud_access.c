@@ -1,12 +1,13 @@
 #include "pando_cloud_access.h"
 #include "pando_storage_interface.h"
-#include "platform/include/pando_types.h"
+#include "c_types.h"
 #include "gateway_defs.h"
 #include "pando_channel.h"
 //#include "pando_system_time.h"
 //#include "mqtt/mqtt.h"
-#include "protocol/sub_device_protocol.h"
-#include "protocol/pando_protocol.h"
+#include "../protocol/sub_device_protocol.h"
+#include "../protocol/pando_protocol.h"
+#include "../platform/include/pando_sys.h"
 
 #define PORT_STR_LEN 8
 #define DEVICE_TOKEN_LEN 16
@@ -37,7 +38,8 @@ static uint8 str_device_id_hex[17];
     return 0;
 }*/
 
-static void init_gateway_info()
+static void ICACHE_FLASH_ATTR
+init_gateway_info()
 {
     // initialize gateway package.
     struct protocol_base gateway_info;
@@ -189,7 +191,8 @@ static void init_gateway_info()
     pd_printf("MQTT: Disconnected\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
 }*/
-static void mqtt_error_cb(uint32_t* arg)
+static void ICACHE_FLASH_ATTR
+mqtt_error_cb(uint32_t* arg)
 {
     pd_printf("MQTT: connecting error\r\n");
     if(error_callback != NULL)
@@ -204,7 +207,8 @@ static void mqtt_error_cb(uint32_t* arg)
 * Parameters   : callback: the specify access callback function.
 * Returns      :
 *******************************************************************************/
-void pando_cloud_access(gateway_callback callback)
+void ICACHE_FLASH_ATTR
+pando_cloud_access(gateway_callback callback)
 {
     pd_printf("PANDO: begin access cloud...\n");
 

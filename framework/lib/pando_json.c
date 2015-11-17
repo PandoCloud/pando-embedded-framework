@@ -1,10 +1,11 @@
 #include "pando_json.h"
+#include "c_types.h"
 
 static char *json_buf;
 static int json_buf_len;
 static int pos;
 
-static int FUNCTION_ATTRIBUTE
+static int ICACHE_FLASH_ATTR
 json_putchar(int c)
 {
     if (json_buf != NULL && pos < json_buf_len) 
@@ -16,7 +17,7 @@ json_putchar(int c)
     return 0;
 }
 
-int FUNCTION_ATTRIBUTE 
+int ICACHE_FLASH_ATTR
 pando_json_print(struct jsontree_value * json_value, char * dst, int len)
 {
     if( dst == NULL) 

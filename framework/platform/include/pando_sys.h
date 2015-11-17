@@ -16,19 +16,47 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define pd_malloc       malloc
-#define pd_free         free
+#ifdef ESP8266_PLATFORM
 
-#define pd_memcpy       memcpy
-#define pd_memcmp       memcmp
-#define pd_memset       memset
+#include "c_types.h"
+#include "mem.h"
+#include "osapi.h"
+//#include "../gateway/pando_system_time.h"
 
-#define pd_strlen       strlen
-#define pd_strncpy      strncpy
-#define pd_strcmp       strcmp
+// for #pragma pack(ALIGNED_LENGTH), for example, esp8266 should be 1
+#define ALIGNED_LENGTH   1
 
-#define pd_sprintf      sprintf
 
-#define pd_printf       printf
+// different platform has its own define of these functions.
+
+#define pd_malloc os_malloc
+#define pd_free os_free
+#define pd_memcpy os_memcpy
+#define pd_printf os_printf
+#define pd_memcmp os_memcmp
+#define pd_memset os_memset
+#define pd_strlen   os_strlen
+#define pd_strncpy  os_strncpy
+#define pd_strcmp   os_strcmp
+
+#else
+#include "../platform/include/pando_types.h"
+
+#define ALIGNED_LENGTH 1
+
+
+// different platform has its own define of these functions.
+#define pd_malloc malloc
+#define pd_free free
+#define pd_memcpy memcpy
+#define pd_printf printf
+#define pd_memcmp memcmp
+#define pd_memset memset
+#define pd_strlen   strlen
+#define pd_strncpy  strncpy
+#define pd_strcmp   strcmp
+
+
+#endif
 
 #endif /* _PANDO_SYS_H_ */

@@ -1,12 +1,14 @@
-#include "pando_subdevice.h"
-#include "gateway/pando_channel.h"
-#include "protocol/common_functions.h"
-#include "protocol/sub_device_protocol.h"
-#include "pando_object.h"
+#include "../../../pando/framework/subdevice/pando_subdevice.h"
+
+#include "../../../pando/framework/gateway/pando_channel.h"
+#include "../../../pando/framework/protocol/common_functions.h"
+#include "../../../pando/framework/protocol/sub_device_protocol.h"
+#include "../../../pando/framework/subdevice/pando_object.h"
+#include "../platform/include/pando_sys.h"
 
 #define CMD_QUERY_STATUS (65528)
 
-static void FUNCTION_ATTRIBUTE
+static void ICACHE_FLASH_ATTR
 decode_data(struct sub_device_buffer *device_buffer)
 {
     struct pando_property data_body;
@@ -26,7 +28,7 @@ decode_data(struct sub_device_buffer *device_buffer)
     }
 }
 
-static void FUNCTION_ATTRIBUTE
+static void ICACHE_FLASH_ATTR
 send_current_status()
 {
     struct sub_device_buffer* data_buffer;
@@ -63,19 +65,19 @@ send_current_status()
     delete_device_package(data_buffer);
 }
 
-static void FUNCTION_ATTRIBUTE
+static void ICACHE_FLASH_ATTR
 decode_command(struct sub_device_buffer *device_buffer)
 {
     struct pando_command cmd_body;
     PARAMS *cmd_param = get_sub_device_command(device_buffer, &cmd_body);
-    if(CMD_QUERY_STATUS == cmd_body.command_id)
+    if(CMD_QUERY_STATUS == cmd_body.command_num)
     {
         pd_printf("receive a get request\n");
         send_current_status();
     }
 }
 
-void FUNCTION_ATTRIBUTE
+void ICACHE_FLASH_ATTR
 pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 {
     if(NULL == buffer)

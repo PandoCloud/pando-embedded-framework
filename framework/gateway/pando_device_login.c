@@ -1,12 +1,12 @@
 #include "pando_device_login.h"
 #include "pando_storage_interface.h"
-#include "platform/include/pando_sys.h"
-#include "platform/include/pando_types.h"
-#include "lib/converter.h"
-#include "lib/json/jsonparse.h"
-#include "lib/json/jsontree.h"
-#include "lib/pando_json.h"
-#include "platform/include/pando_net_http.h"
+#include "../platform/include/pando_sys.h"
+#include "c_types.h"
+#include "../lib/converter.h"
+#include "../lib/json/jsonparse.h"
+#include "../lib/json/jsontree.h"
+#include "../lib/pando_json.h"
+#include "../platform/include/pando_net_http.h"
 
 #define MAX_BUF_LEN 256
 #define KEY_BUF_LEN 64
@@ -18,7 +18,7 @@ static char * request = NULL;
 
 extern uint8 pando_device_token[ACCESS_TOKEN_LEN];
 
-static void FUNCTION_ATTRIBUTE
+/*static void ICACHE_FLASH_ATTR
 http_callback_login(char * response)
 {
     if(request != NULL)
@@ -105,7 +105,7 @@ http_callback_login(char * response)
     {
         device_login_callback(PANDO_LOGIN_OK);
     }
-}
+}*/
 
 /******************************************************************************
  * FunctionName : pando_device_login
@@ -113,7 +113,7 @@ http_callback_login(char * response)
  * Parameters   : the specify login callback function
  * Returns      :
 *******************************************************************************/
-void FUNCTION_ATTRIBUTE
+void ICACHE_FLASH_ATTR
 pando_device_login(gateway_callback callback)
 {
     pd_printf("begin login device...\n");
@@ -153,10 +153,10 @@ pando_device_login(gateway_callback callback)
 
     pd_printf("device login request:::\n%s\n(end)\n", request);
 
-    net_http_post(PANDO_API_URL
-        "/v1/devices/authentication",
-        request,
-        http_callback_login);    
+  //  net_http_post(PANDO_API_URL
+  //      "/v1/devices/authentication",
+  //      request,
+  //      http_callback_login);
     if(request != NULL)
     {
         pd_free(request);
