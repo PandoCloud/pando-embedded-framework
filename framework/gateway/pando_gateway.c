@@ -91,8 +91,8 @@ gateway_error_process()
     struct pd_timer st_timer;
     st_timer.interval = 3000;
     st_timer.repeated = 0;
-    timer1_init(st_timer);
-    timer1_start();
+    timer_init(TIMER_1, st_timer);
+    timer_start(TIMER_1);
 }
 
 /******************************************************************************

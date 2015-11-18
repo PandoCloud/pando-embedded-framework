@@ -57,6 +57,13 @@ typedef unsigned int        size_t;
 //define data handler callback
 typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
 
+//define the buffer struct with data and length.
+struct sys_buf
+{
+    uint8_t *buffer;
+    uint16_t buf_len;
+};
+
 #ifndef NULL
 #define NULL (void *)0
 #endif /* NULL */

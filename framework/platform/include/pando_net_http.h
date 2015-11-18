@@ -14,7 +14,7 @@
 
 #include "pando_types.h"
 
-typedef void (* http_callback)(char* response);
+typedef void (* net_http_callback)(sint8_t errno, char* response);
 
 /******************************************************************************
  * FunctionName : net_http_post
@@ -24,7 +24,7 @@ typedef void (* http_callback)(char* response);
  *                http_cb: the specify function called after post successfully.
  * Returns      : none
 *******************************************************************************/
-void net_http_post(const char* url, const char* data, http_callback http_cb);
+void net_http_post(const char* url, const char* data, net_http_callback http_cb);
 
 /******************************************************************************
  * FunctionName : net_http_get
@@ -33,6 +33,6 @@ void net_http_post(const char* url, const char* data, http_callback http_cb);
  *                http_cb: the specify function called after post successfully.
  * Returns      : none
 *******************************************************************************/
-void net_http_get(const char* url, http_callback http_cb);
+void net_http_get(const char* url, net_http_callback http_cb);
 
 #endif /* _PANDO_NET_HTTP_H_ */

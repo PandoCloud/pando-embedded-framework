@@ -25,28 +25,37 @@ struct pd_timer
     void (*expiry_cb)(void);
 };
 
-/******************************************************************************
- * FunctionName : timer1_init
- * Description  : init timer1.
- * Parameters   : timer_cfg: the config timer.
- * Returns      : 
- ******************************************************************************/
-void timer1_init(struct pd_timer timer_cfg);
+//define the timer no used
+enum TIMER_NO
+{
+    TIMER_1 = 1,
+    TIMER_2 = 2,
+    TIMER_3 = 3,
+}
 
 /******************************************************************************
- * FunctionName : timer1_start
- * Description  : start timer1.
- * Parameters   : 
+ * FunctionName : timer_init
+ * Description  : init timer.
+ * Parameters   : timer_no: the timer indicator.
+                  timer_cfg: the config timer.
  * Returns      : 
  ******************************************************************************/
-void timer1_start(void);
+void timer_init(TIMER_NO timer_no, struct pd_timer timer_cfg);
 
 /******************************************************************************
- * FunctionName : timer1_stop
- * Description  : stop timer1.
- * Parameters   : 
+ * FunctionName : timer_start
+ * Description  : start timer.
+ * Parameters   : timer_no: the timer indicator.
  * Returns      : 
  ******************************************************************************/
-void timer1_stop(void);
+void timer_start(TIMER_NO timer_no);
+
+/******************************************************************************
+ * FunctionName : timer_stop
+ * Description  : stop timer.
+ * Parameters   : timer_no: the timer indicator.
+ * Returns      : 
+ ******************************************************************************/
+void timer_stop(TIMER_NO timer_no);
 
 #endif /* _PANDO_TIMER_H_ */
