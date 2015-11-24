@@ -14,6 +14,8 @@
 #
 ifndef PDIR
 GEN_LIBS = libgateway.a
+SUBDIRS=    \
+	mqtt
 endif
 
 

@@ -1,5 +1,5 @@
 /*******************************************************
- * File name: pando_net_tcp.h
+ * File name: pando_net_tcp.c
  * Author:Chongguang Li
  * Versions:0.0.1
  * Description: the tcp api
@@ -9,36 +9,42 @@
  *     Modification:
  *********************************************************/
 
-#ifndef _PANDO_NET_TCP_H_
-#define _PANDO_NET_TCP_H_
 
 #include "pando_types.h"
+#include "../include/pando_net_tcp.h"
+#include "espconn.h"
 
-struct data_buf
+static net_tcp_connected_callback   temp1 = NULL;
+static net_tcp_sent_callback		temp2 = NULL;
+static net_tcp_recv_callback		temp3 = NULL;
+static net_tcp_disconnected_callback temp4 = NULL;
+
+
+void temp1_function(void *tcp_conn)
 {
-    uint16_t length;
-    char *data;
-};
+	temp1(tcp_conn, 0);
+}
 
-typedef void (* net_tcp_connected_callback)(void *tcp_conn, int8_t errno);
-typedef void (* net_tcp_sent_callback)(void *tcp_conn, int8_t errno);
-typedef void (* net_tcp_recv_callback)(void *tcp_conn, struct data_buf *buffer);
-typedef void (* net_tcp_disconnected_callback)(void *tcp_conn, int8_t errno);
+void temp2_function(void *tcp_conn)
+{
+	temp2(tcp_conn, 0);
+}
 
-struct pando_tcp_conn {
-	uint8_t secure;
-	uint32_t remote_ip;
-	uint16_t remote_port;
-	uint32_t local_ip;
-	uint16_t local_port;
-	uint16_t fd;
-	net_tcp_connected_callback connected_callback;
-	net_tcp_recv_callback recv_callback;
-	net_tcp_sent_callback sent_callback;
-	net_tcp_disconnected_callback disconnected_callback;
-    void *reverse;
-};
+void temp3_function(void *tcp_conn, char *pdata, unsigned short len)
+{
+	struct data_buf data_buffer ;
+	data_buffer.data = pdata;
+	data_buffer.length = len ;
 
+	temp3(tcp_conn,&data_buffer);
+}
+void temp4_function(void *tcp_conn)
+{
+	temp4(tcp_conn, 0);
+}
+
+
+struct espconn *econn ;
 /******************************************************************************
  * FunctionName : net_tcp_connect
  * Description  : The function given as the connect
@@ -46,7 +52,26 @@ struct pando_tcp_conn {
  * 				  timeout: the connect timeout set value.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout);
+void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
+{
+	uint8 i;
+
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+
+	if(conn->secure==0)
+	{
+		espconn_connect(econn);
+	}
+	else
+	{
+		espconn_secure_connect(econn);
+	}
+
+}
 
 /******************************************************************************
  * FunctionName : net_tcp_register_connect_callback
@@ -54,7 +79,21 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout);
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_connected_callback connected_cb);
+void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_connected_callback connected_cb)
+{
+
+	uint8 i;
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+
+	temp1 = connected_cb;
+	espconn_regist_connectcb(econn,temp1_function);
+
+
+}
 
 
 /******************************************************************************
@@ -64,7 +103,16 @@ void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_c
  * 				  timeout: the sent timeout set value.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t timeout);
+void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t timeout)
+{
+	uint8 i;
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+	espconn_secure_send(econn,buffer.data,buffer.length);
+}
 
 
 /******************************************************************************
@@ -73,7 +121,18 @@ void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t 
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_sent_callback(struct pando_tcp_conn *conn, net_tcp_sent_callback sent_cb);
+void net_tcp_register_sent_callback(struct pando_tcp_conn *conn, net_tcp_sent_callback sent_cb)
+{
+	uint8 i;
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+
+	temp2 = sent_cb;
+	espconn_regist_sentcb(econn,temp2_function);
+}
 
 /******************************************************************************
  * FunctionName : net_tcp_register_recv_callback
@@ -81,7 +140,17 @@ void net_tcp_register_sent_callback(struct pando_tcp_conn *conn, net_tcp_sent_ca
  * Parameters   : recv_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_callback recv_cb);
+void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_callback recv_cb)
+{
+	uint8 i;
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+	temp3 = recv_cb;
+	espconn_regist_recvcb(econn,temp3_function);
+}
 
 /******************************************************************************
  * FunctionName : net_tcp_disconnect
@@ -89,7 +158,16 @@ void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_ca
  * Parameters   : none.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_disconnect(struct pando_tcp_conn *conn);
+void net_tcp_disconnect(struct pando_tcp_conn *conn)
+{
+	uint8 i;
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+	espconn_secure_disconnect(econn);
+}
 
 /******************************************************************************
  * FunctionName : net_tcp_register_disconnected_callback
@@ -97,7 +175,18 @@ void net_tcp_disconnect(struct pando_tcp_conn *conn);
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp_disconnected_callback disconnected_cb);
+void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp_disconnected_callback disconnected_cb)
+{
+	uint8 i;
+	for( i = 0; i < 4; i++ )
+	{
+		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
+		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
+	}
+
+	temp4 = disconnected_cb;
+	espconn_regist_disconcb(econn,temp4_function);
+}
 
 /******************************************************************************
  * FunctionName : net_tcp_seriver_listen
@@ -105,7 +194,7 @@ void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp
  * Parameters   : addr: the listen addr.
  * Returns      : the listen result.
 *******************************************************************************/
-int8_t net_tcp_server_listen(struct pando_tcp_conn *conn);
+//int8_t net_tcp_server_listen(struct pando_tcp_conn *conn);
 
 /******************************************************************************
  * FunctionName : net_tcp_server_accept
@@ -113,6 +202,6 @@ int8_t net_tcp_server_listen(struct pando_tcp_conn *conn);
  * Parameters   : conn: the accept parameter.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_server_accept(struct pando_tcp_conn *conn);
+//void net_tcp_server_accept(struct pando_tcp_conn *conn);
 
-#endif /* _PANDO_NET_TCP_H_ */
+

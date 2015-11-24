@@ -9,7 +9,7 @@ timer1_init(struct pd_timer timer_cfg)
 {
 
 	os_timer_disarm(&timer1);
-	os_timer_setfn(&timer1, (os_timer_func_t *)timer_cfg.expiry_cb, NULL);
+	os_timer_setfn(&timer1, (os_timer_func_t *)timer_cfg.timer_cb, NULL);
 	os_timer_arm(&timer1, timer_cfg.interval, timer_cfg.repeated);
 
 }

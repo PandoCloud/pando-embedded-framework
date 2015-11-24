@@ -17,6 +17,7 @@ GEN_LIBS = libpando.a
 SUBDIRS=    \
 	framework	\
 	framework/gateway	\
+	framework/gateway/mqtt	\
 	framework/lib	\
 	framework/platform	\
 	framework/protocol	\

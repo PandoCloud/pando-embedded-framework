@@ -12,8 +12,9 @@
 #ifndef _PANDO_TIMER_H_
 #define _PANDO_TIMER_H_
 
-#include "c_types.h"
+#include "pando_types.h"
 
+typedef void (*expiry_cb)(void* arg);
 
 //define the timer structure
 struct pd_timer
@@ -23,7 +24,8 @@ struct pd_timer
     //whether repeat
     uint8_t repeated;
     //the function pointer to callback if expiry
-    void (*expiry_cb)(void);
+    expiry_cb timer_cb;
+    void* arg;
 };
 
 /******************************************************************************

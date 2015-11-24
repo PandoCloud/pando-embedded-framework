@@ -13,18 +13,9 @@
 #     a generated lib/image xxx.a ()
 #
 ifndef PDIR
-GEN_LIBS = libframework.a
-SUBDIRS=    \
-	gateway	\
-	gateway/mqtt	\
-	lib	\
-	lib/json	\
-	platform	\
-	platform/src	\
-	platform/src/esp8266	\
-	protocol	\
-	subdevice	
+GEN_LIBS = libmqtt.a
 endif
+
 
 #############################################################
 # Configuration i.e. compile options etc.
