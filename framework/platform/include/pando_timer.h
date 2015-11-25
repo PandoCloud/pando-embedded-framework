@@ -22,25 +22,30 @@ struct pd_timer
     //whether repeat
     uint8_t repeated;
     //the function pointer to callback if expiry
-    void (*expiry_cb)(void);
+    void (*expiry_cb)(void *);
+    //the expiry callback function arguments.
+    void *callback_data;
 };
+
+//define total timer used.
+#define MAX_TIMER_COUNT 3
 
 //define the timer no used
 enum TIMER_NO
 {
     TIMER_1 = 1,
     TIMER_2 = 2,
-    TIMER_3 = 3,
+    TIMER_3 = MAX_TIMER_COUNT,
 }
 
 /******************************************************************************
  * FunctionName : timer_init
  * Description  : init timer.
  * Parameters   : timer_no: the timer indicator.
-                  timer_cfg: the config timer.
+                  p_timer_cfg: the pointer to the timer config.
  * Returns      : 
  ******************************************************************************/
-void timer_init(TIMER_NO timer_no, struct pd_timer timer_cfg);
+void timer_init(TIMER_NO timer_no, struct pd_timer *p_timer_cfg);
 
 /******************************************************************************
  * FunctionName : timer_start
