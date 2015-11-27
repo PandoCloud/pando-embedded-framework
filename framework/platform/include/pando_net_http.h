@@ -14,6 +14,28 @@
 
 #include "pando_types.h"
 
+//define the http results enum.
+enum HTTP_RET
+{
+    HTTP_OK = 4001,
+    
+    HTTP_URL_ERR,
+    
+    HTTP_SSL_CTX_ERR,
+    HTTP_SSL_NEW_ERR,
+    HTTP_SSL_FD_ERR,
+    HTTP_SSL_CONNECT_ERR,
+    HTTP_SSL_SHUTDOWN_ERR,
+
+    HTTP_HOST_ERR,
+    HTTP_SOCKET_ERR,
+    HTTP_CONNECT_ERR,
+
+    HTTP_RECV_NO_DATA,
+    HTTP_RECV_ERR,
+    HTTP_RECV_HTTP_ERR
+};
+
 typedef void (* net_http_callback)(sint8_t errno, char* response);
 
 /******************************************************************************

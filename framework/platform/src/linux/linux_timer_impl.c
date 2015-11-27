@@ -47,8 +47,11 @@ int init_mul_timer(void)
 void timer_init(TIMER_NO timer_no, struct pd_timer *p_timer_cfg)
 {
     if(NULL == timer_manager.new_sigfunc)
-    {
-        return; //means the timer_manager is not initialized.
+    { //means the timer_manager is not initialized.
+        if(init_mul_timer() < 0)
+        {
+            return;
+        }
     }
 
     if(0 == p_timer_cfg->interval || NULL == p_timer_cfg->expiry_cb)
