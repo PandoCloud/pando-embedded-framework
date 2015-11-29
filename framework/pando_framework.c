@@ -5,7 +5,7 @@
 #include "gateway/pando_gateway.h"
 
 void FUNCTION_ATTRIBUTE
-pando_framework_init()
+pando_framework_init(void)
 {
     pando_gateway_init();
 

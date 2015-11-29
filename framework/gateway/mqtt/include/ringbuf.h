@@ -1,7 +1,8 @@
 #ifndef _RING_BUF_H_
 #define _RING_BUF_H_
 
-#include <pando_types.h>
+#include <os_type.h>
+#include <stdlib.h>
 #include "typedef.h"
 
 typedef struct{
@@ -12,7 +13,7 @@ typedef struct{
 	I32 size;				/**< Buffer size */
 }RINGBUF;
 
-I16  RINGBUF_Init(RINGBUF *r, U8* buf, I32 size);
-I16  RINGBUF_Put(RINGBUF *r, U8 c);
-I16  RINGBUF_Get(RINGBUF *r, U8* c);
+I16 FUNCTION_ATTRIBUTE RINGBUF_Init(RINGBUF *r, U8* buf, I32 size);
+I16 FUNCTION_ATTRIBUTE RINGBUF_Put(RINGBUF *r, U8 c);
+I16 FUNCTION_ATTRIBUTE RINGBUF_Get(RINGBUF *r, U8* c);
 #endif

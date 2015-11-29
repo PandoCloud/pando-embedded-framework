@@ -11,9 +11,10 @@
 
 #include "pando_storage_interface.h"
 #include "platform/include/pando_types.h"
-//#include "../../peripherl/driver/stmflash.h"
+#include "platform/include/pando_sys.h"
+#include "flash.h"
 
-#define PANDO_CONFIG_ADDRESS
+#define PANDO_CONFIG_ADDRESS 0x08042000 
 #define PANDO_CONFIG_SEC (0x7E)
 #define DATAPAIR_KEY_LEN (32)
 #define DATAPAIR_VALUE_LEN (96)
@@ -31,45 +32,44 @@ static struct data_pair * head = NULL;
 static void save_data_to_flash()
 {
     pd_printf("saving data to flash...\n");
-    int32 magic = PANDO_CONFIG_MAGIC;
-    //STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
+    int32_t magic = PANDO_CONFIG_MAGIC;
+    flash_write(PANDO_CONFIG_ADDRESS, (uint16_t*)(&magic), sizeof(int32_t));
     struct data_pair * cur;
-    int32 cnt = 0;
+    int32_t cnt = 0;
     pd_printf("saving data to flash...\n");
-//    STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
+	flash_write(PANDO_CONFIG_ADDRESS, (uint16_t *)(&magic), sizeof(int32_t));
     for(cur=head; cur!=NULL; cur=cur->next) 
     {
-        //STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + (cnt * sizeof(struct data_pair)),
-            //(uint16 *)cur, sizeof(struct data_pair));
+        flash_write(PANDO_CONFIG_ADDRESS + sizeof(int32_t) + sizeof(int32_t) + (cnt * sizeof(struct data_pair)),
+            (uint16_t*)cur, sizeof(struct data_pair));
         cnt ++;
     }
-    //STMFLASH_Write(PANDO_CONFIG_ADDRESS + sizeof(int32),
-        //(uint16 *)&cnt, sizeof(int32));
+    flash_write(PANDO_CONFIG_ADDRESS + sizeof(int32_t),
+        (uint16_t*)&cnt, sizeof(int32_t));
     pd_printf("done...\n");
 }
 
 void load_data_from_flash()
 {
     pd_printf("loading config data from flash...\n");
-    int32 cnt, i;
-    int32 magic = 0;
+    int32_t cnt, i;
+    int32_t magic = 0;
     pd_printf("loading config data from flash...\n");
-	//TODO: add system data storage interface.
-    //STMFLASH_Read(PANDO_CONFIG_ADDRESS, (uint16 *)&magic, sizeof(int32));
+    flash_read(PANDO_CONFIG_ADDRESS, (uint16_t *)&magic, sizeof(int32_t));
     pd_printf("read magic : %x\n", magic);
     if(magic != PANDO_CONFIG_MAGIC)
     {
         pd_printf("flash config data not initialized!\n");
         return;
     }
-	////TODO: add system data storage interface.
-    //STMFLASH_Read(PANDO_CONFIG_ADDRESS + sizeof(int32), (uint16 *)&cnt, sizeof(int32));
+	
+    flash_read(PANDO_CONFIG_ADDRESS + sizeof(int32_t), (uint16_t *)&cnt, sizeof(int32_t));
     pd_printf("reading config from flash , key count : %d...\n", cnt);
     for(i=0; i<cnt; i++) 
     {
         struct data_pair * p = (struct data_pair * )pd_malloc(sizeof(struct data_pair));
-        STMFLASH_Read(PANDO_CONFIG_ADDRESS + sizeof(int32) + sizeof(int32) + sizeof(struct data_pair)*i,
-            (uint16 *)p, sizeof(struct data_pair));
+        flash_read(PANDO_CONFIG_ADDRESS + sizeof(int32_t) + sizeof(int32_t) + sizeof(struct data_pair)*i,
+            (uint16_t*)p, sizeof(struct data_pair));
         p->next = head;
         head = p;
     }
@@ -139,7 +139,7 @@ char * pando_data_get(char* key)
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-uint16 pando_storage_space_left()
+uint16_t pando_storage_space_left()
 {
 
 }

@@ -30,7 +30,7 @@ static void gateway_error_process();
  * Returns      : none
 *******************************************************************************/
 void FUNCTION_ATTRIBUTE
-gateway_cb(sint8 result)
+gateway_cb(int8_t result)
 {
     switch(gateway_status)
     {
@@ -53,7 +53,8 @@ gateway_cb(sint8 result)
         case GATEWAY_REGISTER:
             if(result == PANDO_REGISTER_OK)
             {
-                pando_cloud_access(gateway_cb);
+            	gateway_status = GATEWAY_LOGIN;
+                pando_device_login(gateway_cb);
             }
             else
             {
@@ -66,17 +67,27 @@ gateway_cb(sint8 result)
 }
 
 /******************************************************************************
- * FunctionName : wifi_connect_check
- * Description  : check the wifi connect status. if device has connected the wifi,
+ * FunctionName : device_connect_check
+ * Description  : check the device connect status. if device has connected the net,
  * 				  start the gateway flow.
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
 static void FUNCTION_ATTRIBUTE
-gprs_connect_check()
+device_connect_check()
 {
-    gateway_status = GATEWAY_LOGIN;
-    pando_device_login(gateway_cb);
+//	printf("check2\n");
+//	if (check_ip_status()== 0)
+//	{
+//		// device has connected the net
+//		timer1_stop();
+//		gateway_status = GATEWAY_LOGIN;
+//		pando_device_login(gateway_cb);
+//	}
+//	else
+//	{
+//		pd_printf("device status: not connected\n");
+//	}
 }
 
 /******************************************************************************
@@ -89,10 +100,11 @@ static void FUNCTION_ATTRIBUTE
 gateway_error_process()
 {
     struct pd_timer st_timer;
-    st_timer.interval = 3000;
-    st_timer.repeated = 0;
-    timer_init(TIMER_1, st_timer);
-    timer_start(TIMER_1);
+    st_timer.interval = 5000;
+    st_timer.repeated = 1;
+	st_timer.timer_cb = device_connect_check;
+    timer1_init(st_timer);
+    timer1_start();
 }
 
 /******************************************************************************
@@ -114,5 +126,7 @@ pando_gateway_init()
 
     pando_zero_device_init();
 
-    gprs_connect_check();
+    gateway_status = GATEWAY_REGISTER;
+
+    pando_device_register(gateway_cb);
 }

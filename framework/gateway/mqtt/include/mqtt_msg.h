@@ -7,7 +7,11 @@
 
 #ifndef MQTT_MSG_H
 #define	MQTT_MSG_H
+#if 0
+#include "c_types.h"
+#else
 #include "pando_types.h"
+#endif
 #ifdef	__cplusplus
 extern "C" {
 #endif

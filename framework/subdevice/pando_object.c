@@ -28,7 +28,7 @@ register_pando_object(pando_object object)
 }
 
 pando_object* FUNCTION_ATTRIBUTE
-find_pando_object(int8 no)
+find_pando_object(int8_t no)
 {
     int i;
     for(i = 0; i < s_pando_object_list_idx; i++)

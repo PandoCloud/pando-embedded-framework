@@ -50,10 +50,13 @@
 #define QUEUE_BUFFER_SIZE		 	2048
 #endif
 
+#define IP4_ADDR(ip_addr, a,b,c,d) \
+        ip_addr = ((uint32_t)((d) & 0xff) << 24) | \
+                         ((uint32_t)((c) & 0xff) << 16) | \
+                         ((uint32_t)((b) & 0xff) << 8)  | \
+                          (uint32_t)((a) & 0xff)
+
 void MQTT_Task(MQTT_Client * arg);
-
-
-
 
 static void FUNCTION_ATTRIBUTE
 deliver_publish(MQTT_Client* client, uint8_t* message, int length)
@@ -268,6 +271,9 @@ void FUNCTION_ATTRIBUTE mqtt_timer(void *arg)
 			client->connState = TCP_RECONNECT;
 			MQTT_Task(client);
 		}
+	}else if(client->connState == TCP_CONNECTING){
+		client->connState = TCP_CONNECTING_ERROR;
+		MQTT_Task(client);
 	}
 	if(client->sendTimeout > 0)
 		client->sendTimeout --;
@@ -413,6 +419,56 @@ MQTT_Subscribe(MQTT_Client *client, char* topic, uint8_t qos)
 	return TRUE;
 }
 
+
+static void FUNCTION_ATTRIBUTE
+MQTT_exit(MQTT_Client *client)
+{
+	if(client == NULL)
+	{
+		return;
+	}
+	if(client->host != NULL)
+	{
+		pd_free(client->host);
+		client->host = NULL;
+	}
+	if(client->connect_info.password != NULL)
+	{
+		pd_free(client->connect_info.password);
+		client->connect_info.password = NULL;
+	}
+	if(client->connect_info.client_id != NULL)
+	{
+		pd_free(client->connect_info.client_id);
+		client->connect_info.client_id = NULL;
+	}
+	if(client->connect_info.username != NULL)
+	{
+		pd_free(client->connect_info.username);
+		client->connect_info.username = NULL;
+	}
+	if(client->mqtt_state.in_buffer != NULL)
+	{
+		pd_free(client->mqtt_state.in_buffer);
+		client->mqtt_state.in_buffer = NULL;
+	}
+	if(client->mqtt_state.out_buffer != NULL)
+	{
+		pd_free(client->mqtt_state.out_buffer);
+		client->mqtt_state.out_buffer = NULL;
+	}
+	if(client->msgQueue.buf != NULL)
+	{
+		pd_free(client->msgQueue.buf);
+		client->msgQueue.buf = NULL;
+	}
+	INFO("mqtt exit:\n");
+	if(client->errorCb != NULL)
+	{
+		(client->errorCb)((uint32_t*)client);
+	}
+}
+
 void FUNCTION_ATTRIBUTE
 MQTT_Task(MQTT_Client *client)
 {
@@ -459,6 +515,10 @@ MQTT_Task(MQTT_Client *client)
 			break;
 		}
 		break;
+	case TCP_CONNECTING_ERROR:
+		MQTT_Disconnect(client);
+		MQTT_exit(client);
+		break;
 	}
 }
 
@@ -500,41 +560,29 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 {
 	uint32_t temp;
 	INFO("MQTT_InitClient\r\n");
-
 	pd_memset(&mqttClient->connect_info, 0, sizeof(mqtt_connect_info_t));
-
+	INFO("11\n");
 	temp = pd_strlen(client_id);
+	INFO("22\n");
 	mqttClient->connect_info.client_id = (uint8_t*)pd_malloc(temp + 1);
+	INFO("33\n");
     pd_memset(mqttClient->connect_info.client_id, 0, temp + 1);
+    INFO("44\n");
 	pd_strcpy(mqttClient->connect_info.client_id, client_id);
+	INFO("55\n");
 	mqttClient->connect_info.client_id[temp] = 0;
 
-	if(client_user == NULL)
-	{
-		mqttClient->connect_info.username = NULL;
-	}
+	temp = pd_strlen(client_user);
+	mqttClient->connect_info.username = (uint8_t*)pd_malloc(temp + 1);
+	pd_memset(mqttClient->connect_info.username, 0, temp + 1);
+	pd_strcpy(mqttClient->connect_info.username, client_user);
+	mqttClient->connect_info.username[temp] = 0;
 
-	else
-	{
-		temp = pd_strlen(client_user);
-		mqttClient->connect_info.username = (uint8_t*)pd_malloc(temp + 1);
-        pd_memset(mqttClient->connect_info.username, 0, temp + 1);
-		pd_strcpy(mqttClient->connect_info.username, client_user);
-		mqttClient->connect_info.username[temp] = 0;
-	}
-	if(client_pass == NULL)
-	{
-		mqttClient->connect_info.password = NULL;
-	}
-
-	else
-	{
-		temp = pd_strlen(client_pass);
-		mqttClient->connect_info.password = (uint8_t*)pd_malloc(temp + 1);
-        pd_memset(mqttClient->connect_info.password, 0, temp + 1);
-		pd_strcpy(mqttClient->connect_info.password, client_pass);
-		mqttClient->connect_info.password[temp] = 0;
-	}
+	temp = pd_strlen(client_pass);
+	mqttClient->connect_info.password = (uint8_t*)pd_malloc(temp + 1);
+	pd_memset(mqttClient->connect_info.password, 0, temp + 1);
+	pd_strcpy(mqttClient->connect_info.password, client_pass);
+	mqttClient->connect_info.password[temp] = 0;
 
 	mqttClient->connect_info.keepalive = keepAliveTime;
 	mqttClient->connect_info.clean_session = cleanSession;
@@ -548,8 +596,9 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	mqttClient->mqtt_state.connect_info = &mqttClient->connect_info;
 
 	mqtt_msg_init(&mqttClient->mqtt_state.mqtt_connection, mqttClient->mqtt_state.out_buffer, mqttClient->mqtt_state.out_buffer_length);
-
+	INFO("190\n");
 	QUEUE_Init(&mqttClient->msgQueue, QUEUE_BUFFER_SIZE);
+	INFO("190\n");
 #if 0
 	system_os_task(MQTT_Task, MQTT_TASK_PRIO, mqtt_procTaskQueue, MQTT_TASK_QUEUE_SIZE);
 	system_os_post(MQTT_TASK_PRIO, 0, (os_param_t)mqttClient);
@@ -620,24 +669,10 @@ MQTT_Connect(MQTT_Client *mqttClient)
     timer1_init(mqttClient->mqttTimer);
     timer1_stop();
     timer1_start();
-    
-	if(UTILS_StrToIP(mqttClient->host, &mqttClient->pCon->remote_ip)) {
-		INFO("TCP: Connect to ip  %s:%d\r\n", mqttClient->host, mqttClient->port);
-		if(mqttClient->security){
-			//espconn_secure_connect(mqttClient->pCon);
-			//need a connect time out? TODO
-			net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
-		}
-		else {
-            //need to distinguish secure and non secure? TODO
-			net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
-		}
-	}
-	else {
-		INFO("TCP: Connect to domain %s:%d\r\n", mqttClient->host, mqttClient->port);
-        //need a host name function. TODO
-        //espconn_gethostbyname(mqttClient->pCon, mqttClient->host, &mqttClient->ip, mqtt_dns_found);
-	}
+    uint8_t ip_adrr[4];
+	UTILS_StrToIP(mqttClient->host, ip_adrr);
+	IP4_ADDR(mqttClient->pCon->remote_ip, ip_adrr[0], ip_adrr[1], ip_adrr[2], ip_adrr[3]);
+	net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
 	mqttClient->connState = TCP_CONNECTING;
 }
 

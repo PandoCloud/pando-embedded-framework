@@ -17,6 +17,7 @@
 #include <string.h>
 
 #define pd_malloc       malloc
+#define pd_calloc       calloc
 #define pd_free         free
 
 #define pd_memcpy       memcpy
@@ -25,6 +26,7 @@
 
 #define pd_strlen       strlen
 #define pd_strncpy      strncpy
+#define pd_strcpy       strcpy
 #define pd_strcmp       strcmp
 
 #define pd_sprintf      sprintf

@@ -18,13 +18,13 @@
 typedef struct TLVs PARAMS;
 
 typedef struct {
-    uint8 no;
+    uint8_t no;
     void (*pack)(PARAMS*);
     void (*unpack)(PARAMS*);
 }pando_object;
 
 typedef struct {
-    uint8 cur;
+    uint8_t cur;
 }pando_objects_iterator;
 
 /******************************************************************************
@@ -41,7 +41,7 @@ void register_pando_object(pando_object object);
  * Parameters   : the object no.
  * Returns      : the pando object of specified no, NULL if not found.
 *******************************************************************************/
-pando_object* find_pando_object(int8 no);
+pando_object* find_pando_object(int8_t no);
 
 /******************************************************************************
  * FunctionName : create_pando_objects_iterator, delete_pando_objects_iterator.

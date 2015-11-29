@@ -12,6 +12,10 @@
 #define BIG_INT_BUF_LEN 21
 #define KEY_BUF_LEN 96
 #define MSG_BUF_LEN 32
+#define PANDO_API_URL "https://api.pandocloud.com"
+
+extern uint8_t g_imei_buf[16];
+extern uint8_t g_product_key_buf[];
 
 static gateway_callback device_register_callback = NULL;
 static char* request = NULL;
@@ -38,7 +42,7 @@ static void http_callback_register(char * response)
 
     struct jsonparse_state json_state;
     jsonparse_setup(&json_state, response, pd_strlen(response));
-    uint8 code;
+    uint8_t code;
     char message[MSG_BUF_LEN];
     long device_id;
     char device_secret[KEY_BUF_LEN];
@@ -138,8 +142,8 @@ void pando_device_register(gateway_callback callback)
     str_device_serial[DEVICE_SERIAL_BUF_LEN - 1] = 0;
     pd_printf("device_serial:%s\n", str_device_serial);
     // try register device via HTTP
-    struct jsontree_string json_product_key = JSONTREE_STRING("");
-    struct jsontree_string json_device_code = JSONTREE_STRING(str_device_serial);
+    struct jsontree_string json_product_key = JSONTREE_STRING(g_product_key_buf);
+    struct jsontree_string json_device_code = JSONTREE_STRING(g_imei_buf);
     struct jsontree_int json_device_type = JSONTREE_INT(1);
     struct jsontree_string json_device_module = JSONTREE_STRING(PANDO_DEVICE_MODULE);
     struct jsontree_string json_version = JSONTREE_STRING(PANDO_SDK_VERSION);
@@ -154,7 +158,6 @@ void pando_device_register(gateway_callback callback)
     int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
 
     pd_printf("device register request:::\n%s\n(end)\n", request);
-
     net_http_post(PANDO_API_URL
         "/v1/devices/registration",
         request,

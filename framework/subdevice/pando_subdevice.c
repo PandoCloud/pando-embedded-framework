@@ -68,7 +68,7 @@ decode_command(struct sub_device_buffer *device_buffer)
 {
     struct pando_command cmd_body;
     PARAMS *cmd_param = get_sub_device_command(device_buffer, &cmd_body);
-    if(CMD_QUERY_STATUS == cmd_body.command_id)
+    if(CMD_QUERY_STATUS == cmd_body.command_num)
     {
         pd_printf("receive a get request\n");
         send_current_status();
@@ -88,11 +88,11 @@ pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 
     struct sub_device_buffer *device_buffer = (struct sub_device_buffer *)pd_malloc(sizeof(struct sub_device_buffer));
     device_buffer->buffer_length = length;
-    device_buffer->buffer = (uint8 *)pd_malloc(length);
+    device_buffer->buffer = (uint8_t *)pd_malloc(length);
 
     pd_memcpy(device_buffer->buffer, buffer, length);
 
-    uint16 payload_type = get_sub_device_payloadtype(device_buffer);
+    uint16_t payload_type = get_sub_device_payloadtype(device_buffer);
 
     switch (payload_type) {
     case PAYLOAD_TYPE_DATA:

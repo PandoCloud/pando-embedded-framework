@@ -30,15 +30,15 @@
 
 #ifndef USER_QUEUE_H_
 #define USER_QUEUE_H_
-#include "pando_types.h"
+#include "os_type.h"
 #include "ringbuf.h"
 typedef struct {
 	uint8_t *buf;
 	RINGBUF rb;
 } QUEUE;
 
-void  QUEUE_Init(QUEUE *queue, int bufferSize);
-int32_t  QUEUE_Puts(QUEUE *queue, uint8_t* buffer, uint16_t len);
-int32_t  QUEUE_Gets(QUEUE *queue, uint8_t* buffer, uint16_t* len, uint16_t maxLen);
-BOOL  QUEUE_IsEmpty(QUEUE *queue);
+void FUNCTION_ATTRIBUTE QUEUE_Init(QUEUE *queue, int bufferSize);
+int32_t FUNCTION_ATTRIBUTE QUEUE_Puts(QUEUE *queue, uint8_t* buffer, uint16_t len);
+int32_t FUNCTION_ATTRIBUTE QUEUE_Gets(QUEUE *queue, uint8_t* buffer, uint16_t* len, uint16_t maxLen);
+BOOL FUNCTION_ATTRIBUTE QUEUE_IsEmpty(QUEUE *queue);
 #endif /* USER_QUEUE_H_ */

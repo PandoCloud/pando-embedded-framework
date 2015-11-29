@@ -36,7 +36,7 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
         pd_printf("%s:malloc error!\n", __func__);
         return;
     }
-    device_buffer->buffer = (uint8*)pd_malloc(length);
+    device_buffer->buffer = (uint8_t*)pd_malloc(length);
     if(device_buffer->buffer == NULL)
     {
         pd_printf("%s:malloc error!\n", __func__);
@@ -46,12 +46,12 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
     device_buffer->buffer_length = length;
 
     struct TLVs *cmd_param = get_sub_device_command(device_buffer, &cmd_body);
-    if(COMMON_COMMAND_SYN_TIME == cmd_body.command_id )
+    if(COMMON_COMMAND_SYN_TIME == cmd_body.command_num )
     {
         pd_printf("PANDO: synchronize time\n");
-        uint64 time = get_next_uint64(cmd_param);
-        show_package((uint8*)(&time), sizeof(time));
-        pando_set_system_time(time);
+        uint64_t time = get_next_uint64(cmd_param);
+        show_package((uint8_t*)(&time), sizeof(time));
+        //pando_set_system_time(time);
     }
 }
 

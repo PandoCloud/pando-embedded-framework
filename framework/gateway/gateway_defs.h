@@ -25,7 +25,7 @@
 
 #define PANDO_SDK_VERSION "0.0.1"
 
-typedef void(*gateway_callback)(sint8_t result);
+typedef void(*gateway_callback)(int8_t result);
 
 #define PANDO_REGISTER_OK      0
 #define PANDO_LOGIN_OK         0
