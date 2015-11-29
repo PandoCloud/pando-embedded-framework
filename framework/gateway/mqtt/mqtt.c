@@ -229,10 +229,12 @@ mqtt_tcpclient_sent_cb(void *arg, int8_t errorno)
 
 void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
 {
+	PRINTF("Enter into mqtt timer...");
 	MQTT_Client* client = (MQTT_Client*)arg;
     struct data_buf buffer;
-
-	if(client->connState == MQTT_DATA){
+    PRINTF("client->connState:%d\n",client->connState);
+	if(client->connState == MQTT_DATA)
+	{
 		client->keepAliveTick ++;
 		if(client->keepAliveTick > client->mqtt_state.connect_info->keepalive){
 
@@ -261,7 +263,8 @@ void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
 			MQTT_Task(client);
 		}
 
-	} else if(client->connState == TCP_RECONNECT_REQ){
+	} else if(client->connState == TCP_RECONNECT_REQ)
+	{
 		client->reconnectTick ++;
 		if(client->reconnectTick > MQTT_RECONNECT_TIMEOUT) {
 			client->reconnectTick = 0;
@@ -483,7 +486,7 @@ MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32_t port, uint8
 	mqttClient->host[temp] = 0;
 	mqttClient->port = port;
 	mqttClient->security = security;
-
+	PRINTF("MQTT_InitConnection END...\n");
 }
 
 /**
@@ -511,6 +514,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 
 	if(client_user == NULL)
 	{
+		PRINTF("client_user == NULL...\n");
 		mqttClient->connect_info.username = NULL;
 	}
 
@@ -524,6 +528,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	}
 	if(client_pass == NULL)
 	{
+		PRINTF("client_pass == NULL...\n");
 		mqttClient->connect_info.password = NULL;
 	}
 
@@ -586,6 +591,7 @@ MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, ui
 void ICACHE_FLASH_ATTR
 MQTT_Connect(MQTT_Client *mqttClient)
 {
+	INFO("MQTT_Connect start..");
 	MQTT_Disconnect(mqttClient);
 #if 0   
 	mqttClient->pCon = (struct espconn *)os_zalloc(sizeof(struct espconn));
@@ -601,6 +607,17 @@ MQTT_Connect(MQTT_Client *mqttClient)
 #endif
     mqttClient->pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
     pd_memset(mqttClient->pCon, 0, sizeof(struct pando_tcp_conn));
+
+
+
+	//mqttClient->pCon->local_port = espconn_port();
+	mqttClient->pCon->remote_port = mqttClient->port;
+	mqttClient->pCon->reverse = mqttClient;
+	mqttClient->pCon->secure = 1;
+
+	PRINTF("local_port:%d\n",mqttClient->pCon->local_port);
+	PRINTF("remote_port:%d\n",mqttClient->pCon->remote_port);
+	//mqttClient->pCon->reverse = mqttClient;
     net_tcp_register_connected_callback(mqttClient->pCon, mqtt_tcpclient_connect_cb);
     //no reconnection call back. TODO
     
@@ -613,6 +630,7 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	os_timer_setfn(&mqttClient->mqttTimer, (os_timer_func_t *)mqtt_timer, mqttClient);
 	os_timer_arm(&mqttClient->mqttTimer, 1000, 1);
 #endif
+	INFO("timer1 init statrt...");
 	mqttClient->mqttTimer.interval = 3000;
 	mqttClient->mqttTimer.repeated = 1;
 	mqttClient->mqttTimer.arg = mqttClient;
@@ -620,6 +638,7 @@ MQTT_Connect(MQTT_Client *mqttClient)
     timer1_init(mqttClient->mqttTimer);
     timer1_stop();
     timer1_start();
+    INFO("timer1 init end...");
     
 	if(UTILS_StrToIP(mqttClient->host, &mqttClient->pCon->remote_ip)) {
 		INFO("TCP: Connect to ip  %s:%d\r\n", mqttClient->host, mqttClient->port);

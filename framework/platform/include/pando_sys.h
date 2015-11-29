@@ -14,6 +14,7 @@
 
 #include "mem.h"
 #include "osapi.h"
+#include "user_interface.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +30,8 @@
 #define pd_strlen       os_strlen
 #define pd_strncpy      os_strncpy
 #define pd_strcmp       os_strcmp
+#define pd_strncmp      os_strncmp
+#define pd_strchr		os_strchr
 
 #define pd_sprintf      os_sprintf
 

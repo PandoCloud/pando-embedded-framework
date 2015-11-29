@@ -12,6 +12,7 @@
 
 #include "pando_types.h"
 #include "../include/pando_net_tcp.h"
+#include "../include/pando_sys.h"
 #include "espconn.h"
 
 static net_tcp_connected_callback   temp1 = NULL;
@@ -22,16 +23,19 @@ static net_tcp_disconnected_callback temp4 = NULL;
 
 void temp1_function(void *tcp_conn)
 {
+	PRINTF("enter into temp1_function...");
 	temp1(tcp_conn, 0);
 }
 
 void temp2_function(void *tcp_conn)
 {
+	PRINTF("enter into temp2_function...");
 	temp2(tcp_conn, 0);
 }
 
 void temp3_function(void *tcp_conn, char *pdata, unsigned short len)
 {
+	PRINTF("enter into temp3_function...");
 	struct data_buf data_buffer ;
 	data_buffer.data = pdata;
 	data_buffer.length = len ;
@@ -40,11 +44,12 @@ void temp3_function(void *tcp_conn, char *pdata, unsigned short len)
 }
 void temp4_function(void *tcp_conn)
 {
+	PRINTF("enter into temp4_function...");
 	temp4(tcp_conn, 0);
 }
 
 
-struct espconn *econn ;
+struct espconn econn ;
 /******************************************************************************
  * FunctionName : net_tcp_connect
  * Description  : The function given as the connect
@@ -54,23 +59,29 @@ struct espconn *econn ;
 *******************************************************************************/
 void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 {
-	uint8 i;
+	 econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+			conn->local_port = espconn_port();
 
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
+			pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
 
-	if(conn->secure==0)
+			pd_memcpy(&(econn.proto.tcp->local_port),&(conn->local_port),sizeof(uint32_t));
+			pd_memcpy(&(econn.proto.tcp->remote_port),&(conn->remote_port),sizeof(uint32_t));
+			econn.reverse = conn->reverse ;
+
+			econn.type = ESPCONN_TCP;
+			econn.state = ESPCONN_NONE;
+
+	if(conn->secure==1)
 	{
-		espconn_connect(econn);
+		PRINTF("espconn_secure_connect\n");
+		espconn_secure_connect(&econn);
 	}
 	else
 	{
-		espconn_secure_connect(econn);
+		PRINTF("espconn_connect\n");
+		espconn_connect(&econn);
 	}
-
+	//pd_free(econn.proto.tcp);
 }
 
 /******************************************************************************
@@ -81,17 +92,31 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 *******************************************************************************/
 void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_connected_callback connected_cb)
 {
+	    econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+	    pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
 
-	uint8 i;
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
+		conn->local_port = espconn_port();
+
+
+		econn.proto.tcp->local_port = conn->local_port ;
+		econn.proto.tcp->remote_port = conn->remote_port ;
+
+		econn.reverse = conn->reverse ;
+
+		econn.type = ESPCONN_TCP;
+		econn.state = ESPCONN_NONE;
+
+
+		pd_printf("econn local_port: %d\n",econn.proto.tcp->local_port);
+
+		pd_printf("econn remote_port: %d\n",econn.proto.tcp->remote_port);
+
 
 	temp1 = connected_cb;
-	espconn_regist_connectcb(econn,temp1_function);
+	espconn_regist_connectcb(&econn,temp1_function);
 
+	pd_printf("net_tcp_register_connected_callback END...\n");
+	//pd_free(econn.proto.tcp);
 
 }
 
@@ -105,13 +130,20 @@ void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_c
 *******************************************************************************/
 void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t timeout)
 {
-	uint8 i;
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
-	espconn_secure_send(econn,buffer.data,buffer.length);
+	econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+			conn->local_port = espconn_port();
+
+			pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
+
+			econn.proto.tcp->local_port = conn->local_port ;
+					econn.proto.tcp->remote_port = conn->remote_port ;
+			econn.reverse = conn->reverse ;
+
+			econn.type = ESPCONN_TCP;
+			econn.state = ESPCONN_NONE;
+
+	espconn_secure_send(&econn,buffer.data,buffer.length);
+	//pd_free(econn.proto.tcp);
 }
 
 
@@ -123,15 +155,20 @@ void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t 
 *******************************************************************************/
 void net_tcp_register_sent_callback(struct pando_tcp_conn *conn, net_tcp_sent_callback sent_cb)
 {
-	uint8 i;
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
+	econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+			conn->local_port = espconn_port();
+
+			pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
+			econn.proto.tcp->local_port = conn->local_port ;
+					econn.proto.tcp->remote_port = conn->remote_port ;
+			econn.reverse = conn->reverse ;
+
+			econn.type = ESPCONN_TCP;
+			econn.state = ESPCONN_NONE;
 
 	temp2 = sent_cb;
-	espconn_regist_sentcb(econn,temp2_function);
+	espconn_regist_sentcb(&econn,temp2_function);
+	//pd_free(econn.proto.tcp);
 }
 
 /******************************************************************************
@@ -142,14 +179,21 @@ void net_tcp_register_sent_callback(struct pando_tcp_conn *conn, net_tcp_sent_ca
 *******************************************************************************/
 void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_callback recv_cb)
 {
-	uint8 i;
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
+	econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+			conn->local_port = espconn_port();
+
+			pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
+
+			econn.proto.tcp->local_port = conn->local_port ;
+					econn.proto.tcp->remote_port = conn->remote_port ;
+			econn.reverse = conn->reverse ;
+
+			econn.type = ESPCONN_TCP;
+			econn.state = ESPCONN_NONE;
+
 	temp3 = recv_cb;
-	espconn_regist_recvcb(econn,temp3_function);
+	espconn_regist_recvcb(&econn,temp3_function);
+	//pd_free(econn.proto.tcp);
 }
 
 /******************************************************************************
@@ -160,13 +204,20 @@ void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_ca
 *******************************************************************************/
 void net_tcp_disconnect(struct pando_tcp_conn *conn)
 {
-	uint8 i;
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
-	espconn_secure_disconnect(econn);
+	econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+			conn->local_port = espconn_port();
+
+			pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
+
+			econn.proto.tcp->local_port = conn->local_port ;
+					econn.proto.tcp->remote_port = conn->remote_port ;
+			econn.reverse = conn->reverse ;
+
+			econn.type = ESPCONN_TCP;
+			econn.state = ESPCONN_NONE;
+
+	espconn_secure_disconnect(&econn);
+	//pd_free(econn.proto.tcp);
 }
 
 /******************************************************************************
@@ -177,15 +228,21 @@ void net_tcp_disconnect(struct pando_tcp_conn *conn)
 *******************************************************************************/
 void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp_disconnected_callback disconnected_cb)
 {
-	uint8 i;
-	for( i = 0; i < 4; i++ )
-	{
-		econn->proto.tcp->local_ip[i] = (conn->local_ip&&(0xff<<8*i))>>8*i ;
-		econn->proto.tcp->remote_ip[i] = (conn->remote_ip&&(0xff<<8*i))>>8*i ;
-	}
+	econn.proto.tcp = (esp_tcp *)pd_malloc(sizeof(struct _esp_tcp));
+			conn->local_port = espconn_port();
+
+			pd_memset(econn.proto.tcp, 0, sizeof(struct _esp_tcp));
+
+			econn.proto.tcp->local_port = conn->local_port ;
+					econn.proto.tcp->remote_port = conn->remote_port ;
+			econn.reverse = conn->reverse ;
+
+			econn.type = ESPCONN_TCP;
+			econn.state = ESPCONN_NONE;
 
 	temp4 = disconnected_cb;
-	espconn_regist_disconcb(econn,temp4_function);
+	espconn_regist_disconcb(&econn,temp4_function);
+	//pd_free(econn.proto.tcp);
 }
 
 /******************************************************************************
@@ -194,7 +251,10 @@ void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp
  * Parameters   : addr: the listen addr.
  * Returns      : the listen result.
 *******************************************************************************/
-//int8_t net_tcp_server_listen(struct pando_tcp_conn *conn);
+int8_t net_tcp_server_listen(struct pando_tcp_conn *conn)
+{
+	;
+}
 
 /******************************************************************************
  * FunctionName : net_tcp_server_accept
@@ -202,6 +262,9 @@ void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp
  * Parameters   : conn: the accept parameter.
  * Returns      : none
 *******************************************************************************/
-//void net_tcp_server_accept(struct pando_tcp_conn *conn);
+void net_tcp_server_accept(struct pando_tcp_conn *conn)
+{
+	;
+}
 
 

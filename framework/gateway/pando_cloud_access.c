@@ -3,10 +3,11 @@
 #include "../platform/include/pando_types.h"
 #include "gateway_defs.h"
 #include "pando_channel.h"
+//#include "pando_system_time.h"
+#include "mqtt/mqtt.h"
 #include "../protocol/sub_device_protocol.h"
 #include "../protocol/pando_protocol.h"
 #include "../platform/include/pando_sys.h"
-#include "mqtt/mqtt.h"
 
 #define PORT_STR_LEN 8
 #define DEVICE_TOKEN_LEN 16
@@ -17,7 +18,7 @@ uint8_t pando_device_token[DEVICE_TOKEN_LEN];
 MQTT_Client mqtt_client;
 static uint8_t str_device_id_hex[17];
 
-static int FUNCTION_ATTRIBUTE
+static int ICACHE_FLASH_ATTR
 conv_addr_str(const char * ip_str, uint8_t * str_ip_addr, int * port)
 {
     char * colon = NULL;
@@ -248,7 +249,7 @@ pando_cloud_access(gateway_callback callback)
 
     MQTT_InitConnection(&mqtt_client, ip_string, port, 0);
 
-    //MQTT_Connect(&mqtt_client);
+    MQTT_Connect(&mqtt_client);
 
     char access_token_str[64];
     char* token_str = pando_data_get(DATANAME_ACCESS_TOKEN);

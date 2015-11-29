@@ -14,7 +14,7 @@
 
 #include "c_types.h"
 
-#define PANDO_API_URL "https://api.pandocloud.com"
+#define PANDO_API_URL "http://api.pandocloud.com"
 #define DATANAME_DEVICE_ID "pando_device_id"
 #define DATANAME_DEVICE_SECRET "pando_device_secret"
 #define DATANAME_DEVICE_KEY "pando_device_key"
@@ -28,7 +28,7 @@
 typedef void(*gateway_callback)(sint8_t result);
 
 #define PANDO_REGISTER_OK      0
-#define PANDO_LOGIN_OK         0
+#define PANDO_LOGIN_OK         1
 #define PANDO_REGISTER_FAIL   -1
 #define PANDO_NOT_REGISTERED  -2
 #define PANDO_LOGIN_FAIL      -3
