@@ -13,6 +13,7 @@
 #define _PANDO_NET_TCP_H_
 
 #include "pando_types.h"
+#include "espconn.h"
 
 struct data_buf
 {
@@ -54,7 +55,7 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout);
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_connected_callback connected_cb);
+void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_connected_callback  connected_cb);
 
 
 /******************************************************************************

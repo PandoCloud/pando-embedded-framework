@@ -38,6 +38,7 @@
 #include "../../platform/include/pando_timer.h"
 #include "../../platform/include/pando_net_tcp.h"
 #include "utils.h"
+#include "espconn.h"
 
 #define MQTT_BUF_SIZE		1024
 #define MQTT_RECONNECT_TIMEOUT 5
@@ -52,7 +53,7 @@
 
 void MQTT_Task(MQTT_Client * arg);
 
-
+extern MQTT_Client mqtt_client;
 
 
 static void ICACHE_FLASH_ATTR
@@ -298,10 +299,14 @@ mqtt_tcpclient_discon_cb(void *arg, int8_t errno)
   * @retval None
   */
 void ICACHE_FLASH_ATTR
-mqtt_tcpclient_connect_cb(void *arg, int8_t errno)
+mqtt_tcpclient_connect_cb(void *arg , int8_t errno)
 {
+	pd_printf("enter into mqtt_tcpclient_connect_cb\n");
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)arg;
+	pd_printf("pCon->reverse:%d\n",pCon->reverse);
 	MQTT_Client* client = (MQTT_Client *)pCon->reverse;
+	pd_printf("mqtt_tcpclient_connect_cb_client:%d\n",client);
+	pd_printf("mqtt_tcpclient_connect_cb_mqtt_client:%d\n",&mqtt_client);
     struct data_buf buffer;
 
 	net_tcp_register_disconnected_callback(pCon, mqtt_tcpclient_discon_cb);
@@ -309,11 +314,19 @@ mqtt_tcpclient_connect_cb(void *arg, int8_t errno)
 	net_tcp_register_sent_callback(pCon, mqtt_tcpclient_sent_cb);///////
 	INFO("MQTT: Connected to broker %s:%d\r\n", client->host, client->port);
 
+
 	mqtt_msg_init(&client->mqtt_state.mqtt_connection, client->mqtt_state.out_buffer, client->mqtt_state.out_buffer_length);
 	client->mqtt_state.outbound_message = mqtt_msg_connect(&client->mqtt_state.mqtt_connection, client->mqtt_state.connect_info);
 	client->mqtt_state.pending_msg_type = mqtt_get_type(client->mqtt_state.outbound_message->data);
 	client->mqtt_state.pending_msg_id = mqtt_get_id(client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
-
+	pd_printf("connect_cb_client->mqtt_state.out_buffer_length:%d\n"
+			,client->mqtt_state.out_buffer_length);
+	pd_printf("client_id0:%d,client_id1:%d,client_id2:%d,client_id3:%d\n"
+			,(client->mqtt_state.connect_info->client_id)[0],
+			(client->mqtt_state.connect_info->client_id)[1],
+			(client->mqtt_state.connect_info->client_id)[2],
+			(client->mqtt_state.connect_info->client_id)[3]);
+	INFO("client_id0:%s\n",client->mqtt_state.connect_info->client_id);
 
 	client->sendTimeout = MQTT_SEND_TIMOUT;
 
@@ -325,7 +338,7 @@ mqtt_tcpclient_connect_cb(void *arg, int8_t errno)
         //espconn_secure_sent(client->pCon, client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
 	}
 	else{
-        net_tcp_send(client->pCon, buffer, client->sendTimeout);
+        net_tcp_send(pCon, buffer, client->sendTimeout);
 		//espconn_sent(client->pCon, client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
 	}
 
@@ -420,6 +433,7 @@ void ICACHE_FLASH_ATTR
 MQTT_Task(MQTT_Client *client)
 {
 	INFO("MQTT TASK\n");
+	pd_printf("mqtt_task:%d\n", client->connState);
 	uint8_t dataBuffer[MQTT_BUF_SIZE];
 	uint16_t dataLen;
     struct data_buf buffer;
@@ -560,6 +574,12 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	system_os_post(MQTT_TASK_PRIO, 0, (os_param_t)mqttClient);
 #endif
     MQTT_Task(mqttClient);
+	pd_printf("client_id0:%d,client_id1:%d,client_id2:%d,client_id3:%d\n"
+			,(mqttClient->mqtt_state.connect_info->client_id)[0],
+			(mqttClient->mqtt_state.connect_info->client_id)[1],
+			(mqttClient->mqtt_state.connect_info->client_id)[2],
+			(mqttClient->mqtt_state.connect_info->client_id)[3]);
+	pd_printf("client_id0:%s\n",mqttClient->mqtt_state.connect_info->client_id);
 }
 
 void ICACHE_FLASH_ATTR
@@ -591,7 +611,7 @@ MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, ui
 void ICACHE_FLASH_ATTR
 MQTT_Connect(MQTT_Client *mqttClient)
 {
-	INFO("MQTT_Connect start..");
+	INFO("MQTT_Connect start..\n");
 	MQTT_Disconnect(mqttClient);
 #if 0   
 	mqttClient->pCon = (struct espconn *)os_zalloc(sizeof(struct espconn));
@@ -610,14 +630,12 @@ MQTT_Connect(MQTT_Client *mqttClient)
 
 
 
-	//mqttClient->pCon->local_port = espconn_port();
+	mqttClient->pCon->local_port = espconn_port();
 	mqttClient->pCon->remote_port = mqttClient->port;
 	mqttClient->pCon->reverse = mqttClient;
-	mqttClient->pCon->secure = 1;
-
-	PRINTF("local_port:%d\n",mqttClient->pCon->local_port);
-	PRINTF("remote_port:%d\n",mqttClient->pCon->remote_port);
+	mqttClient->pCon->secure = 0;
 	//mqttClient->pCon->reverse = mqttClient;
+	PRINTF("MQTT_Connect_mqttClient->pCon->reverse:%d\n",mqttClient->pCon->reverse);
     net_tcp_register_connected_callback(mqttClient->pCon, mqtt_tcpclient_connect_cb);
     //no reconnection call back. TODO
     
@@ -625,20 +643,20 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	mqttClient->keepAliveTick = 0;
 	mqttClient->reconnectTick = 0;
 
-#if 0
+//#if 0
 	os_timer_disarm(&mqttClient->mqttTimer);
 	os_timer_setfn(&mqttClient->mqttTimer, (os_timer_func_t *)mqtt_timer, mqttClient);
-	os_timer_arm(&mqttClient->mqttTimer, 1000, 1);
-#endif
-	INFO("timer1 init statrt...");
-	mqttClient->mqttTimer.interval = 3000;
-	mqttClient->mqttTimer.repeated = 1;
-	mqttClient->mqttTimer.arg = mqttClient;
-	mqttClient->mqttTimer.timer_cb = mqtt_timer;
-    timer1_init(mqttClient->mqttTimer);
-    timer1_stop();
-    timer1_start();
-    INFO("timer1 init end...");
+	os_timer_arm(&mqttClient->mqttTimer, 3000, 1);
+//#endif
+	//INFO("timer1 init statrt...");
+	//mqttClient->mqttTimer.interval = 3000;
+	//mqttClient->mqttTimer.repeated = 1;
+	//mqttClient->mqttTimer.arg = mqttClient;
+	//mqttClient->mqttTimer.timer_cb = mqtt_timer;
+    //timer1_init(mqttClient->mqttTimer);
+    //timer1_stop();
+    //timer1_start();
+    //INFO("timer1 init end...");
     
 	if(UTILS_StrToIP(mqttClient->host, &mqttClient->pCon->remote_ip)) {
 		INFO("TCP: Connect to ip  %s:%d\r\n", mqttClient->host, mqttClient->port);
@@ -648,6 +666,7 @@ MQTT_Connect(MQTT_Client *mqttClient)
 			net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
 		}
 		else {
+			//espconn_connect(mqttClient->pCon);
             //need to distinguish secure and non secure? TODO
 			net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
 		}
@@ -673,8 +692,8 @@ MQTT_Disconnect(MQTT_Client *mqttClient)
 		mqttClient->pCon = NULL;
 	}
 
-    timer1_stop();
-	//os_timer_disarm(&mqttClient->mqttTimer);
+   // timer1_stop();
+	os_timer_disarm(&mqttClient->mqttTimer);
 }
 void ICACHE_FLASH_ATTR
 MQTT_OnConnected(MQTT_Client *mqttClient, MqttCallback connectedCb)

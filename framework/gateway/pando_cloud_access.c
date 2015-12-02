@@ -54,6 +54,7 @@ init_gateway_info()
 static void ICACHE_FLASH_ATTR
 pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
 {
+	pd_printf("pando_publish_data_channel1");
     struct pando_buffer *gateway_data_buffer = NULL;
     uint16_t buf_len = 0;
     uint16_t payload_type = 0;
@@ -99,8 +100,10 @@ pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
 static void ICACHE_FLASH_ATTR
 mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *data, uint32_t data_len)
 {
+	pd_printf("mqtt_data_cb\n");
     pd_printf("mqtt topic length: %d\n", topic_len);
     pd_printf("mqtt data length: %d\n", data_len);
+
     uint16_t sub_device_id = 0;
 
     if((topic == NULL) || (data == NULL))
@@ -244,17 +247,18 @@ pando_cloud_access(gateway_callback callback)
     char* str_device_id = pando_data_get(DATANAME_DEVICE_ID);
 
     int device_id = atol(str_device_id); // TODO: device id is 64bit, atol not support.
-
+    os_sprintf(str_device_id_hex, "%x", device_id);
     init_gateway_info();
 
     MQTT_InitConnection(&mqtt_client, ip_string, port, 0);
 
-    MQTT_Connect(&mqtt_client);
+   // MQTT_Connect(&mqtt_client);
 
     char access_token_str[64];
     char* token_str = pando_data_get(DATANAME_ACCESS_TOKEN);
     pd_memcpy(access_token_str, token_str, pd_strlen(token_str));
     MQTT_InitClient(&mqtt_client, str_device_id_hex, "", access_token_str, 30, 1);
+    pd_printf("access str_device_id_hex:%s\n",&str_device_id_hex);
     MQTT_OnConnected(&mqtt_client, mqtt_connect_cb);
     MQTT_OnDisconnected(&mqtt_client, mqtt_disconnect_cb);
     MQTT_OnPublished(&mqtt_client, mqtt_published_cb);

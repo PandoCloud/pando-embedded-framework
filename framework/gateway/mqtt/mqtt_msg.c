@@ -296,7 +296,11 @@ mqtt_message_t* ICACHE_FLASH_ATTR mqtt_msg_connect(mqtt_connection_t* connection
   init_message(connection);
 
   if(connection->message.length + sizeof(*variable_header) > connection->buffer_length)
+  {
+	  INFO("IF_1");
     return fail_message(connection);
+  }
+
   variable_header = (void*)(connection->buffer + connection->message.length);
   connection->message.length += sizeof(*variable_header);
 
@@ -318,42 +322,68 @@ mqtt_message_t* ICACHE_FLASH_ATTR mqtt_msg_connect(mqtt_connection_t* connection
   variable_header->keepaliveLsb = info->keepalive & 0xff;
 
   if(info->clean_session)
+  {
+	  INFO("IF_2");
     variable_header->flags |= MQTT_CONNECT_FLAG_CLEAN_SESSION;
+  }
 
   if(info->client_id != NULL && info->client_id[0] != '\0')
   {
+	  INFO("IF_3");
     if(append_string(connection, info->client_id, strlen(info->client_id)) < 0)
+    {
+    	INFO("IF_3_1");
       return fail_message(connection);
+    }
   }
   else
+  {
+	  INFO("ELSE_3");
     return fail_message(connection);
+  }
 
   if(info->will_topic != NULL && info->will_topic[0] != '\0')
   {
+	  INFO("IF_4");
     if(append_string(connection, info->will_topic, strlen(info->will_topic)) < 0)
+    {
+    	INFO("IF_4_1");
       return fail_message(connection);
+    }
 
     if(append_string(connection, info->will_message, strlen(info->will_message)) < 0)
+    {
+    	INFO("IF_4_2");
       return fail_message(connection);
+    }
 
     variable_header->flags |= MQTT_CONNECT_FLAG_WILL;
     if(info->will_retain)
+    {
+    	INFO("IF_4_3");
       variable_header->flags |= MQTT_CONNECT_FLAG_WILL_RETAIN;
+    }
     variable_header->flags |= (info->will_qos & 3) << 3;
   }
 
   if(info->username != NULL && info->username[0] != '\0')
   {
+	  INFO("IF_5");
+
     if(append_string(connection, info->username, strlen(info->username)) < 0)
+    {INFO("IF_5_1");
       return fail_message(connection);
+    }
 
     variable_header->flags |= MQTT_CONNECT_FLAG_USERNAME;
   }
 
   if(info->password != NULL && info->password[0] != '\0')
-  {
+  {INFO("IF_5");
     if(append_string(connection, info->password, strlen(info->password)) < 0)
+    {INFO("IF_6_1");
       return fail_message(connection);
+    }
 
     variable_header->flags |= MQTT_CONNECT_FLAG_PASSWORD;
   }
