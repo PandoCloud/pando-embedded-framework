@@ -12,6 +12,7 @@
 #include "pando_device_register.h"
 #include "pando_device_login.h"
 #include "pando_cloud_access.h"
+#include "../../../util/pando_lan_bind.h"
 #include "gateway_defs.h"
 #include "../platform/include/pando_sys.h"
 #include "pando_zero_device.h"
@@ -173,7 +174,7 @@ pando_gateway_init()
     load_data_from_flash();
 
     //pando_system_time_init();
-
+	pando_lan_bind_init();
     pando_zero_device_init();
 
 

@@ -237,17 +237,12 @@ mqtt_tcpclient_sent_cb(void *arg, int8_t errorno)
 
 void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
 {
-	PRINTF("Enter into mqtt timer...\n");
 	MQTT_Client* client = (MQTT_Client*)arg;
     struct data_buf buffer;
-    PRINTF("client->connState:%d\n",client->connState);
 	if(client->connState == MQTT_DATA)
-	{PRINTF("IF_1\n");
+	{
 		client->keepAliveTick ++;
-		PRINTF("client->keepAliveTick:%d\n",client->keepAliveTick);
-		PRINTF("client->mqtt_state.connect_info->keepalive:%d\n",client->mqtt_state.connect_info->keepalive);
 		if(client->keepAliveTick > client->mqtt_state.connect_info->keepalive){
-			PRINTF("IF_1_1\n");
 			INFO("\r\nMQTT: Send keepalive packet to %s:%d!\r\n", client->host, client->port);
 			client->mqtt_state.outbound_message = mqtt_msg_pingreq(&client->mqtt_state.mqtt_connection);
 			client->mqtt_state.pending_msg_type = MQTT_MSG_TYPE_PINGREQ;
@@ -259,11 +254,11 @@ void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
             buffer.length = client->mqtt_state.outbound_message->length;
             buffer.data = client->mqtt_state.outbound_message->data;
 			INFO("MQTT: Sending, type: %d, id: %04X\r\n",client->mqtt_state.pending_msg_type, client->mqtt_state.pending_msg_id);
-			if(client->security){PRINTF("IF_1_1\n");
+			if(client->security){
 				//espconn_secure_sent(client->pCon, client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
                 net_tcp_send(client->pCon, buffer, client->sendTimeout);
             }
-			else{PRINTF("IF_1_else1\n");
+			else{
 				net_tcp_send(client->pCon, buffer, client->sendTimeout);
 			}
 
@@ -274,15 +269,14 @@ void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
 		}
 
 	} else if(client->connState == TCP_RECONNECT_REQ)
-	{PRINTF("IF_2\n");
+	{
 		client->reconnectTick ++;
-		if(client->reconnectTick > MQTT_RECONNECT_TIMEOUT) {PRINTF("IF_2_1\n");
+		if(client->reconnectTick > MQTT_RECONNECT_TIMEOUT) {
 			client->reconnectTick = 0;
 			client->connState = TCP_RECONNECT;
 			MQTT_Task(client);
 		}
 	}else if(client->connState == TCP_CONNECTING){
-		PRINTF("IF_3\n");
 		client->connState = TCP_CONNECTING_ERROR;
 		MQTT_Task(client);
 	}
@@ -437,7 +431,6 @@ void ICACHE_FLASH_ATTR
 MQTT_Task(MQTT_Client *client)
 {
 	INFO("MQTT TASK\n");
-	pd_printf("mqtt_task:%d\n", client->connState);
 	uint8_t dataBuffer[MQTT_BUF_SIZE];
 	uint16_t dataLen;
     struct data_buf buffer;
@@ -457,12 +450,10 @@ MQTT_Task(MQTT_Client *client)
 		INFO("MQTT TASK DATA\n");
 		if(QUEUE_IsEmpty(&client->msgQueue) || client->sendTimeout != 0)
 		{
-			INFO("IF-1\n");
 			break;
 		}
 		if(QUEUE_Gets(&client->msgQueue, dataBuffer, &dataLen, MQTT_BUF_SIZE) == 0)
 		{
-			INFO("IF-2\n");
 			client->mqtt_state.pending_msg_type = mqtt_get_type(dataBuffer);
 			client->mqtt_state.pending_msg_id = mqtt_get_id(dataBuffer, dataLen);
 
@@ -472,12 +463,10 @@ MQTT_Task(MQTT_Client *client)
             buffer.data = client->mqtt_state.outbound_message->data;
 			INFO("MQTT: Sending, type: %d, id: %04X\r\n",client->mqtt_state.pending_msg_type, client->mqtt_state.pending_msg_id);
 			if(client->security){
-				INFO("IF-2_IF_1\n");
                 net_tcp_send(client->pCon, buffer, client->sendTimeout);
                 //espconn_secure_sent(client->pCon, dataBuffer, dataLen);
 			}
 			else{
-				INFO("IF-2_ELSE_1\n");
                 net_tcp_send(client->pCon, buffer, client->sendTimeout);
 				//espconn_sent(client->pCon, dataBuffer, dataLen);
 			}
