@@ -26,7 +26,6 @@ void ICACHE_FLASH_ATTR temp1_function(void *arg)
 	uint8 i;
 	PRINTF("enter into temp1_function...\n");
 	econn = (struct espconn *)arg;
-	pd_printf("econn-reverse£º%d\n", econn->reverse);
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
 	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
 	pCon->local_port = econn->proto.tcp->local_port;
@@ -40,11 +39,6 @@ void ICACHE_FLASH_ATTR temp1_function(void *arg)
 	{
 		pCon->remote_ip += ((uint32_t)(econn->proto.tcp->remote_ip[i]))<<8*i;
 	}
-	pd_printf("pCon->remote_ip: %x\n",pCon->remote_ip);
-	pd_printf("eCon remote_ip0: %x,eCon remote_ip1: %x,eCon remote_ip2: %x,eCon remote_ip3: %x\n",
-				(econn->proto.tcp->remote_ip)[0],(econn->proto.tcp->remote_ip)[1],
-				(econn->proto.tcp->remote_ip)[2],(econn->proto.tcp->remote_ip)[3]);
-	pd_printf("econn->reverse: %x\n",econn->reverse);
 	pCon->reverse = econn->reverse ;
 	temp1(pCon, 0);
 }
@@ -53,22 +47,71 @@ void ICACHE_FLASH_ATTR temp1_function(void *arg)
 void ICACHE_FLASH_ATTR temp2_function(void *arg)
 {
 	PRINTF("enter into temp2_function...");
-	temp2(arg, 0);
+	uint8 i;
+	econn = (struct espconn *)arg;
+	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	pCon->local_port = econn->proto.tcp->local_port;
+	pCon->remote_port = econn->proto.tcp->remote_port;
+
+	for(i=0;i<4;i++)
+	{
+		pCon->local_ip += ((uint32_t)(econn->proto.tcp->local_ip[i]))<<8*i;
+	}
+	for(i=0;i<4;i++)
+	{
+		pCon->remote_ip += ((uint32_t)(econn->proto.tcp->remote_ip[i]))<<8*i;
+	}
+	pCon->reverse = econn->reverse ;
+	temp2(pCon, 0);
 }
 
 void ICACHE_FLASH_ATTR temp3_function(void *arg, char *pdata, unsigned short len)
 {
-	PRINTF("enter into temp3_function...");
-	struct data_buf data_buffer ;
-	data_buffer.data = pdata;
-	data_buffer.length = len ;
+	PRINTF("enter into temp3_function...\n");
+	uint8 i;
+	econn = (struct espconn *)arg;
+	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	pCon->local_port = econn->proto.tcp->local_port;
+	pCon->remote_port = econn->proto.tcp->remote_port;
 
-	temp3(arg,&data_buffer);
+	for(i=0;i<4;i++)
+	{
+		pCon->local_ip += ((uint32_t)(econn->proto.tcp->local_ip[i]))<<8*i;
+	}
+	for(i=0;i<4;i++)
+	{
+		pCon->remote_ip += ((uint32_t)(econn->proto.tcp->remote_ip[i]))<<8*i;
+	}
+	pCon->reverse = econn->reverse ;
+	struct data_buf *data_buffer = (struct data_buf *)pd_malloc(sizeof(struct data_buf)); ;
+	pd_memset(data_buffer, 0, sizeof(struct data_buf));
+	data_buffer->data = pdata;
+	data_buffer->length = len ;
+	temp3(pCon,data_buffer);
 }
 void ICACHE_FLASH_ATTR temp4_function(void *arg)
 {
 	PRINTF("enter into temp4_function...");
-	temp4(arg, 0);
+	uint8 i;
+	econn = (struct espconn *)arg;
+	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	pCon->local_port = econn->proto.tcp->local_port;
+	pCon->remote_port = econn->proto.tcp->remote_port;
+
+	for(i=0;i<4;i++)
+	{
+		pCon->local_ip += ((uint32_t)(econn->proto.tcp->local_ip[i]))<<8*i;
+	}
+	for(i=0;i<4;i++)
+	{
+		pCon->remote_ip += ((uint32_t)(econn->proto.tcp->remote_ip[i]))<<8*i;
+	}
+	pCon->reverse = econn->reverse ;
+
+	temp4(pCon, 0);
 }
 
 
@@ -88,25 +131,14 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 	{
 		econn->proto.tcp->remote_ip[i] =(uint8)(conn->remote_ip>>8*i) ;
 	}
-	pd_printf("conn->remote_ip: %x\n",conn->remote_ip);
-	pd_printf("econn remote_ip0: %x,econn remote_ip1: %x,econn remote_ip2: %x,econn remote_ip3: %x\n",
-			(econn->proto.tcp->remote_ip)[0],(econn->proto.tcp->remote_ip)[1],
-			(econn->proto.tcp->remote_ip)[2],(econn->proto.tcp->remote_ip)[3]);
 
 	if(conn->secure==1)
 	{
-		PRINTF("espconn_secure_connect\n");
 		espconn_secure_connect(econn);
 	}
 	else
 	{
-		pd_printf("econn remote_port: %d\n",econn->proto.tcp->remote_port);
-		pd_printf("econn local_port: %d\n",econn->proto.tcp->local_port);
-		PRINTF("espconn_connect\n");
-		pd_printf("econn : %d\n",econn);
 		error = espconn_connect(econn);
-		PRINTF("espconn_connect_error:%d\n",error);
-
 	}
 	//pd_free(econn.proto.tcp);
 }
@@ -141,8 +173,6 @@ void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_c
 
 	temp1 = connected_cb;
 	error = espconn_regist_connectcb(econn,temp1_function);
-	//error = espconn_regist_connectcb(econn,connected_cb1);
-	//pd_free(econn.proto.tcp);
 
 }
 
@@ -174,19 +204,9 @@ void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t 
 
 
 	econn->reverse = conn->reverse ;
-	pd_printf("length:%d\n",buffer.length);
-	pd_printf("con_type:%d\n",econn->type);
-	pd_printf("con_state:%d\n",econn->state);
-	pd_printf("con_remote_port:%d\n",econn->proto.tcp->remote_port);
-	pd_printf("con_local_port:%d\n",econn->proto.tcp->local_port);
 
-	pd_printf("econn remote_ip0: %x,econn remote_ip1: %x,econn remote_ip2: %x,econn remote_ip3: %x\n",
-			(econn->proto.tcp->remote_ip)[0],(econn->proto.tcp->remote_ip)[1],
-			(econn->proto.tcp->remote_ip)[2],(econn->proto.tcp->remote_ip)[3]);
+	espconn_send(econn,buffer.data,buffer.length);
 
-	error = espconn_send(econn,buffer.data,buffer.length);
-
-	pd_printf("error:%d\n",error);
 
 }
 
@@ -216,6 +236,7 @@ void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_ca
 {
 	pd_printf("enter into net_tcp_register_recv_callback...\n ");
 	econn->reverse = conn->reverse ;
+	temp3 = recv_cb;
 	espconn_regist_recvcb(econn,temp3_function);
 	//pd_free(econn.proto.tcp);
 }
