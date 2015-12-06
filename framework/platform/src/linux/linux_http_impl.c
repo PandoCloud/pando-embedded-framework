@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <string.h>
 
 #define TCP_DEFAULT_PORT "80"
 #define TCP_SSL_DEFAULT_PORT "443"
@@ -290,7 +291,7 @@ HTTP_RET parse_url(const char* url, struct pd_http_info *p_http_info)
     }
     else
     {
-        strnpy(protocol, url, pos);
+        strncpy(protocol, url, pos);
         strcpy(url_without_head, url + pos + 3); //remove "://"
     }
 

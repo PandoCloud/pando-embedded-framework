@@ -1,4 +1,4 @@
-PROTOCOL_OBJS=common_functions.o pando_endian.o pando_machine.o pando_protocol.o 
+PROTOCOL_OBJS=common_functions.o pando_endian.o pando_machine.o pando_protocol.o sub_device_protocol.o
 OBJS = $(PROTOCOL_OBJS)
 
 all:$(OBJS)

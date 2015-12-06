@@ -1,6 +1,10 @@
+OBJS = main.o
+TARGET = 
 
-all:
-	$(CC) -o main.o main.c $(CFLAGS)
+all:$(OBJS)
+
+$(OBJS):%.o:%.c
+	$(CC) -c $< -o $(BUILD_DIR)/$@ $(CFLAGS)	
 
 clean:
-	-$(RM) $(TARGETS)
+	-$(RM) $(BUILD_DIR)/$(OBJS)

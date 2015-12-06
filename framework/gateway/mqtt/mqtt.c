@@ -30,7 +30,7 @@
 */
 
 #include "mqtt_msg.h"
-//#include "debug.h"
+#include "debug.h"
 #include "mqtt.h"
 #include "queue.h"
 #include "pando_sys.h"
@@ -685,7 +685,7 @@ MQTT_Disconnect(MQTT_Client *mqttClient)
 		mqttClient->pCon = NULL;
 	}
 
-    timer1_stop();
+    timer_stop(1);
 	//os_timer_disarm(&mqttClient->mqttTimer);
 }
 void FUNCTION_ATTRIBUTE

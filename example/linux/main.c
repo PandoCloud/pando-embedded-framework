@@ -10,5 +10,5 @@ uint8_t g_product_key_buf[] = "d9db7e6a7e11bcd81da5230ad1e3647947f1fb4bf1ff7efa9
 
 int main(void)
 {
-
+    pando_framework_init();
 }
