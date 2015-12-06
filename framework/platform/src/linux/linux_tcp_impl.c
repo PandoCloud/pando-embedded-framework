@@ -1,6 +1,13 @@
 #include "framework/platform/include/pando_net_tcp.h"
 
+#include <linux/socket.h>
+
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/un.h>
+#include <sys/types.h>
+#include <netdb.h>
+
 
 //define the max tcp client count connected.
 #define MAX_TCP_CLIENT_SIZE 10
@@ -118,13 +125,15 @@ void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_c
 
 void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t timeout)
 {
+    uint8_t index = 0;
+        
     if(NULL == conn)
     {
         return;
     }
 
     net_tcp_sent_callback sent_cb = NULL;
-    for(uint8_t index = 0; index < MAX_TCP_CLIENT_SIZE; index++)
+    for(index = 0; index < MAX_TCP_CLIENT_SIZE; index++)
     {
         if(conn->remote_ip == g_tcp_client_identifiers_ip[index] && conn->remote_port == g_tcp_client_identifiers_port[index])
         {
@@ -239,13 +248,15 @@ void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_ca
 
 void net_tcp_disconnect(struct pando_tcp_conn *conn)
 {
+    uint8_t index = 0;
+    
     if(NULL == conn)
     {
         return;
     }
 
     net_tcp_disconnected_callback disconnected_cb = NULL;
-    for(uint8_t index = 0; index < MAX_TCP_CLIENT_SIZE; index++)
+    for(index = 0; index < MAX_TCP_CLIENT_SIZE; index++)
     {
         if(conn->remote_ip == g_tcp_client_identifiers_ip[index] && conn->remote_port == g_tcp_client_identifiers_port[index])
         {
@@ -334,17 +345,17 @@ int8_t net_tcp_server_listen(struct pando_tcp_conn *conn)
     }
 
     conn->fd = listenfd;
-    struct socketaddr_in server_addr;
+    struct sockaddr_in server_addr;
     bzero(&server_addr, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(conn->local_ip);
     server_addr.sin_port = htons(conn->local_port);
-    if(bind(server_addr, (struct sock_addr*)&server_addr, sizeof(server_addr)) < 0)
+    if(bind(listenfd, (struct sock_addr*)&server_addr, sizeof(server_addr)) < 0)
     {
         return -1;
     }
 
-    return listen(listenfd, LISTENQ);
+    return listen(listenfd, 5);
 }
 
 void net_tcp_server_accept(struct pando_tcp_conn *conn)

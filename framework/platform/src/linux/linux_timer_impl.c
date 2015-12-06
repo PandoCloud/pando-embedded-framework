@@ -1,5 +1,9 @@
 #include "framework/platform/include/pando_timer.h"
-#include <linux/timer.h>
+//#include <linux/timer.h>
+#include <time.h>
+#include <sys/time.h>
+#include <signal.h>
+
 
 //define the timer reset interval.
 #define MUL_TIMER_RESET_SEC 1
@@ -62,7 +66,7 @@ void timer_init(TIMER_NO timer_no, struct pd_timer *p_timer_cfg)
     memset(&timer_manager.timer_info[timer_no], 0, sizeof(timer_manager.timer_info[timer_no]));
     timer_manager.timer_info[timer_no].timer_proc = p_timer_cfg->expiry_cb;
     timer_manager.timer_info[timer_no].repeated = p_timer_cfg->repeated;
-    timer_manager.tiemr_info[timer_no].interval = p_timer_cfg->interval / 1000; //the mul-timer minimum time unit is set to 1s.
+    timer_manager.timer_info[timer_no].interval = p_timer_cfg->interval / 1000; //the mul-timer minimum time unit is set to 1s.
     timer_manager.timer_info[timer_no].elapse = 0;
     timer_manager.timer_info[timer_no].state = 0;
     return;
@@ -105,7 +109,7 @@ static void sig_func(int signo)
         {
             timer_manager.timer_info[i].elapse = 0;
             timer_manager.timer_info[i].timer_proc(timer_manager.timer_info[i].func_arg);
-            if(timer_manager.tiemr_info[i].repeated == 0)
+            if(timer_manager.timer_info[i].repeated == 0)
             {
                 timer_manager.timer_info[i].state = 0;
             }
