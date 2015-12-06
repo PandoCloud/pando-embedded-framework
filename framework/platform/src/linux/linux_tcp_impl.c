@@ -26,13 +26,15 @@ net_tcp_disconnected_callback g_tcp_disconnected_cbs[MAX_TCP_CLIENT_SIZE] = {NUL
 
 void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 {
+    uint8_t index = 0;
+        
     if(NULL == conn)
     {
         return;
     }
 
     net_tcp_connected_callback connected_cb = NULL;
-    for(uint8_t index = 0; index < MAX_TCP_CLIENT_SIZE; index++)
+    for(index = 0; index < MAX_TCP_CLIENT_SIZE; index++)
     {
         if(conn->remote_ip == g_tcp_client_identifiers_ip[index] && conn->remote_port == g_tcp_client_identifiers_port[index])
         {

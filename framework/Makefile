@@ -1,5 +1,5 @@
 #CC=gcc
-CFLAGS=-I./ -I./platform/include -I./gateway/mqtt/include
+#CFLAGS=-I./ -I./platform/include -I./gateway/mqtt/include
 #VPATH=gateway:gateway/mqtt:protocol:subdevice
 #GATEWAY_OBJS=pando_channel.o pando_cloud_access.o pando_device_login.o pando_device_register.o pando_gateway.o pando_storage_interface.o pando_zero_device.o 
 #MQTT_OBJS=mqtt.o mqtt_msg.o proto.o queue.o ringbuf.o utils.o
@@ -13,8 +13,8 @@ TARGET=framework
 $(TARGET):$(OBJS)
 	cd $(FRAMEWORK_DIR)/gateway && $(MAKE)
 	cd $(FRAMEWORK_DIR)/lib && $(MAKE)
-	cd $(FRAMEWORK_DIR)/platform && $(MAKE)
 	cd $(FRAMEWORK_DIR)/protocol && $(MAKE)
-	cd $(FRAMEWORK_DIR)/subdevice && $(MAKE)	
-	$(CC) -o $(TARGET) $(OBJS) $(CFLAGS)
+	cd $(FRAMEWORK_DIR)/subdevice && $(MAKE)
+	cd $(FRAMEWORK_DIR)/platform && $(MAKE)	
+	$(CC) -o $(TARGET) $(BUIL_DIR/*.o) $(CFLAGS)
 	
