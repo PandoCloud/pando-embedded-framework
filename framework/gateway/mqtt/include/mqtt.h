@@ -30,7 +30,8 @@
 #ifndef USER_AT_MQTT_H_
 #define USER_AT_MQTT_H_
 #include "mqtt_msg.h"
-#include "user_interface.h"
+//#include "user_interface.h"
+#include "pando_timer.h"
 
 #include "queue.h"
 typedef struct mqtt_event_data_t
@@ -102,7 +103,7 @@ typedef struct  {
 	MqttCallback disconnectedCb;
 	MqttCallback publishedCb;
 	MqttDataCallback dataCb;
-	pd_timer mqttTimer;
+	struct pd_timer mqttTimer;
 	uint32_t keepAliveTick;
 	uint32_t reconnectTick;
 	uint32_t sendTimeout;
@@ -128,7 +129,7 @@ typedef struct  {
 #define MQTT_EVENT_TYPE_EXITED 			7
 #define MQTT_EVENT_TYPE_PUBLISH_CONTINUATION 8
 
-void FUNCTION_ATTRIBUTE MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32 port, uint8_t security);
+void FUNCTION_ATTRIBUTE MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32_t port, uint8_t security);
 void FUNCTION_ATTRIBUTE MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_user, uint8_t* client_pass, uint32_t keepAliveTime, uint8_t cleanSession);
 void FUNCTION_ATTRIBUTE MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, uint8_t will_qos, uint8_t will_retain);
 void FUNCTION_ATTRIBUTE MQTT_OnConnected(MQTT_Client *mqttClient, MqttCallback connectedCb);

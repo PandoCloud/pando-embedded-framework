@@ -30,7 +30,7 @@
 */
 
 #include "mqtt_msg.h"
-#include "debug.h"
+//#include "debug.h"
 #include "mqtt.h"
 #include "queue.h"
 #include "pando_sys.h"
@@ -463,10 +463,6 @@ MQTT_exit(MQTT_Client *client)
 		client->msgQueue.buf = NULL;
 	}
 	INFO("mqtt exit:\n");
-	if(client->errorCb != NULL)
-	{
-		(client->errorCb)((uint32_t*)client);
-	}
 }
 
 void FUNCTION_ATTRIBUTE
@@ -664,14 +660,14 @@ MQTT_Connect(MQTT_Client *mqttClient)
 #endif
 	mqttClient->mqttTimer.interval = 3000;
 	mqttClient->mqttTimer.repeated = 1;
-	mqttClient->mqttTimer.arg = mqttClient;
-	mqttClient->mqttTimer.timer_cb = mqtt_timer;
-    timer1_init(mqttClient->mqttTimer);
-    timer1_stop();
-    timer1_start();
+	mqttClient->mqttTimer.callback_data= mqttClient;
+	mqttClient->mqttTimer.expiry_cb= mqtt_timer;
+    timer_init(1, &(mqttClient->mqttTimer));
+    timer_stop(1);
+    timer_start(1);
     uint8_t ip_adrr[4];
 	UTILS_StrToIP(mqttClient->host, ip_adrr);
-	IP4_ADDR(mqttClient->pCon->remote_ip, ip_adrr[0], ip_adrr[1], ip_adrr[2], ip_adrr[3]);
+	IP4_ADDR(mqttClient->ip, ip_adrr[0], ip_adrr[1], ip_adrr[2], ip_adrr[3]);
 	net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
 	mqttClient->connState = TCP_CONNECTING;
 }
@@ -701,7 +697,7 @@ MQTT_OnConnected(MQTT_Client *mqttClient, MqttCallback connectedCb)
 void FUNCTION_ATTRIBUTE
 MQTT_OnConnect_Error(MQTT_Client *mqttClient, MqttCallback error_cb)
 {
-	mqttClient->errorCb= error_cb;
+	//mqttClient->errorCb= error_cb; 	//pando not define error callback yet
 }
 
 void FUNCTION_ATTRIBUTE

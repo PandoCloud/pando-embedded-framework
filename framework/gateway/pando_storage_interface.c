@@ -12,7 +12,7 @@
 #include "pando_storage_interface.h"
 #include "platform/include/pando_types.h"
 #include "platform/include/pando_sys.h"
-#include "flash.h"
+#include "platform/include/flash.h"
 
 #define PANDO_CONFIG_ADDRESS 0x08042000 
 #define PANDO_CONFIG_SEC (0x7E)

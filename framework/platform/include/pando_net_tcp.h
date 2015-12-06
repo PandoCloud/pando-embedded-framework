@@ -44,7 +44,7 @@ struct pando_tcp_conn {
     net_tcp_recv_callback recv_callback;
     net_tcp_sent_callback sent_callback;
     net_tcp_disconnected_callback disconnected_callback;
-    void *reserved;
+    void *reverse;
 };
 
 /******************************************************************************

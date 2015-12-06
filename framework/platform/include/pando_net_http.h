@@ -36,7 +36,7 @@ enum HTTP_RET
     HTTP_RECV_HTTP_ERR
 };
 
-typedef void (* net_http_callback)(sint8_t errno, char* response);
+typedef void (* net_http_callback)(int8_t errno, char* response);
 
 /******************************************************************************
  * FunctionName : net_http_post

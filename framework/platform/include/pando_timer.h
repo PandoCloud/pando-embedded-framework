@@ -31,12 +31,12 @@ struct pd_timer
 #define MAX_TIMER_COUNT 3
 
 //define the timer no used
-enum TIMER_NO
+typedef enum _TIMER_NO
 {
     TIMER_1 = 1,
     TIMER_2 = 2,
     TIMER_3 = MAX_TIMER_COUNT,
-}
+}TIMER_NO;
 
 /******************************************************************************
  * FunctionName : timer_init

@@ -30,7 +30,7 @@
 */
 
 #include "mqtt_msg.h"
-#include "debug.h"
+//#include "debug.h"
 #include "pando_types.h"
 
 #define PROTOCOL_NAMEv311

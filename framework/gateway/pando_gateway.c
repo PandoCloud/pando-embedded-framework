@@ -102,9 +102,9 @@ gateway_error_process()
     struct pd_timer st_timer;
     st_timer.interval = 5000;
     st_timer.repeated = 1;
-	st_timer.timer_cb = device_connect_check;
-    timer1_init(st_timer);
-    timer1_start();
+	st_timer.expiry_cb = device_connect_check;
+    timer_init(1, &st_timer);
+    timer_start(1);
 }
 
 /******************************************************************************

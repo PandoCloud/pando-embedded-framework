@@ -30,7 +30,7 @@
 
 #ifndef USER_QUEUE_H_
 #define USER_QUEUE_H_
-#include "os_type.h"
+#include "pando_types.h"
 #include "ringbuf.h"
 typedef struct {
 	uint8_t *buf;

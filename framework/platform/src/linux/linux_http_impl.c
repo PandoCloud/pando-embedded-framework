@@ -1,8 +1,9 @@
-#include "framework/platform/include/pando_net_http.h"
+#include "platform/include/pando_net_http.h"
 
 #include <openssl/err.h>
 #include <stdio.h>
 #include <sys/socket.h>
+#include <netdb.h>
 
 #define TCP_DEFAULT_PORT "80"
 #define TCP_SSL_DEFAULT_PORT "443"
@@ -257,7 +258,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
     {
         if(http_cb != NULL)
         {
-            http_cb(HTTP_RECV_HTTP_ERR, null);
+            http_cb(HTTP_RECV_HTTP_ERR, NULL);
         }
 
         return;

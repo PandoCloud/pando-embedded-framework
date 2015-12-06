@@ -12,6 +12,7 @@
 #ifndef _PANDO_TYPES_H_
 #define _PANDO_TYPES_H_
 
+#if 0 //conflict with linux defines
 typedef unsigned char       uint8_t;
 typedef signed char         sint8_t;
 typedef signed char         int8_t;
@@ -53,6 +54,8 @@ typedef double              real64;
 typedef double              double64;
 
 typedef unsigned int        size_t;
+#endif
+#include <stdint.h>	//for linux debug
 
 //define data handler callback
 typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);

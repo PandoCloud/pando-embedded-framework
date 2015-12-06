@@ -1,7 +1,7 @@
 #ifndef _RING_BUF_H_
 #define _RING_BUF_H_
 
-#include <os_type.h>
+#include "pando_types.h"
 #include <stdlib.h>
 #include "typedef.h"
 
