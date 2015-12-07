@@ -395,6 +395,7 @@ MQTT_Publish(MQTT_Client *client, const char* topic, const char* data, int data_
 			return FALSE;
 		}
 	}
+	pd_printf("client->mqtt_state.outbound_message->length:%d",client->mqtt_state.outbound_message->length);
 	MQTT_Task(client);
 	return TRUE;
 }
@@ -457,16 +458,19 @@ MQTT_Task(MQTT_Client *client)
 			client->mqtt_state.pending_msg_type = mqtt_get_type(dataBuffer);
 			client->mqtt_state.pending_msg_id = mqtt_get_id(dataBuffer, dataLen);
 
-
 			client->sendTimeout = MQTT_SEND_TIMOUT;
-            buffer.length = client->mqtt_state.outbound_message->length;
-            buffer.data = client->mqtt_state.outbound_message->data;
+			buffer.data = dataBuffer;
+			buffer.length = dataLen;
+
 			INFO("MQTT: Sending, type: %d, id: %04X\r\n",client->mqtt_state.pending_msg_type, client->mqtt_state.pending_msg_id);
 			if(client->security){
                 net_tcp_send(client->pCon, buffer, client->sendTimeout);
                 //espconn_secure_sent(client->pCon, dataBuffer, dataLen);
 			}
 			else{
+				INFO("net_tcp_send\n");
+				INFO("client:%d",client);
+
                 net_tcp_send(client->pCon, buffer, client->sendTimeout);
 				//espconn_sent(client->pCon, dataBuffer, dataLen);
 			}

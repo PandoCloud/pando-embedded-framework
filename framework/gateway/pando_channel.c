@@ -1,4 +1,5 @@
-#include "../../../pando/framework/gateway/pando_channel.h"
+#include "pando_channel.h"
+#include "../platform/include/pando_sys.h"
 
 #define MAX_CHAN_LEN 8
 
@@ -34,6 +35,7 @@ channel_send_to_subdevice(PANDO_CHANNEL_NAME name, uint8_t * buffer, uint16_t le
 void ICACHE_FLASH_ATTR
 channel_send_to_device(PANDO_CHANNEL_NAME name, uint8_t * buffer, uint16_t length)
 {
+	pd_printf("send package to device\n");
     if(channels[name].device_cb != NULL ){
         channels[name].device_cb(buffer, length);
     }
