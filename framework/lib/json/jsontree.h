@@ -40,7 +40,7 @@
 #ifndef __JSONTREE_H__
 #define __JSONTREE_H__
 
-#include "c_types.h"
+#include "../../platform/include/pando_types.h"
 #include "json/json.h"
 
 #ifdef JSONTREE_CONF_MAX_DEPTH

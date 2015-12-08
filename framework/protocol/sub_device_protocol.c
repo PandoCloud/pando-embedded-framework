@@ -42,7 +42,7 @@ static struct TLV *get_tlv_param(struct TLV *params_in, uint16_t *type, uint16_t
 
 
 
-static void ICACHE_FLASH_ATTR *copy_return_next(void *dst, void *src,
+static void FUNCTION_ATTRIBUTE *copy_return_next(void *dst, void *src,
     unsigned int src_len)
 {
     pd_memcpy(dst, src, src_len);
@@ -50,11 +50,11 @@ static void ICACHE_FLASH_ATTR *copy_return_next(void *dst, void *src,
     return dst;
 }
 
-static struct TLVs ICACHE_FLASH_ATTR *get_next_property(struct pando_property *next_property, struct pando_property *property_body);
-static uint8_t ICACHE_FLASH_ATTR is_tlv_need_length(uint16_t type);
-static uint8_t ICACHE_FLASH_ATTR get_type_length(uint16_t type);
+static struct TLVs FUNCTION_ATTRIBUTE *get_next_property(struct pando_property *next_property, struct pando_property *property_body);
+static uint8_t FUNCTION_ATTRIBUTE is_tlv_need_length(uint16_t type);
+static uint8_t FUNCTION_ATTRIBUTE get_type_length(uint16_t type);
 
-static struct sub_device_buffer * ICACHE_FLASH_ATTR create_package(
+static struct sub_device_buffer * FUNCTION_ATTRIBUTE create_package(
     uint16_t flags, uint16_t payload_type)
 {
 	struct sub_device_buffer *data_buffer = NULL;
@@ -95,7 +95,7 @@ static struct sub_device_buffer * ICACHE_FLASH_ATTR create_package(
 
 // we must maintain the position of tlv for next get operation
 // handled_length means all the tlv has been handled 
-static void ICACHE_FLASH_ATTR cal_current_position(uint16_t type, uint16_t len)
+static void FUNCTION_ATTRIBUTE cal_current_position(uint16_t type, uint16_t len)
 {
     s_current_param.tlv_count--;
     s_current_param.handled_length += len
@@ -115,7 +115,7 @@ static void ICACHE_FLASH_ATTR cal_current_position(uint16_t type, uint16_t len)
     }
 }
 
-static struct TLV ICACHE_FLASH_ATTR *get_current_tlv(struct TLVs *params)
+static struct TLV FUNCTION_ATTRIBUTE *get_current_tlv(struct TLVs *params)
 {
     if (s_current_param.handled_length == 0) //first tlv
     {
@@ -126,7 +126,7 @@ static struct TLV ICACHE_FLASH_ATTR *get_current_tlv(struct TLVs *params)
         + s_current_param.handled_length);   
 }
 
-static void ICACHE_FLASH_ATTR get_value(struct TLVs *params, void *val)
+static void FUNCTION_ATTRIBUTE get_value(struct TLVs *params, void *val)
 {
     uint16_t type = 0;
     uint16_t len = 0;
@@ -136,7 +136,7 @@ static void ICACHE_FLASH_ATTR get_value(struct TLVs *params, void *val)
     cal_current_position(type, len);
 }
 
-static void ICACHE_FLASH_ATTR *get_string(struct TLVs *params, uint16_t *len)
+static void FUNCTION_ATTRIBUTE *get_string(struct TLVs *params, uint16_t *len)
 {
     uint16_t type = 0;
     void *val = NULL;
@@ -149,7 +149,7 @@ static void ICACHE_FLASH_ATTR *get_string(struct TLVs *params, uint16_t *len)
     return val;
 }
 
-int ICACHE_FLASH_ATTR init_sub_device(struct sub_device_base_params params)
+int FUNCTION_ATTRIBUTE init_sub_device(struct sub_device_base_params params)
 {
 	base_params.data_sequence = params.data_sequence;
 	base_params.event_sequence = params.event_sequence;
@@ -157,7 +157,7 @@ int ICACHE_FLASH_ATTR init_sub_device(struct sub_device_base_params params)
 	return 0;
 }
 
-struct TLVs * ICACHE_FLASH_ATTR create_params_block()
+struct TLVs * FUNCTION_ATTRIBUTE create_params_block()
 {
 	struct TLVs *tlv_block = NULL;
     uint8_t need_length;
@@ -177,7 +177,7 @@ struct TLVs * ICACHE_FLASH_ATTR create_params_block()
 	return tlv_block;
 }
 
-int ICACHE_FLASH_ATTR add_next_param(struct TLVs *params_block, uint16_t next_type, uint16_t next_length, void *next_value)
+int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_type, uint16_t next_length, void *next_value)
 {
     uint16_t type;
     uint16_t conver_length;
@@ -283,7 +283,7 @@ int ICACHE_FLASH_ATTR add_next_param(struct TLVs *params_block, uint16_t next_ty
 }
 
 
-void ICACHE_FLASH_ATTR delete_device_package(struct sub_device_buffer *device_buffer)
+void FUNCTION_ATTRIBUTE delete_device_package(struct sub_device_buffer *device_buffer)
 {
     if (device_buffer != NULL)
     {
@@ -298,7 +298,7 @@ void ICACHE_FLASH_ATTR delete_device_package(struct sub_device_buffer *device_bu
 	device_buffer = NULL;
 }
 
-void ICACHE_FLASH_ATTR delete_params_block(struct TLVs *params_block)
+void FUNCTION_ATTRIBUTE delete_params_block(struct TLVs *params_block)
 {
     if (params_block != NULL)
     {
@@ -308,25 +308,25 @@ void ICACHE_FLASH_ATTR delete_params_block(struct TLVs *params_block)
     }
 }
 
-struct sub_device_buffer * ICACHE_FLASH_ATTR
+struct sub_device_buffer * FUNCTION_ATTRIBUTE
     create_data_package(uint16_t flags)
 {
     return create_package(flags, PAYLOAD_TYPE_DATA);
 }
 
-struct sub_device_buffer * ICACHE_FLASH_ATTR
+struct sub_device_buffer * FUNCTION_ATTRIBUTE
     create_event_package(uint16_t flags)
 {
     return create_package(flags, PAYLOAD_TYPE_EVENT);
 }
 
-struct sub_device_buffer * ICACHE_FLASH_ATTR
+struct sub_device_buffer * FUNCTION_ATTRIBUTE
     create_command_package(uint16_t flags)
 {
     return create_package(flags, PAYLOAD_TYPE_COMMAND);
 }
 
-struct TLVs * ICACHE_FLASH_ATTR get_sub_device_command(
+struct TLVs * FUNCTION_ATTRIBUTE get_sub_device_command(
     struct sub_device_buffer *device_buffer, struct pando_command *command_body)
 {
 	struct pando_command *tmp_body = (struct pando_command *)(device_buffer->buffer + DEV_HEADER_LEN);
@@ -343,7 +343,7 @@ struct TLVs * ICACHE_FLASH_ATTR get_sub_device_command(
         + sizeof(struct pando_command) - sizeof(struct TLVs));
 }
 
-uint16_t ICACHE_FLASH_ATTR
+uint16_t FUNCTION_ATTRIBUTE
 get_tlv_count(struct TLVs *params_block)
 {
     uint16_t count = 0;
@@ -356,7 +356,7 @@ get_tlv_count(struct TLVs *params_block)
     return count;
 }
 
-uint16_t ICACHE_FLASH_ATTR get_tlv_type(struct TLV *params_in)
+uint16_t FUNCTION_ATTRIBUTE get_tlv_type(struct TLV *params_in)
 {
     uint16_t type = 0;
     pd_memcpy((void*)(&type), (void*)(&(params_in->type)), sizeof(params_in->type));
@@ -365,7 +365,7 @@ uint16_t ICACHE_FLASH_ATTR get_tlv_type(struct TLV *params_in)
 }
 
 
-uint16_t ICACHE_FLASH_ATTR get_tlv_len(struct TLV *params_in)
+uint16_t FUNCTION_ATTRIBUTE get_tlv_len(struct TLV *params_in)
 {
     uint8_t need_length;
     uint16_t type = 0;
@@ -394,7 +394,7 @@ uint16_t ICACHE_FLASH_ATTR get_tlv_len(struct TLV *params_in)
     return length;
 }
 
-struct TLV * ICACHE_FLASH_ATTR get_tlv_value(struct TLV *params_in, void *value)
+struct TLV * FUNCTION_ATTRIBUTE get_tlv_value(struct TLV *params_in, void *value)
 {
     uint8_t need_length;
     void *value_pos = NULL;
@@ -452,7 +452,7 @@ struct TLV * ICACHE_FLASH_ATTR get_tlv_value(struct TLV *params_in, void *value)
 }
 
 
-struct TLV * ICACHE_FLASH_ATTR get_tlv_param(struct TLV *params_in, uint16_t *type,
+struct TLV * FUNCTION_ATTRIBUTE get_tlv_param(struct TLV *params_in, uint16_t *type,
     uint16_t *length, void *value)
 
 {
@@ -512,7 +512,7 @@ struct TLV * ICACHE_FLASH_ATTR get_tlv_param(struct TLV *params_in, uint16_t *ty
  * param
  * return:
  *********************************************************/ 
-struct TLVs * ICACHE_FLASH_ATTR get_sub_device_property(
+struct TLVs * FUNCTION_ATTRIBUTE get_sub_device_property(
     struct sub_device_buffer *device_buffer, 
     struct pando_property *property_body)
 {
@@ -543,7 +543,7 @@ struct TLVs * ICACHE_FLASH_ATTR get_sub_device_property(
 	return get_next_property(tmp_body, property_body);
 }
 
-uint16_t ICACHE_FLASH_ATTR get_sub_device_payloadtype(struct sub_device_buffer *package)
+uint16_t FUNCTION_ATTRIBUTE get_sub_device_payloadtype(struct sub_device_buffer *package)
 {
     struct device_header *head;
  
@@ -557,7 +557,7 @@ uint16_t ICACHE_FLASH_ATTR get_sub_device_payloadtype(struct sub_device_buffer *
     return net16_to_host(head->payload_type);
 }
 
-uint8_t ICACHE_FLASH_ATTR is_tlv_need_length(uint16_t type)
+uint8_t FUNCTION_ATTRIBUTE is_tlv_need_length(uint16_t type)
 {
     switch (type)
     {
@@ -588,7 +588,7 @@ uint8_t ICACHE_FLASH_ATTR is_tlv_need_length(uint16_t type)
     return -1;
 }
 
-uint8_t ICACHE_FLASH_ATTR get_type_length(uint16_t type)
+uint8_t FUNCTION_ATTRIBUTE get_type_length(uint16_t type)
 {
     switch (type)
     {
@@ -625,7 +625,7 @@ uint8_t ICACHE_FLASH_ATTR get_type_length(uint16_t type)
 }
 
 /* malloc a new block to save old buffer and new property, and update the package length */
-int ICACHE_FLASH_ATTR add_next_property(struct sub_device_buffer *data_package, uint16_t property_num, struct TLVs *next_data_params)
+int FUNCTION_ATTRIBUTE add_next_property(struct sub_device_buffer *data_package, uint16_t property_num, struct TLVs *next_data_params)
 {
     uint8_t *old_buffer = NULL;
     uint8_t *position = NULL;
@@ -661,7 +661,7 @@ int ICACHE_FLASH_ATTR add_next_property(struct sub_device_buffer *data_package, 
     return 0;
 }
 
-int ICACHE_FLASH_ATTR add_command(struct sub_device_buffer *command_package,
+int FUNCTION_ATTRIBUTE add_command(struct sub_device_buffer *command_package,
     uint16_t command_num, uint16_t priority, struct TLVs *command_params)
 {
     uint8_t *old_buffer = NULL;
@@ -700,7 +700,7 @@ int ICACHE_FLASH_ATTR add_command(struct sub_device_buffer *command_package,
     return 0;
 }
 
-int ICACHE_FLASH_ATTR add_event(struct sub_device_buffer *event_package,
+int FUNCTION_ATTRIBUTE add_event(struct sub_device_buffer *event_package,
     uint16_t event_num, uint16_t priority, struct TLVs *event_params)
 {
     uint8_t *old_buffer = NULL;
@@ -740,7 +740,7 @@ int ICACHE_FLASH_ATTR add_event(struct sub_device_buffer *event_package,
 
 }
 
-int ICACHE_FLASH_ATTR finish_package(struct sub_device_buffer *package_buf)
+int FUNCTION_ATTRIBUTE finish_package(struct sub_device_buffer *package_buf)
 {
     struct device_header *header;
 
@@ -766,7 +766,7 @@ int ICACHE_FLASH_ATTR finish_package(struct sub_device_buffer *package_buf)
 }
 
 
-struct TLVs * ICACHE_FLASH_ATTR get_next_property(
+struct TLVs * FUNCTION_ATTRIBUTE get_next_property(
     struct pando_property *next_property, struct pando_property *property_body)
 {
     property_body->sub_device_id = net16_to_host(next_property->sub_device_id);
@@ -779,7 +779,7 @@ struct TLVs * ICACHE_FLASH_ATTR get_next_property(
         - sizeof(struct TLVs));
 }
 
-int ICACHE_FLASH_ATTR is_device_file_command(struct sub_device_buffer *device_buffer)
+int FUNCTION_ATTRIBUTE is_device_file_command(struct sub_device_buffer *device_buffer)
 {
     struct device_header *header = (struct device_header *)device_buffer->buffer;
 
@@ -797,14 +797,14 @@ int ICACHE_FLASH_ATTR is_device_file_command(struct sub_device_buffer *device_bu
 /*
     Temp region
 */
-uint8_t ICACHE_FLASH_ATTR get_next_uint8(struct TLVs *params)
+uint8_t FUNCTION_ATTRIBUTE get_next_uint8(struct TLVs *params)
 {
     uint8_t val = 0;
     get_value(params, &val);
     return val;
 }
 
-uint16_t ICACHE_FLASH_ATTR get_next_uint16(struct TLVs *params)
+uint16_t FUNCTION_ATTRIBUTE get_next_uint16(struct TLVs *params)
 {
     uint16_t val = 0;
     get_value(params, &val);    
@@ -812,7 +812,7 @@ uint16_t ICACHE_FLASH_ATTR get_next_uint16(struct TLVs *params)
 
 }
 
-uint32_t ICACHE_FLASH_ATTR get_next_uint32(struct TLVs *params)
+uint32_t FUNCTION_ATTRIBUTE get_next_uint32(struct TLVs *params)
 {
     uint32_t val = 0;
     get_value(params, &val);    
@@ -820,7 +820,7 @@ uint32_t ICACHE_FLASH_ATTR get_next_uint32(struct TLVs *params)
 
 }
 
-uint64_t ICACHE_FLASH_ATTR get_next_uint64(struct TLVs *params)
+uint64_t FUNCTION_ATTRIBUTE get_next_uint64(struct TLVs *params)
 {
     uint64_t val = 0;
     get_value(params, &val);    
@@ -828,14 +828,14 @@ uint64_t ICACHE_FLASH_ATTR get_next_uint64(struct TLVs *params)
 
 }
 
-int8_t ICACHE_FLASH_ATTR get_next_int8(struct TLVs *params)
+int8_t FUNCTION_ATTRIBUTE get_next_int8(struct TLVs *params)
 {
     int8_t val = 0;
     get_value(params, &val);    
     return val;
 }
 
-int16_t ICACHE_FLASH_ATTR get_next_int16(struct TLVs *params)
+int16_t FUNCTION_ATTRIBUTE get_next_int16(struct TLVs *params)
 {
     int16_t val = 0;
     get_value(params, &val);    
@@ -843,7 +843,7 @@ int16_t ICACHE_FLASH_ATTR get_next_int16(struct TLVs *params)
 
 }
 
-int32_t ICACHE_FLASH_ATTR get_next_int32(struct TLVs *params)
+int32_t FUNCTION_ATTRIBUTE get_next_int32(struct TLVs *params)
 {
     int32_t val = 0;
     get_value(params, &val);    
@@ -851,7 +851,7 @@ int32_t ICACHE_FLASH_ATTR get_next_int32(struct TLVs *params)
 
 }
 
-int64_t ICACHE_FLASH_ATTR get_next_int64(struct TLVs *params)
+int64_t FUNCTION_ATTRIBUTE get_next_int64(struct TLVs *params)
 {
     int64_t val = 0;
     get_value(params, &val);    
@@ -859,7 +859,7 @@ int64_t ICACHE_FLASH_ATTR get_next_int64(struct TLVs *params)
 
 }
 
-float ICACHE_FLASH_ATTR get_next_float32(struct TLVs *params)
+float FUNCTION_ATTRIBUTE get_next_float32(struct TLVs *params)
 {
     float val = 0;
     get_value(params, &val);    
@@ -867,7 +867,7 @@ float ICACHE_FLASH_ATTR get_next_float32(struct TLVs *params)
 
 }
 
-double ICACHE_FLASH_ATTR get_next_float64(struct TLVs *params)
+double FUNCTION_ATTRIBUTE get_next_float64(struct TLVs *params)
 {
     double val = 0;
     get_value(params, &val);    
@@ -875,7 +875,7 @@ double ICACHE_FLASH_ATTR get_next_float64(struct TLVs *params)
 
 }
 
-uint8_t ICACHE_FLASH_ATTR get_next_bool(struct TLVs *params)
+uint8_t FUNCTION_ATTRIBUTE get_next_bool(struct TLVs *params)
 {
     uint8_t val = 0;
     get_value(params, &val);    
@@ -883,90 +883,90 @@ uint8_t ICACHE_FLASH_ATTR get_next_bool(struct TLVs *params)
 
 }
 
-void ICACHE_FLASH_ATTR *get_next_uri(struct TLVs *params, uint16_t *length)
+void FUNCTION_ATTRIBUTE *get_next_uri(struct TLVs *params, uint16_t *length)
 {
     return get_string(params,length);
 }
 
-void ICACHE_FLASH_ATTR *get_next_bytes(struct TLVs *params, uint16_t *length)
+void FUNCTION_ATTRIBUTE *get_next_bytes(struct TLVs *params, uint16_t *length)
 {
     return get_string(params,length);
 }
 
 
-int  ICACHE_FLASH_ATTR
+int  FUNCTION_ATTRIBUTE
 add_next_uint8(struct TLVs *params, uint8_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT8, get_type_length(TLV_TYPE_INT8), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_uint16(struct TLVs *params, uint16_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT16, get_type_length(TLV_TYPE_UINT16), &next_value);
 }
 
-int  ICACHE_FLASH_ATTR
+int  FUNCTION_ATTRIBUTE
 add_next_uint32(struct TLVs *params, uint32_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT32, get_type_length(TLV_TYPE_UINT32), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_uint64(struct TLVs *params, uint64_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT64, get_type_length(TLV_TYPE_UINT64), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_int8(struct TLVs *params, int8_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT8, get_type_length(TLV_TYPE_INT8), &next_value);
 }
 
-int  ICACHE_FLASH_ATTR
+int  FUNCTION_ATTRIBUTE
 add_next_int16(struct TLVs *params, int16_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT16, get_type_length(TLV_TYPE_INT16), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_int32(struct TLVs *params, int32_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT32, get_type_length(TLV_TYPE_INT32), &next_value);
 }
 
-int  ICACHE_FLASH_ATTR
+int  FUNCTION_ATTRIBUTE
 add_next_int64(struct TLVs *params, int64_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT64, get_type_length(TLV_TYPE_INT64), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_float32(struct TLVs *params, float next_value)
 {
     return add_next_param(params, TLV_TYPE_FLOAT32, get_type_length(TLV_TYPE_FLOAT32), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_float64(struct TLVs *params, double next_value)
 {
     return add_next_param(params, TLV_TYPE_FLOAT64, get_type_length(TLV_TYPE_FLOAT64), &next_value);
 }
 
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 add_next_bool(struct TLVs *params, uint8_t next_value)
 {
     return add_next_param(params, TLV_TYPE_BOOL, get_type_length(TLV_TYPE_BOOL), &next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_uri(struct TLVs *params, uint16_t length, void *next_value)
 {
     return add_next_param(params, TLV_TYPE_URI, length, next_value);
 }
 
-int   ICACHE_FLASH_ATTR
+int   FUNCTION_ATTRIBUTE
 add_next_bytes(struct TLVs *params, uint16_t length, void *next_value)
 {
     return add_next_param(params, TLV_TYPE_BYTES, length, next_value);

@@ -21,7 +21,7 @@ static char * request = NULL;
 
 extern uint8 pando_device_token[ACCESS_TOKEN_LEN];
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 http_callback_login(char * response)
 {
     if(request != NULL)
@@ -116,7 +116,7 @@ http_callback_login(char * response)
  * Parameters   : the specify login callback function
  * Returns      :
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_device_login(gateway_callback callback)
 {
     pd_printf("begin login device...\n");

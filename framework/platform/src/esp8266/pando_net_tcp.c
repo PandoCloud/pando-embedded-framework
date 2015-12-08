@@ -21,7 +21,7 @@ static net_tcp_recv_callback		temp3 = NULL;
 static net_tcp_disconnected_callback temp4 = NULL;
 
 
-void ICACHE_FLASH_ATTR temp1_function(void *arg)
+void FUNCTION_ATTRIBUTE temp1_function(void *arg)
 {
 	uint8 i;
 	PRINTF("enter into temp1_function...\n");
@@ -44,7 +44,7 @@ void ICACHE_FLASH_ATTR temp1_function(void *arg)
 }
 
 
-void ICACHE_FLASH_ATTR temp2_function(void *arg)
+void FUNCTION_ATTRIBUTE temp2_function(void *arg)
 {
 	PRINTF("enter into temp2_function...");
 	uint8 i;
@@ -66,7 +66,7 @@ void ICACHE_FLASH_ATTR temp2_function(void *arg)
 	temp2(pCon, 0);
 }
 
-void ICACHE_FLASH_ATTR temp3_function(void *arg, char *pdata, unsigned short len)
+void FUNCTION_ATTRIBUTE temp3_function(void *arg, char *pdata, unsigned short len)
 {
 	PRINTF("enter into temp3_function...\n");
 	uint8 i;
@@ -91,7 +91,7 @@ void ICACHE_FLASH_ATTR temp3_function(void *arg, char *pdata, unsigned short len
 	data_buffer->length = len ;
 	temp3(pCon,data_buffer);
 }
-void ICACHE_FLASH_ATTR temp4_function(void *arg)
+void FUNCTION_ATTRIBUTE temp4_function(void *arg)
 {
 	PRINTF("enter into temp4_function...");
 	uint8 i;

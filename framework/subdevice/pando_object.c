@@ -20,7 +20,7 @@
 static pando_object s_pando_object_list[MAX_OBJECTS];
 static int s_pando_object_list_idx = 0;
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 register_pando_object(pando_object object)
 {
     if(s_pando_object_list_idx > MAX_OBJECTS - 1)
@@ -31,7 +31,7 @@ register_pando_object(pando_object object)
     s_pando_object_list[s_pando_object_list_idx++] = object;
 }
 
-pando_object* ICACHE_FLASH_ATTR
+pando_object* FUNCTION_ATTRIBUTE
 find_pando_object(int8 no)
 {
     int i;
@@ -46,7 +46,7 @@ find_pando_object(int8 no)
     return NULL;
 }
 
-pando_objects_iterator* ICACHE_FLASH_ATTR
+pando_objects_iterator* FUNCTION_ATTRIBUTE
 create_pando_objects_iterator()
 {
     pando_objects_iterator* it =  (pando_objects_iterator*)pd_malloc(sizeof(pando_objects_iterator));
@@ -54,7 +54,7 @@ create_pando_objects_iterator()
     return it;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 delete_pando_objects_iterator(pando_objects_iterator* it)
 {
     if(it)
@@ -63,7 +63,7 @@ delete_pando_objects_iterator(pando_objects_iterator* it)
     }
 }
 
-pando_object* ICACHE_FLASH_ATTR
+pando_object* FUNCTION_ATTRIBUTE
 pando_objects_iterator_next(pando_objects_iterator *it)
 {
     if(it->cur == s_pando_object_list_idx)

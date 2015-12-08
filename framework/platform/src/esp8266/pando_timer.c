@@ -4,7 +4,7 @@
 #include "osapi.h"
 
 static os_timer_t timer1;
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 timer1_init(struct pd_timer timer_cfg)
 {
 	os_timer_disarm(&timer1);
@@ -13,12 +13,12 @@ timer1_init(struct pd_timer timer_cfg)
 
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 timer1_start(void)
 {
 	;
 }
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 timer1_stop(void)
 {
 ;	//os_timer_disarm(&timer1);

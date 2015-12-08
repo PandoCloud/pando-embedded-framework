@@ -8,7 +8,7 @@
 
 #define CMD_QUERY_STATUS (65528)
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 decode_data(struct sub_device_buffer *device_buffer)
 {
     struct pando_property data_body;
@@ -28,7 +28,7 @@ decode_data(struct sub_device_buffer *device_buffer)
     }
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 send_current_status()
 {
     struct sub_device_buffer* data_buffer;
@@ -65,7 +65,7 @@ send_current_status()
     delete_device_package(data_buffer);
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 decode_command(struct sub_device_buffer *device_buffer)
 {
     struct pando_command cmd_body;
@@ -77,7 +77,7 @@ decode_command(struct sub_device_buffer *device_buffer)
     }
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 {
     if(NULL == buffer)

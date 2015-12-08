@@ -32,23 +32,23 @@
 #include "../../platform/include/pando_sys.h"
 #include "proto.h"
 
-void ICACHE_FLASH_ATTR QUEUE_Init(QUEUE *queue, int bufferSize)
+void FUNCTION_ATTRIBUTE QUEUE_Init(QUEUE *queue, int bufferSize)
 {
 	queue->buf = (uint8_t*)pd_malloc(bufferSize);
 	pd_memset(queue->buf, 0, bufferSize);
 	RINGBUF_Init(&queue->rb, queue->buf, bufferSize);
 }
-int32_t ICACHE_FLASH_ATTR QUEUE_Puts(QUEUE *queue, uint8_t* buffer, uint16_t len)
+int32_t FUNCTION_ATTRIBUTE QUEUE_Puts(QUEUE *queue, uint8_t* buffer, uint16_t len)
 {
 	return PROTO_AddRb(&queue->rb, buffer, len);
 }
-int32_t ICACHE_FLASH_ATTR QUEUE_Gets(QUEUE *queue, uint8_t* buffer, uint16_t* len, uint16_t maxLen)
+int32_t FUNCTION_ATTRIBUTE QUEUE_Gets(QUEUE *queue, uint8_t* buffer, uint16_t* len, uint16_t maxLen)
 {
 
 	return PROTO_ParseRb(&queue->rb, buffer, len, maxLen);
 }
 
-BOOL ICACHE_FLASH_ATTR QUEUE_IsEmpty(QUEUE *queue)
+BOOL FUNCTION_ATTRIBUTE QUEUE_IsEmpty(QUEUE *queue)
 {
 	if(queue->rb.fill_cnt<=0)
 		return TRUE;

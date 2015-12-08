@@ -32,15 +32,12 @@
 #include "mqtt_msg.h"
 #include "debug.h"
 #include "mqtt.h"
-#include "osapi.h"
-#include "user_interface.h"
 #include "queue.h"
 #include "../../platform/include/pando_sys.h"
 #include "../../platform/include/pando_types.h"
 #include "../../platform/include/pando_timer.h"
 #include "../../platform/include/pando_net_tcp.h"
 #include "utils.h"
-#include "espconn.h"
 
 #define MQTT_BUF_SIZE		1024
 #define MQTT_RECONNECT_TIMEOUT 5
@@ -55,10 +52,8 @@
 
 void MQTT_Task(MQTT_Client * arg);
 
-extern MQTT_Client mqtt_client;
 
-
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 deliver_publish(MQTT_Client* client, uint8_t* message, int length)
 {
 	mqtt_event_data_t event_data;
@@ -81,7 +76,7 @@ deliver_publish(MQTT_Client* client, uint8_t* message, int length)
   * @param  len: the lenght of received data
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 mqtt_tcpclient_recv(void *arg, struct data_buf *buffer)
 {
 	uint8_t msg_type;
@@ -221,7 +216,7 @@ READPACKET:
   * @param  arg: contain the ip link information
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 mqtt_tcpclient_sent_cb(void *arg, int8_t errorno)
 {
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)arg;
@@ -235,7 +230,7 @@ mqtt_tcpclient_sent_cb(void *arg, int8_t errorno)
 	MQTT_Task(client);
 }
 
-void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
+void FUNCTION_ATTRIBUTE mqtt_timer(void *arg)
 {
 	pd_printf("enter into mqtt timer!!!\n");
 	MQTT_Client* client = (MQTT_Client*)arg;
@@ -286,7 +281,7 @@ void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
 		client->sendTimeout --;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 mqtt_tcpclient_discon_cb(void *arg, int8_t errno)
 {
 
@@ -307,7 +302,7 @@ mqtt_tcpclient_discon_cb(void *arg, int8_t errno)
   * @param  arg: contain the ip link information
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 mqtt_tcpclient_connect_cb(void *arg , int8_t errno)
 {
 	pd_printf("enter into mqtt_tcpclient_connect_cb\n");
@@ -351,7 +346,7 @@ mqtt_tcpclient_connect_cb(void *arg , int8_t errno)
   * @param  arg: contain the ip link information
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 mqtt_tcpclient_recon_cb(void *arg, int8_t errType)
 {
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)arg;
@@ -375,7 +370,7 @@ mqtt_tcpclient_recon_cb(void *arg, int8_t errType)
   * @param  retain:		retain
   * @retval TRUE if success queue
   */
-BOOL ICACHE_FLASH_ATTR
+BOOL FUNCTION_ATTRIBUTE
 MQTT_Publish(MQTT_Client *client, const char* topic, const char* data, int data_length, int qos, int retain)
 {
 	uint8_t dataBuffer[MQTT_BUF_SIZE];
@@ -408,7 +403,7 @@ MQTT_Publish(MQTT_Client *client, const char* topic, const char* data, int data_
   * @param  qos:		qos
   * @retval TRUE if success queue
   */
-BOOL ICACHE_FLASH_ATTR
+BOOL FUNCTION_ATTRIBUTE
 MQTT_Subscribe(MQTT_Client *client, char* topic, uint8_t qos)
 {
 	uint8_t dataBuffer[MQTT_BUF_SIZE];
@@ -429,7 +424,7 @@ MQTT_Subscribe(MQTT_Client *client, char* topic, uint8_t qos)
 	return TRUE;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_Task(MQTT_Client *client)
 {
 	INFO("MQTT TASK\n");
@@ -492,7 +487,7 @@ MQTT_Task(MQTT_Client *client)
   * @param  security:		1 for ssl, 0 for none
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32_t port, uint8_t security)
 {
 	uint32_t temp;
@@ -517,7 +512,7 @@ MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32_t port, uint8
   * @param  client_pass:MQTT keep alive timer, in second
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_user, uint8_t* client_pass, uint32_t keepAliveTime, uint8_t cleanSession)
 {
 	uint32_t temp;
@@ -587,7 +582,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	pd_printf("client_id0:%s\n",mqttClient->mqtt_state.connect_info->client_id);
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, uint8_t will_qos, uint8_t will_retain)
 {
 	uint32_t temp;
@@ -613,7 +608,7 @@ MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, ui
   * @param  client: MQTT_Client reference
   * @retval None
   */
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_Connect(MQTT_Client *mqttClient)
 {
 	INFO("MQTT_Connect start..\n");
@@ -683,7 +678,7 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	mqttClient->connState = TCP_CONNECTING;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_Disconnect(MQTT_Client *mqttClient)
 {
 	if(mqttClient->pCon){
@@ -699,31 +694,31 @@ MQTT_Disconnect(MQTT_Client *mqttClient)
    // timer1_stop();
 	os_timer_disarm(&mqttClient->mqttTimer);
 }
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_OnConnected(MQTT_Client *mqttClient, MqttCallback connectedCb)
 {
 	mqttClient->connectedCb = connectedCb;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_OnConnect_Error(MQTT_Client *mqttClient, MqttCallback error_cb)
 {
 	mqttClient->errorCb= error_cb;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_OnDisconnected(MQTT_Client *mqttClient, MqttCallback disconnectedCb)
 {
 	mqttClient->disconnectedCb = disconnectedCb;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_OnData(MQTT_Client *mqttClient, MqttDataCallback dataCb)
 {
 	mqttClient->dataCb = dataCb;
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 MQTT_OnPublished(MQTT_Client *mqttClient, MqttCallback publishedCb)
 {
 	mqttClient->publishedCb = publishedCb;

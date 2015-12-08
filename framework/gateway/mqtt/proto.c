@@ -1,7 +1,8 @@
 #include "proto.h"
 #include "ringbuf.h"
+#include "../../platform/include/pando_types.h"
 
-I8 ICACHE_FLASH_ATTR PROTO_Init(PROTO_PARSER *parser, PROTO_PARSE_CALLBACK *completeCallback, U8 *buf, U16 bufSize)
+I8 FUNCTION_ATTRIBUTE PROTO_Init(PROTO_PARSER *parser, PROTO_PARSE_CALLBACK *completeCallback, U8 *buf, U16 bufSize)
 {
     parser->buf = buf;
     parser->bufSize = bufSize;
@@ -11,7 +12,7 @@ I8 ICACHE_FLASH_ATTR PROTO_Init(PROTO_PARSER *parser, PROTO_PARSE_CALLBACK *comp
     return 0;
 }
 
-I8 ICACHE_FLASH_ATTR PROTO_ParseByte(PROTO_PARSER *parser, U8 value)
+I8 FUNCTION_ATTRIBUTE PROTO_ParseByte(PROTO_PARSER *parser, U8 value)
 {	
 	switch(value){
 		case 0x7D:
@@ -47,14 +48,14 @@ I8 ICACHE_FLASH_ATTR PROTO_ParseByte(PROTO_PARSER *parser, U8 value)
     return -1;
 }
 
-I8 ICACHE_FLASH_ATTR PROTO_Parse(PROTO_PARSER *parser, U8 *buf, U16 len)
+I8 FUNCTION_ATTRIBUTE PROTO_Parse(PROTO_PARSER *parser, U8 *buf, U16 len)
 {
     while(len--)
         PROTO_ParseByte(parser, *buf++);
 
     return 0;
 }
-I16 ICACHE_FLASH_ATTR PROTO_ParseRb(RINGBUF* rb, U8 *bufOut, U16* len, U16 maxBufLen)
+I16 FUNCTION_ATTRIBUTE PROTO_ParseRb(RINGBUF* rb, U8 *bufOut, U16* len, U16 maxBufLen)
 {
 	U8 c;
 
@@ -68,7 +69,7 @@ I16 ICACHE_FLASH_ATTR PROTO_ParseRb(RINGBUF* rb, U8 *bufOut, U16* len, U16 maxBu
 	}
 	return -1;
 }
-I16 ICACHE_FLASH_ATTR PROTO_Add(U8 *buf, const U8 *packet, I16 bufSize)
+I16 FUNCTION_ATTRIBUTE PROTO_Add(U8 *buf, const U8 *packet, I16 bufSize)
 {
     U16 i = 2;
     U16 len = *(U16*) packet;
@@ -104,7 +105,7 @@ I16 ICACHE_FLASH_ATTR PROTO_Add(U8 *buf, const U8 *packet, I16 bufSize)
     return i;
 }
 
-I16 ICACHE_FLASH_ATTR PROTO_AddRb(RINGBUF *rb, const U8 *packet, I16 len)
+I16 FUNCTION_ATTRIBUTE PROTO_AddRb(RINGBUF *rb, const U8 *packet, I16 len)
 {
     U16 i = 2;
     if(RINGBUF_Put(rb, 0x7E) == -1) return -1;

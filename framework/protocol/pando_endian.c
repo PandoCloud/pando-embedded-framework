@@ -15,7 +15,7 @@
 
 int little_endian = -1;
 
-int ICACHE_FLASH_ATTR is_little_endian()
+int FUNCTION_ATTRIBUTE is_little_endian()
 {
 	if(little_endian == -1)
 	{
@@ -31,7 +31,7 @@ int ICACHE_FLASH_ATTR is_little_endian()
 	return little_endian;
 }
 
-uint16_t ICACHE_FLASH_ATTR net16_to_host(uint16_t A)
+uint16_t FUNCTION_ATTRIBUTE net16_to_host(uint16_t A)
 {
 	if(is_little_endian())
 	{
@@ -43,7 +43,7 @@ uint16_t ICACHE_FLASH_ATTR net16_to_host(uint16_t A)
 	}
 }
 
-uint32_t ICACHE_FLASH_ATTR net32_to_host(uint32_t A)
+uint32_t FUNCTION_ATTRIBUTE net32_to_host(uint32_t A)
 {
 	if(is_little_endian())
 	{
@@ -58,7 +58,7 @@ uint32_t ICACHE_FLASH_ATTR net32_to_host(uint32_t A)
 	}
 }
 
-uint64_t ICACHE_FLASH_ATTR net64_to_host(uint64_t A)
+uint64_t FUNCTION_ATTRIBUTE net64_to_host(uint64_t A)
 {
 	uint64_t mask = 0xff;
 	if(is_little_endian())
@@ -79,7 +79,7 @@ uint64_t ICACHE_FLASH_ATTR net64_to_host(uint64_t A)
 }
 
 
-float ICACHE_FLASH_ATTR net32f_to_host(float A)
+float FUNCTION_ATTRIBUTE net32f_to_host(float A)
 {
 	if(is_little_endian())
 	{
@@ -98,7 +98,7 @@ float ICACHE_FLASH_ATTR net32f_to_host(float A)
 	}
 }
 
-double ICACHE_FLASH_ATTR net64f_to_host(double A)
+double FUNCTION_ATTRIBUTE net64f_to_host(double A)
 {
 	if(is_little_endian())
 	{

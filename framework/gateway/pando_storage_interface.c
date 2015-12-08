@@ -10,7 +10,7 @@
  *********************************************************/
 
 #include "pando_storage_interface.h"
-#include "c_types.h"
+#include "../platform/include/pando_types.h"
 #include "../platform/include/pando_sys.h"
 
 //#include "../../peripherl/driver/stmflash.h"
@@ -30,7 +30,7 @@ struct data_pair
 
 static struct data_pair * head = NULL;
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 save_data_to_flash()
 {
     pd_printf("saving data to flash...\n");
@@ -51,7 +51,7 @@ save_data_to_flash()
     pd_printf("done...\n");
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 load_data_from_flash()
 {
     pd_printf("loading config data from flash...\n");
@@ -80,7 +80,7 @@ load_data_from_flash()
     pd_printf("done...\n");
 }
 
-static struct data_pair * ICACHE_FLASH_ATTR
+static struct data_pair * FUNCTION_ATTRIBUTE
 find_pair_by_key(char * key){
     struct data_pair * p;
     for( p=head; p!=NULL; p=p->next ) 
@@ -100,7 +100,7 @@ find_pair_by_key(char * key){
                   value -- the value of the parameter. 
  * Returns      : the save result
 *******************************************************************************/
-SET_RESULT ICACHE_FLASH_ATTR
+SET_RESULT FUNCTION_ATTRIBUTE
 pando_data_set(char* key, char* value)
 {
     struct data_pair * p;
@@ -128,7 +128,7 @@ pando_data_set(char* key, char* value)
  * Parameters   : key -- the parameter
  * Returns      : the pointer of the value. NULL if not exist
 *******************************************************************************/
-char * ICACHE_FLASH_ATTR
+char * FUNCTION_ATTRIBUTE
 pando_data_get(char* key)
 {
     struct data_pair * p;
@@ -146,7 +146,7 @@ pando_data_get(char* key)
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-uint16 ICACHE_FLASH_ATTR
+uint16 FUNCTION_ATTRIBUTE
 pando_storage_space_left()
 {
 
@@ -158,7 +158,7 @@ pando_storage_space_left()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_storage_clean()
 {
 

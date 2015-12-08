@@ -54,7 +54,7 @@ static os_timer_t timeout_timer;
 
 static uint8 http_flag = 0;
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 free_req(void)
 {
 
@@ -76,7 +76,7 @@ free_req(void)
 
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 free_http_buf(void)
 {
 	if(NULL == http_buf)
@@ -98,7 +98,7 @@ free_http_buf(void)
 
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 free_conn(void)
 {
 	PRINTF("free conn\n");
@@ -123,7 +123,7 @@ free_conn(void)
 	}
 }
 
-static void  ICACHE_FLASH_ATTR
+static void  FUNCTION_ATTRIBUTE
 http_exit(HTTP_RESULT http_result)
 {
 	http_flag = 0;
@@ -183,7 +183,7 @@ http_exit(HTTP_RESULT http_result)
 
 }
 
-static char * ICACHE_FLASH_ATTR my_strdup(const char * str)
+static char * FUNCTION_ATTRIBUTE my_strdup(const char * str)
 {
     if(str == NULL)
     {
@@ -200,7 +200,7 @@ static char * ICACHE_FLASH_ATTR my_strdup(const char * str)
 }
 
 
-static void ICACHE_FLASH_ATTR receive_callback(void * arg, char * buf, unsigned short len)
+static void FUNCTION_ATTRIBUTE receive_callback(void * arg, char * buf, unsigned short len)
 {
 	PRINTF("Receive Response...\n");
 	struct espconn * conn = (struct espconn *)arg;
@@ -237,7 +237,7 @@ static void ICACHE_FLASH_ATTR receive_callback(void * arg, char * buf, unsigned 
 
 }
 
-static void ICACHE_FLASH_ATTR sent_callback(void * arg)
+static void FUNCTION_ATTRIBUTE sent_callback(void * arg)
 {
 	struct espconn * conn = (struct espconn *)arg;
 
@@ -255,7 +255,7 @@ static void ICACHE_FLASH_ATTR sent_callback(void * arg)
 	}
 }
 
-static void ICACHE_FLASH_ATTR connect_callback(void * arg)
+static void FUNCTION_ATTRIBUTE connect_callback(void * arg)
 {
 	PRINTF("http server Connected\n");
 	struct espconn * conn = (struct espconn *)arg;
@@ -291,7 +291,7 @@ static void ICACHE_FLASH_ATTR connect_callback(void * arg)
 	PRINTF("Sending request header\n");
 }
 
-static void ICACHE_FLASH_ATTR disconnect_callback(void * arg)
+static void FUNCTION_ATTRIBUTE disconnect_callback(void * arg)
 {
 	PRINTF("http disconnected\n");
 
@@ -306,7 +306,7 @@ static void ICACHE_FLASH_ATTR disconnect_callback(void * arg)
 	return http_exit(HTTP_ERR);
 }
 
-static void ICACHE_FLASH_ATTR reconnect_callback(void *arg, sint8 err)
+static void FUNCTION_ATTRIBUTE reconnect_callback(void *arg, sint8 err)
 {
 	PRINTF("http reconnected, error:%d\n", err);
 
@@ -323,7 +323,7 @@ static void ICACHE_FLASH_ATTR reconnect_callback(void *arg, sint8 err)
 	http_exit(HTTP_ERR);
 }
 
-static void ICACHE_FLASH_ATTR dns_callback(const char * hostname, ip_addr_t * addr, void * arg)
+static void FUNCTION_ATTRIBUTE dns_callback(const char * hostname, ip_addr_t * addr, void * arg)
 {
 	//request_args * req = (request_args *)arg;
 
@@ -353,7 +353,7 @@ static void ICACHE_FLASH_ATTR dns_callback(const char * hostname, ip_addr_t * ad
 	}
 }
 
-void ICACHE_FLASH_ATTR http_raw_request(const char * hostname, int port, const char * path, const char * post_data, http_callback user_callback)
+void FUNCTION_ATTRIBUTE http_raw_request(const char * hostname, int port, const char * path, const char * post_data, http_callback user_callback)
 {
 	if(http_flag == 1)
 	{

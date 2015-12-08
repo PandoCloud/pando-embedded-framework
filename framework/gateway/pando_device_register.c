@@ -1,6 +1,5 @@
 #include "pando_device_register.h"
 #include "pando_storage_interface.h"
-#include "user_interface.h"
 #include "../lib/json/jsontree.h"
 #include "../lib/json/jsonparse.h"
 #include "../platform/include/pando_net_tcp.h"
@@ -20,7 +19,7 @@
 static gateway_callback device_register_callback = NULL;
 static char* request = NULL;
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 http_callback_register(char * response)
 {
 
@@ -120,7 +119,7 @@ http_callback_register(char * response)
     }
 }
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_device_register(gateway_callback callback)
 {
     PRINTF("PANDO begin register device...\n");

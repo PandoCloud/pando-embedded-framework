@@ -18,7 +18,7 @@ uint8_t pando_device_token[DEVICE_TOKEN_LEN];
 MQTT_Client mqtt_client;
 static uint8_t str_device_id_hex[17];
 
-static int ICACHE_FLASH_ATTR
+static int FUNCTION_ATTRIBUTE
 conv_addr_str(const char * ip_str, uint8_t * str_ip_addr, int * port)
 {
     char * colon = NULL;
@@ -38,7 +38,7 @@ conv_addr_str(const char * ip_str, uint8_t * str_ip_addr, int * port)
     return 0;
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 init_gateway_info()
 {
     // initialize gateway package.
@@ -51,7 +51,7 @@ init_gateway_info()
     pando_protocol_init(gateway_info);
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
 {
 	pd_printf("pando_publish_data_channel1");
@@ -97,7 +97,7 @@ pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
     pando_buffer_delete(gateway_data_buffer);
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *data, uint32_t data_len)
 {
 	pd_printf("mqtt_data_cb\n");
@@ -178,7 +178,7 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
     delete_device_package(device_buffer);
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 mqtt_published_cb(uint32_t *arg)
 {
     pd_printf("MQTT: Published\r\n");
@@ -186,7 +186,7 @@ mqtt_published_cb(uint32_t *arg)
 
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 mqtt_connect_cb(uint32_t* arg)
 {
     pd_printf("MQTT: Connected\r\n");
@@ -194,13 +194,13 @@ mqtt_connect_cb(uint32_t* arg)
     on_device_channel_recv(PANDO_CHANNEL_PORT_1, pando_publish_data_channel1);
 }
 
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 mqtt_disconnect_cb(uint32_t* arg)
 {
     pd_printf("MQTT: Disconnected\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
 }
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 mqtt_error_cb(uint32_t* arg)
 {
     pd_printf("MQTT: connecting error\r\n");
@@ -216,7 +216,7 @@ mqtt_error_cb(uint32_t* arg)
 * Parameters   : callback: the specify access callback function.
 * Returns      :
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_cloud_access(gateway_callback callback)
 {
     pd_printf("PANDO: begin access cloud...\n");

@@ -3,7 +3,7 @@
 #include "pando_framework.h"
 #include "gateway/pando_gateway.h"
 
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_framework_init()
 {
     pando_gateway_init();

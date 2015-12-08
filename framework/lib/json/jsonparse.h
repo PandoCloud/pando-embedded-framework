@@ -32,7 +32,7 @@
 #ifndef __JSONPARSE_H__
 #define __JSONPARSE_H__
 
-#include "c_types.h"
+#include "../../platform/include/pando_types.h"
 #include "json.h"
 
 #ifdef JSONPARSE_CONF_MAX_DEPTH

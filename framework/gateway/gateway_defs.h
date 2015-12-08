@@ -12,7 +12,7 @@
 #ifndef __GATEWAY_DEFS_H__
 #define __GATEWAY_DEFS_H__
 
-#include "c_types.h"
+#include "../platform/include/pando_types.h"
 
 #define PANDO_API_URL "http://api.pandocloud.com"
 #define DATANAME_DEVICE_ID "pando_device_id"

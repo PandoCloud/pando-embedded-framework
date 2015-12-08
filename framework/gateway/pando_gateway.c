@@ -36,7 +36,7 @@ static os_timer_t wifi_check_timer;
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 wifi_connect_check()
 {
 	struct ip_info device_ip;
@@ -68,7 +68,7 @@ wifi_connect_check()
  * Parameters   : the gateway flow return value.
  * Returns      : none
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 gateway_cb(sint8 result)
 {
 	PRINTF("Enter into gateway-cb...,gateway_states:%d\n",gateway_status);
@@ -132,7 +132,7 @@ gateway_cb(sint8 result)
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 gprs_connect_check()
 {
 	PRINTF("Enter into gprs_connect_check...,gateway_states:%d\n",gateway_status);
@@ -146,7 +146,7 @@ gprs_connect_check()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 gateway_error_process()
 {
 	PRINTF("enter into gateway error !!!");
@@ -163,7 +163,7 @@ gateway_error_process()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 pando_gateway_init()
 {
     pd_printf("PANDO gateway initial....\n");

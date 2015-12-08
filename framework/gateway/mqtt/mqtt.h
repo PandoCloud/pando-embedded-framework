@@ -32,7 +32,6 @@
 #include "mqtt_msg.h"
 #include "../../platform/include/pando_timer.h"
 #include "queue.h"
-#include "user_interface.h"
 typedef struct mqtt_event_data_t
 {
   uint8_t type;

@@ -32,10 +32,10 @@
 #include "jsonparse.h"
 //#include <stdlib.h>
 //#include <string.h>
-#include "c_types.h"
+#include "../../platform/include/pando_types.h"
 
 /*--------------------------------------------------------------------*/
-static int ICACHE_FLASH_ATTR
+static int FUNCTION_ATTRIBUTE
 push(struct jsonparse_state *state, char c)
 {
   state->stack[state->depth] = c;
@@ -44,7 +44,7 @@ push(struct jsonparse_state *state, char c)
   return state->depth < JSONPARSE_MAX_DEPTH;
 }
 /*--------------------------------------------------------------------*/
-static char ICACHE_FLASH_ATTR
+static char FUNCTION_ATTRIBUTE
 pop(struct jsonparse_state *state)
 {
   if(state->depth == 0) {
@@ -57,7 +57,7 @@ pop(struct jsonparse_state *state)
 /* will pass by the value and store the start and length of the value for
    atomic types */
 /*--------------------------------------------------------------------*/
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 atomic(struct jsonparse_state *state, char type)
 {
   char c;
@@ -87,7 +87,7 @@ atomic(struct jsonparse_state *state, char type)
   /* no other types for now... */
 }
 /*--------------------------------------------------------------------*/
-static void ICACHE_FLASH_ATTR
+static void FUNCTION_ATTRIBUTE
 skip_ws(struct jsonparse_state *state)
 {
   char c;
@@ -98,7 +98,7 @@ skip_ws(struct jsonparse_state *state)
   }
 }
 /*--------------------------------------------------------------------*/
-void ICACHE_FLASH_ATTR
+void FUNCTION_ATTRIBUTE
 jsonparse_setup(struct jsonparse_state *state, const char *json, int len)
 {
   state->json = json;
@@ -109,7 +109,7 @@ jsonparse_setup(struct jsonparse_state *state, const char *json, int len)
   state->stack[0] = 0;
 }
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_next(struct jsonparse_state *state)
 {
   char c;
@@ -190,7 +190,7 @@ jsonparse_next(struct jsonparse_state *state)
  * works only on "atomic" values such as string, number, null, false, true
  */
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_copy_value(struct jsonparse_state *state, char *str, int size)
 {
   int i;
@@ -206,7 +206,7 @@ jsonparse_copy_value(struct jsonparse_state *state, char *str, int size)
   return state->vtype;
 }
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_get_value_as_int(struct jsonparse_state *state)
 {
   if(state->vtype != JSON_TYPE_NUMBER) {
@@ -215,7 +215,7 @@ jsonparse_get_value_as_int(struct jsonparse_state *state)
   return atoi(&state->json[state->vstart]);
 }
 /*--------------------------------------------------------------------*/
-long ICACHE_FLASH_ATTR
+long FUNCTION_ATTRIBUTE
 jsonparse_get_value_as_long(struct jsonparse_state *state)
 {
   if(state->vtype != JSON_TYPE_NUMBER) {
@@ -226,7 +226,7 @@ jsonparse_get_value_as_long(struct jsonparse_state *state)
 /*--------------------------------------------------------------------*/
 /* strcmp - assume no strange chars that needs to be stuffed in string... */
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_strcmp_value(struct jsonparse_state *state, const char *str)
 {
   if(state->vtype == 0) {
@@ -235,13 +235,13 @@ jsonparse_strcmp_value(struct jsonparse_state *state, const char *str)
   return strncmp(str, &state->json[state->vstart], state->vlen);
 }
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_get_len(struct jsonparse_state *state)
 {
   return state->vlen;
 }
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_get_type(struct jsonparse_state *state)
 {
   if(state->depth == 0) {
@@ -250,7 +250,7 @@ jsonparse_get_type(struct jsonparse_state *state)
   return state->stack[state->depth - 1];
 }
 /*--------------------------------------------------------------------*/
-int ICACHE_FLASH_ATTR
+int FUNCTION_ATTRIBUTE
 jsonparse_has_next(struct jsonparse_state *state)
 {
   return state->pos < state->len;

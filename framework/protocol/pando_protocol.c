@@ -13,10 +13,10 @@
 #include "pando_protocol.h"
 #include "../platform/include/pando_sys.h"
 
-static int ICACHE_FLASH_ATTR check_pdbin_header(struct mqtt_bin_header *bin_header);
-static int ICACHE_FLASH_ATTR init_device_header(struct device_header *header, struct mqtt_bin_header *bin_header,
+static int FUNCTION_ATTRIBUTE check_pdbin_header(struct mqtt_bin_header *bin_header);
+static int FUNCTION_ATTRIBUTE init_device_header(struct device_header *header, struct mqtt_bin_header *bin_header,
     uint16_t payload_type, uint16_t payload_len);
-static int ICACHE_FLASH_ATTR init_pdbin_header(struct mqtt_bin_header *bin_header, struct device_header *header);
+static int FUNCTION_ATTRIBUTE init_pdbin_header(struct mqtt_bin_header *bin_header, struct device_header *header);
 
 
 typedef long long unsigned int llui;
@@ -24,7 +24,7 @@ typedef long long unsigned int llui;
 struct protocol_base protocol_tool_base_params;
 static int file_cmd_sequence;	//need to be array when there are sub devices more than one.
 
-struct pando_buffer * ICACHE_FLASH_ATTR pando_buffer_create(int length, int offset)
+struct pando_buffer * FUNCTION_ATTRIBUTE pando_buffer_create(int length, int offset)
 {
 	struct pando_buffer *protocol_buffer = (struct pando_buffer *)pd_malloc(sizeof(struct pando_buffer));
 
@@ -47,7 +47,7 @@ struct pando_buffer * ICACHE_FLASH_ATTR pando_buffer_create(int length, int offs
 	return protocol_buffer;
 }
 
-void ICACHE_FLASH_ATTR pando_buffer_delete(struct pando_buffer *pdbuf)
+void FUNCTION_ATTRIBUTE pando_buffer_delete(struct pando_buffer *pdbuf)
 {
 	if (pdbuf == NULL)
 	{
@@ -61,7 +61,7 @@ void ICACHE_FLASH_ATTR pando_buffer_delete(struct pando_buffer *pdbuf)
 }
 
 
-int ICACHE_FLASH_ATTR pando_protocol_decode(struct pando_buffer *pdbuf, uint16_t payload_type)
+int FUNCTION_ATTRIBUTE pando_protocol_decode(struct pando_buffer *pdbuf, uint16_t payload_type)
 {
     //get valid data position of buffer
 	uint8_t *position = pdbuf->buffer + pdbuf->offset;
@@ -94,7 +94,7 @@ int ICACHE_FLASH_ATTR pando_protocol_decode(struct pando_buffer *pdbuf, uint16_t
 	return 0;
 }
 
-int ICACHE_FLASH_ATTR pando_protocol_encode(struct pando_buffer *pdbuf, uint16_t *payload_type)
+int FUNCTION_ATTRIBUTE pando_protocol_encode(struct pando_buffer *pdbuf, uint16_t *payload_type)
 {
 	uint8_t *position = pdbuf->buffer + pdbuf->offset;
 	uint8_t *buffer_end = pdbuf->buffer + pdbuf->buff_len;
@@ -126,7 +126,7 @@ int ICACHE_FLASH_ATTR pando_protocol_encode(struct pando_buffer *pdbuf, uint16_t
 	return 0;
 }
 
-int ICACHE_FLASH_ATTR check_pdbin_header(struct mqtt_bin_header *bin_header)
+int FUNCTION_ATTRIBUTE check_pdbin_header(struct mqtt_bin_header *bin_header)
 {
 	if (pd_memcmp(bin_header->token, protocol_tool_base_params.token, sizeof(protocol_tool_base_params.token)))
 	{
@@ -137,7 +137,7 @@ int ICACHE_FLASH_ATTR check_pdbin_header(struct mqtt_bin_header *bin_header)
 	return 0;
 }
 
-int ICACHE_FLASH_ATTR init_device_header(struct device_header *header, struct mqtt_bin_header *bin_header,
+int FUNCTION_ATTRIBUTE init_device_header(struct device_header *header, struct mqtt_bin_header *bin_header,
     uint16_t payload_type, uint16_t payload_len)
 {
 	protocol_tool_base_params.sub_device_cmd_seq++;
@@ -151,7 +151,7 @@ int ICACHE_FLASH_ATTR init_device_header(struct device_header *header, struct mq
 	return 0;
 }
 
-int ICACHE_FLASH_ATTR init_pdbin_header(struct mqtt_bin_header *bin_header, struct device_header *header)
+int FUNCTION_ATTRIBUTE init_pdbin_header(struct mqtt_bin_header *bin_header, struct device_header *header)
 {
 	bin_header->flags = host16_to_net(header->flags);
 	bin_header->timestamp = host64_to_net((uint64_t)pd_get_timestamp());
@@ -161,7 +161,7 @@ int ICACHE_FLASH_ATTR init_pdbin_header(struct mqtt_bin_header *bin_header, stru
 	return 0;
 }
 
-int ICACHE_FLASH_ATTR pando_protocol_init(struct protocol_base init_params)
+int FUNCTION_ATTRIBUTE pando_protocol_init(struct protocol_base init_params)
 {
 
 	if ((struct protocol_base *)pd_memcpy(&protocol_tool_base_params, &init_params, sizeof(init_params)) == NULL)
@@ -174,7 +174,7 @@ int ICACHE_FLASH_ATTR pando_protocol_init(struct protocol_base init_params)
 
 
 
-int ICACHE_FLASH_ATTR pando_protocol_get_sub_device_id(struct pando_buffer *buf, uint16_t *sub_device_id)
+int FUNCTION_ATTRIBUTE pando_protocol_get_sub_device_id(struct pando_buffer *buf, uint16_t *sub_device_id)
 {
     uint8_t *pos = buf->buffer + GATE_HEADER_LEN + buf->offset;
     
@@ -192,7 +192,7 @@ int ICACHE_FLASH_ATTR pando_protocol_get_sub_device_id(struct pando_buffer *buf,
 
 }
 
-int ICACHE_FLASH_ATTR pando_protocol_set_sub_device_id(struct pando_buffer *buf, uint16_t sub_device_id)
+int FUNCTION_ATTRIBUTE pando_protocol_set_sub_device_id(struct pando_buffer *buf, uint16_t sub_device_id)
 {
     uint8_t *pos = buf->buffer + GATE_HEADER_LEN + buf->offset;
     
@@ -251,23 +251,23 @@ int ICACHE_FLASH_ATTR pando_protocol_set_sub_device_id(struct pando_buffer *buf,
 }
 
 
-uint64_t ICACHE_FLASH_ATTR pando_protocol_get_cmd_sequence()
+uint64_t FUNCTION_ATTRIBUTE pando_protocol_get_cmd_sequence()
 {
 	return protocol_tool_base_params.command_sequence;
 }
 
-void ICACHE_FLASH_ATTR save_file_sequence()
+void FUNCTION_ATTRIBUTE save_file_sequence()
 {
 	file_cmd_sequence = protocol_tool_base_params.sub_device_cmd_seq;
 }
 
-int ICACHE_FLASH_ATTR is_file_feedback(uint32_t sequence)
+int FUNCTION_ATTRIBUTE is_file_feedback(uint32_t sequence)
 {
 	return (sequence == file_cmd_sequence)?1:0;
 }
 
 #if 0
-char *ICACHE_FLASH_ATTR pando_protocol_get_uri(struct pando_buffer *pdbuf)
+char *FUNCTION_ATTRIBUTE pando_protocol_get_uri(struct pando_buffer *pdbuf)
 {
 	if (pdbuf == NULL)
 	{
@@ -305,7 +305,7 @@ char *ICACHE_FLASH_ATTR pando_protocol_get_uri(struct pando_buffer *pdbuf)
 
 
 //pdbuf points to the buffer contains command from server ,it's big endian.
-uint16_t ICACHE_FLASH_ATTR pando_protocol_get_payload_type(struct pando_buffer *pdbuf)
+uint16_t FUNCTION_ATTRIBUTE pando_protocol_get_payload_type(struct pando_buffer *pdbuf)
 {
     struct device_header *gateway_header;
     if (pdbuf == NULL)
@@ -317,7 +317,7 @@ uint16_t ICACHE_FLASH_ATTR pando_protocol_get_payload_type(struct pando_buffer *
     return net16_to_host(gateway_header->payload_type);
 }
 
-int ICACHE_FLASH_ATTR is_pando_file_command(struct pando_buffer *pdbuf)
+int FUNCTION_ATTRIBUTE is_pando_file_command(struct pando_buffer *pdbuf)
 {
     struct mqtt_bin_header *header = (struct mqtt_bin_header *)(pdbuf->buffer + pdbuf->offset);
 
@@ -331,11 +331,11 @@ int ICACHE_FLASH_ATTR is_pando_file_command(struct pando_buffer *pdbuf)
     }
 }
 
-uint8_t ICACHE_FLASH_ATTR *pando_get_package_begin(struct pando_buffer *buf)
+uint8_t FUNCTION_ATTRIBUTE *pando_get_package_begin(struct pando_buffer *buf)
 {
     return (buf->buffer + buf->offset);
 }
-uint16_t ICACHE_FLASH_ATTR pando_get_package_length(struct pando_buffer *buf)
+uint16_t FUNCTION_ATTRIBUTE pando_get_package_length(struct pando_buffer *buf)
 {
     return (buf->buff_len - buf->offset);
 }

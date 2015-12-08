@@ -69,7 +69,7 @@ typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
 #define REG_CLR_BIT(_r, _b)  (*(volatile uint32_t*)(_r) &= ~(_b))
 
 /*#ifdef ESP8266_PLANTFORM
-#define FUNCTION_ATTRIBUTE ICACHE_FLASH_ATTR
+#include "c_types.h"
 #else
 #define FUNCTION_ATTRIBUTE
 #endif*/

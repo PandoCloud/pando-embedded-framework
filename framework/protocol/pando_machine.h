@@ -13,7 +13,7 @@
 #ifndef PD_MACHINE_H
 #define PD_MACHINE_H
 
-#include "c_types.h"
+#include "../platform/include/pando_types.h"
 
 
 
