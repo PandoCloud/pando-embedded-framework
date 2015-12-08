@@ -103,7 +103,7 @@ typedef struct  {
 	MqttCallback publishedCb;
 	MqttDataCallback dataCb;
 	MqttCallback errorCb;
-	ETSTimer mqttTimer;
+	struct pd_timer mqttTimer;
 	uint32_t keepAliveTick;
 	uint32_t reconnectTick;
 	uint32_t sendTimeout;

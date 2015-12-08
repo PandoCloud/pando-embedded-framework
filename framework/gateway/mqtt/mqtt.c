@@ -91,7 +91,7 @@ mqtt_tcpclient_recv(void *arg, struct data_buf *buffer)
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn*)arg;
 	MQTT_Client *client = (MQTT_Client *)pCon->reverse;
 
-	pd_printf("mqtt_tcpclient_recv-client£º%d\n", client);
+	pd_printf("mqtt_tcpclient_recv-client%d\n", client);
 
 READPACKET:
 	INFO("TCP: data received %d bytes\r\n", buffer->length);
@@ -237,6 +237,7 @@ mqtt_tcpclient_sent_cb(void *arg, int8_t errorno)
 
 void ICACHE_FLASH_ATTR mqtt_timer(void *arg)
 {
+	pd_printf("enter into mqtt timer!!!\n");
 	MQTT_Client* client = (MQTT_Client*)arg;
     struct data_buf buffer;
 	if(client->connState == MQTT_DATA)
@@ -432,6 +433,7 @@ void ICACHE_FLASH_ATTR
 MQTT_Task(MQTT_Client *client)
 {
 	INFO("MQTT TASK\n");
+	INFO("MQTT TASK client->connState:%d\n",client->connState);
 	uint8_t dataBuffer[MQTT_BUF_SIZE];
 	uint16_t dataLen;
     struct data_buf buffer;
@@ -624,7 +626,6 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	mqttClient->pCon->proto.tcp->local_port = espconn_port();
 	mqttClient->pCon->proto.tcp->remote_port = mqttClient->port;
 	mqttClient->pCon->reverse = mqttClient;
-
 	espconn_regist_connectcb(mqttClient->pCon, mqtt_tcpclient_connect_cb);
 	espconn_regist_reconcb(mqttClient->pCon, mqtt_tcpclient_recon_cb);
 #endif
@@ -646,20 +647,20 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	mqttClient->keepAliveTick = 0;
 	mqttClient->reconnectTick = 0;
 
-//#if 0
+#if 0
 	os_timer_disarm(&mqttClient->mqttTimer);
 	os_timer_setfn(&mqttClient->mqttTimer, (os_timer_func_t *)mqtt_timer, mqttClient);
 	os_timer_arm(&mqttClient->mqttTimer, 1000, 1);
-//#endif
-	//INFO("timer1 init statrt...");
-	//mqttClient->mqttTimer.interval = 3000;
-	//mqttClient->mqttTimer.repeated = 1;
-	//mqttClient->mqttTimer.arg = mqttClient;
-	//mqttClient->mqttTimer.timer_cb = mqtt_timer;
-    //timer1_init(mqttClient->mqttTimer);
-    //timer1_stop();
-    //timer1_start();
-    //INFO("timer1 init end...");
+#endif
+	INFO("timer1 init statrt...");
+	mqttClient->mqttTimer.interval = 1000;
+	mqttClient->mqttTimer.repeated = 1;
+	mqttClient->mqttTimer.arg = mqttClient;
+	mqttClient->mqttTimer.timer_cb = mqtt_timer;
+    timer1_init(mqttClient->mqttTimer);
+    timer1_stop();
+    timer1_start();
+    INFO("timer1 init end...");
     
 	if(UTILS_StrToIP(mqttClient->host, &mqttClient->pCon->remote_ip)) {
 		INFO("TCP: Connect to ip  %s:%d\r\n", mqttClient->host, mqttClient->port);
