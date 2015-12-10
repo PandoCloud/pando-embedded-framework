@@ -6,4 +6,4 @@ OBJS = $(LIB_OBJS) $(JSON_OBJS)
 all:$(OBJS)
 
 $(OBJS):%.o:%.c
-	$(CC) -c $< -o $(BUILD_DIR)/$@ $(CFLAGS)
+	$(CC) -g -c $< -o $(BUILD_DIR)/$@ $(CFLAGS)

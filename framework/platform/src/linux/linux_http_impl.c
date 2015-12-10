@@ -11,6 +11,10 @@
 
 #define HTTP_BUF_LEN 1024
 
+SSL_CTX *p_g_ctx = NULL;
+
+SSL *p_g_ssl = NULL;
+
 //define the struct http related info.
 struct pd_http_info {
     char path[50];
@@ -73,9 +77,23 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
     {
         SSL_library_init();
         SSL_load_error_strings();
-        SSL_CTX *p_ctx;
-        p_ctx = SSL_CTX_new(SSLv23_client_method());
-        if(NULL == p_ctx)
+        if(NULL != p_g_ctx)
+        {
+            SSL_CTX_free(p_g_ctx);
+        }
+
+        if(NULL != p_g_ssl)
+        {
+            if(SSL_shutdown(p_g_ssl) != 1)
+            {
+                printf("SSL_shutdown failed.\n");
+            }
+
+            SSL_free(p_g_ssl);
+        }
+
+        p_g_ctx = SSL_CTX_new(SSLv23_client_method());
+        if(NULL == p_g_ctx)
         {
             if(NULL != http_cb)
             {
@@ -85,9 +103,8 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
             return;
         }
 
-        SSL *p_ssl;
-        p_ssl = SSL_new(p_ctx);
-        if(NULL == p_ssl)
+        p_g_ssl = SSL_new(p_g_ctx);
+        if(NULL == p_g_ssl)
         {
             if(NULL != http_cb)
             {
@@ -97,7 +114,7 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
             return;
         }
 
-        if(0 == SSL_set_fd(p_ssl, p_http_info->socketfd))
+        if(0 == SSL_set_fd(p_g_ssl, p_http_info->socketfd))
         {
             if(NULL != http_cb)
             {
@@ -107,7 +124,7 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
             return;
         }
 
-        if(1 != SSL_connect(p_ssl))
+        if(1 != SSL_connect(p_g_ssl))
         {
             if(NULL != http_cb)
             {
@@ -117,7 +134,7 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
             return;
         }
 
-        SSL_write(p_ssl, message, strlen(message));
+        SSL_write(p_g_ssl, message, strlen(message));
     }
 
     if(NULL != http_cb)
@@ -184,9 +201,23 @@ void net_http_get(const char* url, net_http_callback http_cb)
     {
         SSL_library_init();
         SSL_load_error_strings();
-        SSL_CTX *p_ctx;
-        p_ctx = SSL_CTX_new(SSLv23_client_method());
-        if(NULL == p_ctx)
+        if(NULL != p_g_ctx)
+        {
+            SSL_CTX_free(p_g_ctx);
+        }
+
+        if(NULL != p_g_ssl)
+        {
+            if(SSL_shutdown(p_g_ssl) != 1)
+            {
+                printf("SSL_shutdown failed.\n");
+            }
+
+            SSL_free(p_g_ssl);
+        }
+        
+        p_g_ctx = SSL_CTX_new(SSLv23_client_method());
+        if(NULL == p_g_ctx)
         {
             if(NULL != http_cb)
             {
@@ -196,9 +227,8 @@ void net_http_get(const char* url, net_http_callback http_cb)
             return;
         }
 
-        SSL *p_ssl;
-        p_ssl = SSL_new(p_ctx);
-        if(NULL == p_ssl)
+        p_g_ssl = SSL_new(p_g_ctx);
+        if(NULL == p_g_ssl)
         {
             if(NULL != http_cb)
             {
@@ -208,7 +238,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
             return;
         }
 
-        if(0 == SSL_set_fd(p_ssl, p_http_info->socketfd))
+        if(0 == SSL_set_fd(p_g_ssl, p_http_info->socketfd))
         {
             if(NULL != http_cb)
             {
@@ -218,7 +248,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
             return;
         }
 
-        if(1 != SSL_connect(p_ssl))
+        if(1 != SSL_connect(p_g_ssl))
         {
             if(NULL != http_cb)
             {
@@ -228,7 +258,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
             return;
         }
 
-        bytes_recieved = SSL_read(p_ssl, buf, HTTP_BUF_LEN - 1);
+        bytes_recieved = SSL_read(p_g_ssl, buf, HTTP_BUF_LEN - 1);
         if(bytes_recieved < 0)
         {
             if(http_cb != NULL)
@@ -284,6 +314,7 @@ HTTP_RET parse_url(const char* url, struct pd_http_info *p_http_info)
     int pos = strstrpos(url, "://");
     char protocol[20];
     char url_without_head[50];
+    strcpy(url_without_head, url);
     if(pos == -1)
     {
         strcpy(protocol, "http");

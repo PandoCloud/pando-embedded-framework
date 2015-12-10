@@ -20,7 +20,7 @@ extern uint8_t g_product_key_buf[];
 static gateway_callback device_register_callback = NULL;
 static char* request = NULL;
 
-static void http_callback_register(char * response)
+static void http_callback_register(int8_t errno, char* response)
 {
     if(request != NULL)
     {

@@ -11,4 +11,4 @@ all:$(OBJS)
 	#$(CC) -o $(TARGET) $(BUIL_DIR/*.o) $(CFLAGS)
 	
 $(OBJS):%.o:%.c
-	$(CC) -c $< -o $(BUILD_DIR)/$@ $(CFLAGS)
+	$(CC) -g -c $< -o $(BUILD_DIR)/$@ $(CFLAGS)
