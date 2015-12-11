@@ -41,8 +41,8 @@ HTTP_RET create_tcp_socket(struct pd_http_info *p_http_info);
 
 void net_http_post(const char* url, const char* data, net_http_callback http_cb)
 {
-    struct pd_http_info *p_http_info;
-    if(HTTP_OK != parse_url(url, p_http_info))
+    struct pd_http_info st_http_info;
+    if(HTTP_OK != parse_url(url, &st_http_info))
     {
         if(NULL != http_cb)
         {
@@ -52,7 +52,7 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
         return;
     }
 
-    HTTP_RET ret = create_tcp_socket(p_http_info);
+    HTTP_RET ret = create_tcp_socket(&st_http_info);
     if(HTTP_OK != ret)
     {
         if(NULL != http_cb)
@@ -67,11 +67,11 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
     sprintf(temp, "%d", strlen(data));
     char message[100];
     sprintf(message, "POST %s HTTP/1.1\nhost: %s\nConnection: keep-alive\nContent-Length: %s\nUser-Agent: Linux\nContent-Type: application/json\nAccept: */*\n\n%s", 
-        p_http_info->path, p_http_info->host, temp, data);
-    if(0 == p_http_info->isHttps)
+        st_http_info.path, st_http_info.host, temp, data);
+    if(0 == st_http_info.isHttps)
     {
         ssize_t bytes_sent;
-        bytes_sent = send(p_http_info->socketfd, message, strlen(message), 0);
+        bytes_sent = send(st_http_info.socketfd, message, strlen(message), 0);
     }
     else //https request
     {
@@ -114,7 +114,7 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
             return;
         }
 
-        if(0 == SSL_set_fd(p_g_ssl, p_http_info->socketfd))
+        if(0 == SSL_set_fd(p_g_ssl, st_http_info.socketfd))
         {
             if(NULL != http_cb)
             {
@@ -147,8 +147,8 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
 
 void net_http_get(const char* url, net_http_callback http_cb)
 {
-    struct pd_http_info *p_http_info;
-    if(HTTP_OK != parse_url(url, p_http_info))
+    struct pd_http_info st_http_info;
+    if(HTTP_OK != parse_url(url, &st_http_info))
     {
         if(NULL != http_cb)
         {
@@ -158,7 +158,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
         return;
     }
 
-    HTTP_RET ret = create_tcp_socket(p_http_info);
+    HTTP_RET ret = create_tcp_socket(&st_http_info);
     if(HTTP_OK != ret)
     {
         if(NULL != http_cb)
@@ -172,9 +172,9 @@ void net_http_get(const char* url, net_http_callback http_cb)
     ssize_t bytes_recieved = 0;
     char buf[HTTP_BUF_LEN];
     memset(buf, 0, HTTP_BUF_LEN);
-    if(0 == p_http_info->isHttps)
+    if(0 == st_http_info.isHttps)
     {
-        bytes_recieved = recv(p_http_info->socketfd, buf, HTTP_BUF_LEN, 0);
+        bytes_recieved = recv(st_http_info.socketfd, buf, HTTP_BUF_LEN, 0);
         if(0 == bytes_recieved)
         {
             if(http_cb != NULL)
@@ -238,7 +238,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
             return;
         }
 
-        if(0 == SSL_set_fd(p_g_ssl, p_http_info->socketfd))
+        if(0 == SSL_set_fd(p_g_ssl, st_http_info.socketfd))
         {
             if(NULL != http_cb)
             {
@@ -312,12 +312,12 @@ void net_http_get(const char* url, net_http_callback http_cb)
 HTTP_RET parse_url(const char* url, struct pd_http_info *p_http_info)
 {
     int pos = strstrpos(url, "://");
-    char protocol[20];
-    char url_without_head[50];
-    strcpy(url_without_head, url);
+    char protocol[20] = {'\0'};
+    char url_without_head[50] = {'\0'};
     if(pos == -1)
     {
         strcpy(protocol, "http");
+        strcpy(url_without_head, url);
         pos = 0;
     }
     else
