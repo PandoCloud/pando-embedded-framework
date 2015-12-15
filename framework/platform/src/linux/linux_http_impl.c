@@ -1,6 +1,7 @@
 #include "platform/include/pando_net_http.h"
 
 #include <openssl/err.h>
+#include <openssl/ssl.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -65,7 +66,7 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
 
     char temp[10] = {0};
     sprintf(temp, "%d", strlen(data));
-    char message[100];
+    char message[1024];
     sprintf(message, "POST %s HTTP/1.1\nhost: %s\nConnection: keep-alive\nContent-Length: %s\nUser-Agent: Linux\nContent-Type: application/json\nAccept: */*\n\n%s", 
         st_http_info.path, st_http_info.host, temp, data);
     if(0 == st_http_info.isHttps)
@@ -334,7 +335,7 @@ HTTP_RET parse_url(const char* url, struct pd_http_info *p_http_info)
     }
     else
     {
-        strcpy(p_http_info->path, url_without_head);
+        strcpy(p_http_info->path, url_without_head + host_end_pos);
     }
 
     if(strcmp(protocol, "https") == 0)
