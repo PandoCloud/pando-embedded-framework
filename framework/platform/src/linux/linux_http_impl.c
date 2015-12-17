@@ -69,10 +69,37 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
     char message[1024];
     sprintf(message, "POST %s HTTP/1.1\nhost: %s\nConnection: keep-alive\nContent-Length: %s\nUser-Agent: Linux\nContent-Type: application/json\nAccept: */*\n\n%s", 
         st_http_info.path, st_http_info.host, temp, data);
+
+    ssize_t bytes_recieved = 0;
+    char buf[HTTP_BUF_LEN];
+    memset(buf, 0, HTTP_BUF_LEN);
     if(0 == st_http_info.isHttps)
     {
         ssize_t bytes_sent;
         bytes_sent = send(st_http_info.socketfd, message, strlen(message), 0);
+
+        bytes_recieved = recv(st_http_info.socketfd, buf, HTTP_BUF_LEN, 0);
+        if(0 == bytes_recieved)
+        {
+            if(http_cb != NULL)
+            {
+                http_cb(HTTP_RECV_NO_DATA, NULL);
+            }
+
+            return;
+        }
+
+        if(bytes_recieved < 0)
+        {
+            if(http_cb != NULL)
+            {
+                http_cb(HTTP_RECV_ERR, NULL);
+            }
+
+            return;
+        }
+
+        buf[bytes_recieved] = '\0';
     }
     else //https request
     {
@@ -136,11 +163,53 @@ void net_http_post(const char* url, const char* data, net_http_callback http_cb)
         }
 
         SSL_write(p_g_ssl, message, strlen(message));
+
+        bytes_recieved = SSL_read(p_g_ssl, buf, HTTP_BUF_LEN - 1);
+        if(bytes_recieved < 0)
+        {
+            if(http_cb != NULL)
+            {
+                http_cb(HTTP_RECV_ERR, 0);
+            }
+
+            return;
+        }
+        else
+        {
+            buf[bytes_recieved] = '\0';
+        }
+
+        if(0 == strlen(buf))
+        {
+            if(http_cb != NULL)
+            {
+                http_cb(HTTP_RECV_NO_DATA, NULL);
+            }
+
+            return;
+        }
     }
 
-    if(NULL != http_cb)
+    int pos = strstrpos(buf, "HTTP/1.1 200");
+    if(pos < 0)
     {
-        http_cb(HTTP_OK, NULL);
+        if(http_cb != NULL)
+        {
+            http_cb(HTTP_RECV_HTTP_ERR, NULL);
+        }
+
+        return;
+    }
+
+    pos = strstrpos(buf, "Content-Length:");
+    char result[HTTP_BUF_LEN] = {0};
+    strcpy(result, buf + pos);
+    pos = strstrpos(result, "\n");
+    char response[HTTP_BUF_LEN];
+    strcpy(response, result + pos + 1);
+    if(http_cb != NULL)
+    {
+        http_cb(HTTP_OK, response);
     }
 
     return;
@@ -169,12 +238,19 @@ void net_http_get(const char* url, net_http_callback http_cb)
 
         return;
     }
+    
+    char message[1024];
+    sprintf(message, "GET %s HTTP/1.1\nhost: %s\nConnection: keep-alive\nUser-Agent: Linux\nAccept: */*\r\n\r\n", 
+        st_http_info.path, st_http_info.host);
 
     ssize_t bytes_recieved = 0;
     char buf[HTTP_BUF_LEN];
     memset(buf, 0, HTTP_BUF_LEN);
     if(0 == st_http_info.isHttps)
     {
+        ssize_t bytes_sent;
+        bytes_sent = send(st_http_info.socketfd, message, strlen(message), 0);
+
         bytes_recieved = recv(st_http_info.socketfd, buf, HTTP_BUF_LEN, 0);
         if(0 == bytes_recieved)
         {
@@ -259,6 +335,7 @@ void net_http_get(const char* url, net_http_callback http_cb)
             return;
         }
 
+        SSL_write(p_g_ssl, message, strlen(message));
         bytes_recieved = SSL_read(p_g_ssl, buf, HTTP_BUF_LEN - 1);
         if(bytes_recieved < 0)
         {

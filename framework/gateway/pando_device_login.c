@@ -19,7 +19,7 @@ static char * request = NULL;
 extern uint8_t pando_device_token[ACCESS_TOKEN_LEN];
 
 static void FUNCTION_ATTRIBUTE
-http_callback_login(char * response)
+http_callback_login(int8_t errno, char* response)
 {
     if(request != NULL)
     {
