@@ -86,8 +86,6 @@ mqtt_tcpclient_recv(void *arg, struct data_buf *buffer)
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn*)arg;
 	MQTT_Client *client = (MQTT_Client *)pCon->reverse;
 
-	pd_printf("mqtt_tcpclient_recv-client%d\n", client);
-
 READPACKET:
 	INFO("TCP: data received %d bytes\r\n", buffer->length);
 	show_package(buffer->data, buffer->length);
@@ -428,7 +426,6 @@ void FUNCTION_ATTRIBUTE
 MQTT_Task(MQTT_Client *client)
 {
 	INFO("MQTT TASK\n");
-	INFO("MQTT TASK client->connState:%d\n",client->connState);
 	uint8_t dataBuffer[MQTT_BUF_SIZE];
 	uint16_t dataLen;
     struct data_buf buffer;
@@ -528,7 +525,6 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 
 	if(client_user == NULL)
 	{
-		PRINTF("client_user == NULL...\n");
 		mqttClient->connect_info.username = NULL;
 	}
 
@@ -574,12 +570,6 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	system_os_post(MQTT_TASK_PRIO, 0, (os_param_t)mqttClient);
 #endif
     MQTT_Task(mqttClient);
-	pd_printf("client_id0:%d,client_id1:%d,client_id2:%d,client_id3:%d\n"
-			,(mqttClient->mqtt_state.connect_info->client_id)[0],
-			(mqttClient->mqtt_state.connect_info->client_id)[1],
-			(mqttClient->mqtt_state.connect_info->client_id)[2],
-			(mqttClient->mqtt_state.connect_info->client_id)[3]);
-	pd_printf("client_id0:%s\n",mqttClient->mqtt_state.connect_info->client_id);
 }
 
 void FUNCTION_ATTRIBUTE

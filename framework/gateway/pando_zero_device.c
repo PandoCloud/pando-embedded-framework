@@ -45,7 +45,6 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
     }
     pd_memcpy(device_buffer->buffer, buffer, length);
     device_buffer->buffer_length = length;
-
     struct TLVs *cmd_param = get_sub_device_command(device_buffer, &cmd_body);
     if(COMMON_COMMAND_SYN_TIME == cmd_body.command_num )
     {
