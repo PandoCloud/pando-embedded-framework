@@ -39,3 +39,5 @@ project/
 
 # library files platform related
 STM32F10x_StdPeriph_Lib/
+*.cproject
+*.project
