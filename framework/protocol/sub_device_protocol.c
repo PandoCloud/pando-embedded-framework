@@ -11,6 +11,7 @@
 
 
 #include "sub_device_protocol.h"
+#include "../platform/include/pando_sys.h"
 
 #define DEFAULT_TLV_BLOCK_SIZE 128
 
@@ -41,7 +42,7 @@ static struct TLV *get_tlv_param(struct TLV *params_in, uint16_t *type, uint16_t
 
 
 
-static void FUNCTION_ATTRIBUTE *copy_return_next(void *dst, void *src, 
+static void FUNCTION_ATTRIBUTE *copy_return_next(void *dst, void *src,
     unsigned int src_len)
 {
     pd_memcpy(dst, src, src_len);
@@ -196,7 +197,7 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
     {
         if(next_length != get_type_length(next_type))
         {
-            pd_printf("Param type dismatch with the input length\n");
+        	pd_printf("Param type dismatch with the input length\n");
             return -1;
         }
     }
@@ -307,19 +308,19 @@ void FUNCTION_ATTRIBUTE delete_params_block(struct TLVs *params_block)
     }
 }
 
-struct sub_device_buffer * FUNCTION_ATTRIBUTE 
+struct sub_device_buffer * FUNCTION_ATTRIBUTE
     create_data_package(uint16_t flags)
 {
     return create_package(flags, PAYLOAD_TYPE_DATA);
 }
 
-struct sub_device_buffer * FUNCTION_ATTRIBUTE 
+struct sub_device_buffer * FUNCTION_ATTRIBUTE
     create_event_package(uint16_t flags)
 {
     return create_package(flags, PAYLOAD_TYPE_EVENT);
 }
 
-struct sub_device_buffer * FUNCTION_ATTRIBUTE 
+struct sub_device_buffer * FUNCTION_ATTRIBUTE
     create_command_package(uint16_t flags)
 {
     return create_package(flags, PAYLOAD_TYPE_COMMAND);
@@ -342,7 +343,8 @@ struct TLVs * FUNCTION_ATTRIBUTE get_sub_device_command(
         + sizeof(struct pando_command) - sizeof(struct TLVs));
 }
 
-uint16_t get_tlv_count(struct TLVs *params_block)
+uint16_t FUNCTION_ATTRIBUTE
+get_tlv_count(struct TLVs *params_block)
 {
     uint16_t count = 0;
 
@@ -450,7 +452,7 @@ struct TLV * FUNCTION_ATTRIBUTE get_tlv_value(struct TLV *params_in, void *value
 }
 
 
-struct TLV * FUNCTION_ATTRIBUTE get_tlv_param(struct TLV *params_in, uint16_t *type, 
+struct TLV * FUNCTION_ATTRIBUTE get_tlv_param(struct TLV *params_in, uint16_t *type,
     uint16_t *length, void *value)
 
 {
@@ -578,7 +580,7 @@ uint8_t FUNCTION_ATTRIBUTE is_tlv_need_length(uint16_t type)
             break;
             
         default:
-            pd_printf("Unknow data type.\n");
+        	pd_printf("Unknow data type.\n");
             return -1;
             break;
     }
@@ -614,7 +616,7 @@ uint8_t FUNCTION_ATTRIBUTE get_type_length(uint16_t type)
             break;
             
         default:
-            pd_printf("Unknow data type.\n");
+        	pd_printf("Unknow data type.\n");
             return -1;
             break;
     }
@@ -659,7 +661,7 @@ int FUNCTION_ATTRIBUTE add_next_property(struct sub_device_buffer *data_package,
     return 0;
 }
 
-int FUNCTION_ATTRIBUTE add_command(struct sub_device_buffer *command_package, 
+int FUNCTION_ATTRIBUTE add_command(struct sub_device_buffer *command_package,
     uint16_t command_num, uint16_t priority, struct TLVs *command_params)
 {
     uint8_t *old_buffer = NULL;
@@ -698,7 +700,7 @@ int FUNCTION_ATTRIBUTE add_command(struct sub_device_buffer *command_package,
     return 0;
 }
 
-int FUNCTION_ATTRIBUTE add_event(struct sub_device_buffer *event_package, 
+int FUNCTION_ATTRIBUTE add_event(struct sub_device_buffer *event_package,
     uint16_t event_num, uint16_t priority, struct TLVs *event_params)
 {
     uint8_t *old_buffer = NULL;
@@ -892,67 +894,80 @@ void FUNCTION_ATTRIBUTE *get_next_bytes(struct TLVs *params, uint16_t *length)
 }
 
 
-int    add_next_uint8(struct TLVs *params, uint8_t next_value)
+int  FUNCTION_ATTRIBUTE
+add_next_uint8(struct TLVs *params, uint8_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT8, get_type_length(TLV_TYPE_INT8), &next_value);
 }
 
-int    add_next_uint16(struct TLVs *params, uint16_t next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_uint16(struct TLVs *params, uint16_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT16, get_type_length(TLV_TYPE_UINT16), &next_value);
 }
 
-int    add_next_uint32(struct TLVs *params, uint32_t next_value)
+int  FUNCTION_ATTRIBUTE
+add_next_uint32(struct TLVs *params, uint32_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT32, get_type_length(TLV_TYPE_UINT32), &next_value);
 }
 
-int    add_next_uint64(struct TLVs *params, uint64_t next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_uint64(struct TLVs *params, uint64_t next_value)
 {
     return add_next_param(params, TLV_TYPE_UINT64, get_type_length(TLV_TYPE_UINT64), &next_value);
 }
 
-int    add_next_int8(struct TLVs *params, int8_t next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_int8(struct TLVs *params, int8_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT8, get_type_length(TLV_TYPE_INT8), &next_value);
 }
 
-int    add_next_int16(struct TLVs *params, int16_t next_value)
+int  FUNCTION_ATTRIBUTE
+add_next_int16(struct TLVs *params, int16_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT16, get_type_length(TLV_TYPE_INT16), &next_value);
 }
 
-int    add_next_int32(struct TLVs *params, int32_t next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_int32(struct TLVs *params, int32_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT32, get_type_length(TLV_TYPE_INT32), &next_value);
 }
 
-int    add_next_int64(struct TLVs *params, int64_t next_value)
+int  FUNCTION_ATTRIBUTE
+add_next_int64(struct TLVs *params, int64_t next_value)
 {
     return add_next_param(params, TLV_TYPE_INT64, get_type_length(TLV_TYPE_INT64), &next_value);
 }
 
-int    add_next_float32(struct TLVs *params, float next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_float32(struct TLVs *params, float next_value)
 {
     return add_next_param(params, TLV_TYPE_FLOAT32, get_type_length(TLV_TYPE_FLOAT32), &next_value);
 }
 
-int    add_next_float64(struct TLVs *params, double next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_float64(struct TLVs *params, double next_value)
 {
     return add_next_param(params, TLV_TYPE_FLOAT64, get_type_length(TLV_TYPE_FLOAT64), &next_value);
 }
 
-int    add_next_bool(struct TLVs *params, uint8_t next_value)
+int FUNCTION_ATTRIBUTE
+add_next_bool(struct TLVs *params, uint8_t next_value)
 {
     return add_next_param(params, TLV_TYPE_BOOL, get_type_length(TLV_TYPE_BOOL), &next_value);
 }
 
-int    add_next_uri(struct TLVs *params, uint16_t length, void *next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_uri(struct TLVs *params, uint16_t length, void *next_value)
 {
     return add_next_param(params, TLV_TYPE_URI, length, next_value);
 }
 
-int    add_next_bytes(struct TLVs *params, uint16_t length, void *next_value)
+int   FUNCTION_ATTRIBUTE
+add_next_bytes(struct TLVs *params, uint16_t length, void *next_value)
 {
     return add_next_param(params, TLV_TYPE_BYTES, length, next_value);
 }

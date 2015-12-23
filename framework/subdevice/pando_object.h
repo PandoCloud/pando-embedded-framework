@@ -12,8 +12,8 @@
 #ifndef PANDO_OBJECTS_H_
 #define PANDO_OBJECTS_H_
 
-#include "platform/include/pando_types.h"
-#include "protocol/sub_device_protocol.h"
+#include "../platform/include/pando_types.h"
+//#include "../protocol/sub_device_protocol.h"
 
 typedef struct TLVs PARAMS;
 

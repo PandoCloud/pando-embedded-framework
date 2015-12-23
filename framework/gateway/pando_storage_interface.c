@@ -10,7 +10,10 @@
  *********************************************************/
 
 #include "pando_storage_interface.h"
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
+#include "../platform/include/pando_sys.h"
+#include "mqtt/debug.h"
+
 //#include "../../peripherl/driver/stmflash.h"
 
 #define PANDO_CONFIG_ADDRESS
@@ -28,9 +31,10 @@ struct data_pair
 
 static struct data_pair * head = NULL;
 
-static void save_data_to_flash()
+static void FUNCTION_ATTRIBUTE
+save_data_to_flash()
 {
-    pd_printf("saving data to flash...\n");
+	pd_printf("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
     //STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     struct data_pair * cur;
@@ -48,9 +52,10 @@ static void save_data_to_flash()
     pd_printf("done...\n");
 }
 
-void load_data_from_flash()
+void FUNCTION_ATTRIBUTE
+load_data_from_flash()
 {
-    pd_printf("loading config data from flash...\n");
+	pd_printf("loading config data from flash...\n");
     int32 cnt, i;
     int32 magic = 0;
     pd_printf("loading config data from flash...\n");
@@ -59,7 +64,7 @@ void load_data_from_flash()
     pd_printf("read magic : %x\n", magic);
     if(magic != PANDO_CONFIG_MAGIC)
     {
-        pd_printf("flash config data not initialized!\n");
+    	pd_printf("flash config data not initialized!\n");
         return;
     }
 	////TODO: add system data storage interface.
@@ -76,7 +81,8 @@ void load_data_from_flash()
     pd_printf("done...\n");
 }
 
-static struct data_pair * find_pair_by_key(char * key){
+static struct data_pair * FUNCTION_ATTRIBUTE
+find_pair_by_key(char * key){
     struct data_pair * p;
     for( p=head; p!=NULL; p=p->next ) 
     {
@@ -95,7 +101,8 @@ static struct data_pair * find_pair_by_key(char * key){
                   value -- the value of the parameter. 
  * Returns      : the save result
 *******************************************************************************/
-SET_RESULT pando_data_set(char* key, char* value)
+SET_RESULT FUNCTION_ATTRIBUTE
+pando_data_set(char* key, char* value)
 {
     struct data_pair * p;
     p = find_pair_by_key(key);
@@ -122,7 +129,8 @@ SET_RESULT pando_data_set(char* key, char* value)
  * Parameters   : key -- the parameter
  * Returns      : the pointer of the value. NULL if not exist
 *******************************************************************************/
-char * pando_data_get(char* key)
+char * FUNCTION_ATTRIBUTE
+pando_data_get(char* key)
 {
     struct data_pair * p;
     p = find_pair_by_key(key);
@@ -139,7 +147,8 @@ char * pando_data_get(char* key)
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-uint16 pando_storage_space_left()
+uint16 FUNCTION_ATTRIBUTE
+pando_storage_space_left()
 {
 
 }
@@ -150,7 +159,8 @@ uint16 pando_storage_space_left()
  * Parameters   : none
  * Returns      : none
 *******************************************************************************/
-void pando_storage_clean()
+void FUNCTION_ATTRIBUTE
+pando_storage_clean()
 {
 
 }

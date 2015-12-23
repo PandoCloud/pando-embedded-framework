@@ -1,7 +1,7 @@
 #ifndef __CONVERTER_H__
 #define __CONVERTER_H__
 
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
 
 /******************************************************************************
  * FunctionName : hex2bin.

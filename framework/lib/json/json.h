@@ -37,8 +37,8 @@
  *         Joakim Eriksson <joakime@sics.se>
  */
 
-#ifndef JSON_H_
-#define JSON_H_
+#ifndef __JSON_H__
+#define __JSON_H__
 
 #define JSON_TYPE_ARRAY '['
 #define JSON_TYPE_OBJECT '{'
@@ -57,14 +57,14 @@
 #define JSON_TYPE_CALLBACK 'C'
 
 enum {
-  JSON_ERROR_OK,
-  JSON_ERROR_SYNTAX,
-  JSON_ERROR_UNEXPECTED_ARRAY,
-  JSON_ERROR_UNEXPECTED_END_OF_ARRAY,
-  JSON_ERROR_UNEXPECTED_OBJECT,
-  JSON_ERROR_UNEXPECTED_STRING
+    JSON_ERROR_OK,
+    JSON_ERROR_SYNTAX,
+    JSON_ERROR_UNEXPECTED_ARRAY,
+    JSON_ERROR_UNEXPECTED_END_OF_ARRAY,
+    JSON_ERROR_UNEXPECTED_OBJECT,
+    JSON_ERROR_UNEXPECTED_STRING
 };
 
 #define JSON_CONTENT_TYPE "application/json"
 
-#endif /* JSON_H_ */
+#endif /* __JSON_H__ */

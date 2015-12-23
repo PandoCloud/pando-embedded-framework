@@ -12,13 +12,14 @@
  #include <time.h>
 
 #include "pando_machine.h"
+#include "../platform/include/pando_types.h"
 
 #ifdef ESP8266_PLANTFORM
 
 uint64_t FUNCTION_ATTRIBUTE pd_get_timestamp()
 {
 	uint64_t time_now;
-	time_now = pando_get_system_time();
+	//time_now = pando_get_system_time();
 	return time_now;
 }
 

@@ -36,21 +36,23 @@
  *         Niclas Finne <nfi@sics.se>
  *         Joakim Eriksson <joakime@sics.se>
  */
-
+#ifdef JSON_FORMAT
+//#include "contiki.h"
 #include "jsontree.h"
 #include "jsonparse.h"
-#include <string.h>
+//#include "osapi.h"
+//#include <string.h>
 
 #define DEBUG 0
 #if DEBUG
-#include <stdio.h>
-#define PRINTF(...) printf(__VA_ARGS__)
+//#include <stdio.h>
+#define PRINTF(...) os_printf(__VA_ARGS__)
 #else
 #define PRINTF(...)
 #endif
 
 /*---------------------------------------------------------------------------*/
-void
+void FUNCTION_ATTRIBUTE
 jsontree_write_atom(const struct jsontree_context *js_ctx, const char *text)
 {
   if(text == NULL) {
@@ -62,7 +64,7 @@ jsontree_write_atom(const struct jsontree_context *js_ctx, const char *text)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void FUNCTION_ATTRIBUTE
 jsontree_write_string(const struct jsontree_context *js_ctx, const char *text)
 {
   js_ctx->putchar('"');
@@ -77,7 +79,7 @@ jsontree_write_string(const struct jsontree_context *js_ctx, const char *text)
   js_ctx->putchar('"');
 }
 /*---------------------------------------------------------------------------*/
-void
+void FUNCTION_ATTRIBUTE
 jsontree_write_int(const struct jsontree_context *js_ctx, int value)
 {
   char buf[10];
@@ -98,8 +100,26 @@ jsontree_write_int(const struct jsontree_context *js_ctx, int value)
     js_ctx->putchar(buf[l]);
   }
 }
+
 /*---------------------------------------------------------------------------*/
-void
+void FUNCTION_ATTRIBUTE
+jsontree_write_int_array(const struct jsontree_context *js_ctx, const int *text, uint32 length)
+{
+  uint32 i = 0;
+  if(text == NULL) {
+    js_ctx->putchar('0');
+  } else {
+    for (i = 0; i < length - 1; i ++) {
+      jsontree_write_int(js_ctx, *text++);
+	  js_ctx->putchar(',');
+    }
+	jsontree_write_int(js_ctx, *text);
+  }
+}
+
+
+/*---------------------------------------------------------------------------*/
+void FUNCTION_ATTRIBUTE
 jsontree_setup(struct jsontree_context *js_ctx, struct jsontree_value *root,
                int (* putchar)(int))
 {
@@ -109,14 +129,14 @@ jsontree_setup(struct jsontree_context *js_ctx, struct jsontree_value *root,
   jsontree_reset(js_ctx);
 }
 /*---------------------------------------------------------------------------*/
-void
+void FUNCTION_ATTRIBUTE
 jsontree_reset(struct jsontree_context *js_ctx)
 {
   js_ctx->depth = 0;
   js_ctx->index[0] = 0;
 }
 /*---------------------------------------------------------------------------*/
-const char *
+const char *FUNCTION_ATTRIBUTE
 jsontree_path_name(const struct jsontree_context *js_ctx, int depth)
 {
   if(depth < js_ctx->depth && js_ctx->values[depth]->type == JSON_TYPE_OBJECT) {
@@ -126,7 +146,7 @@ jsontree_path_name(const struct jsontree_context *js_ctx, int depth)
   return "";
 }
 /*---------------------------------------------------------------------------*/
-int
+int FUNCTION_ATTRIBUTE
 jsontree_print_next(struct jsontree_context *js_ctx)
 {
   struct jsontree_value *v;
@@ -211,7 +231,7 @@ jsontree_print_next(struct jsontree_context *js_ctx)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static struct jsontree_value *
+static struct jsontree_value *FUNCTION_ATTRIBUTE
 find_next(struct jsontree_context *js_ctx)
 {
   struct jsontree_value *v;
@@ -259,7 +279,7 @@ find_next(struct jsontree_context *js_ctx)
   } while(1);
 }
 /*---------------------------------------------------------------------------*/
-struct jsontree_value *
+struct jsontree_value *FUNCTION_ATTRIBUTE
 jsontree_find_next(struct jsontree_context *js_ctx, int type)
 {
   struct jsontree_value *v;
@@ -272,3 +292,5 @@ jsontree_find_next(struct jsontree_context *js_ctx, int type)
   return js_ctx->path < js_ctx->depth ? v : NULL;
 }
 /*---------------------------------------------------------------------------*/
+#endif
+

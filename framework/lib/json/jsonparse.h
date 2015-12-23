@@ -29,10 +29,10 @@
  * This file is part of the Contiki operating system.
  */
 
-#ifndef JSONPARSE_H_
-#define JSONPARSE_H_
+#ifndef __JSONPARSE_H__
+#define __JSONPARSE_H__
 
-//#include "contiki-conf.h"
+#include "../../platform/include/pando_types.h"
 #include "json.h"
 
 #ifdef JSONPARSE_CONF_MAX_DEPTH
@@ -42,16 +42,16 @@
 #endif
 
 struct jsonparse_state {
-  const char *json;
-  int pos;
-  int len;
-  int depth;
-  /* for handling atomic values */
-  int vstart;
-  int vlen;
-  char vtype;
-  char error;
-  char stack[JSONPARSE_MAX_DEPTH];
+    const char *json;
+    int pos;
+    int len;
+    int depth;
+    /* for handling atomic values */
+    int vstart;
+    int vlen;
+    char vtype;
+    char error;
+    char stack[JSONPARSE_MAX_DEPTH];
 };
 
 /**
@@ -63,8 +63,7 @@ struct jsonparse_state {
  *             This function initializes a JSON parser state for
  *             parsing a string as JSON.
  */
-void jsonparse_setup(struct jsonparse_state *state, const char *json,
-                     int len);
+void jsonparse_setup(struct jsonparse_state *state, const char *json, int len);
 
 /* move to next JSON element */
 int jsonparse_next(struct jsonparse_state *state);
@@ -88,4 +87,4 @@ int jsonparse_get_type(struct jsonparse_state *state);
 /* compare the JSON value with the specified string */
 int jsonparse_strcmp_value(struct jsonparse_state *state, const char *str);
 
-#endif /* JSONPARSE_H_ */
+#endif /* __JSONPARSE_H__ */

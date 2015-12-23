@@ -26,7 +26,7 @@ extern "C"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
 
 #endif
 

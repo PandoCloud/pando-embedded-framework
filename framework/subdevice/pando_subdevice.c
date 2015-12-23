@@ -1,8 +1,10 @@
-#include "pando_subdevice.h"
-#include "gateway/pando_channel.h"
-#include "protocol/common_functions.h"
-#include "protocol/sub_device_protocol.h"
-#include "pando_object.h"
+#include "../../../pando/framework/subdevice/pando_subdevice.h"
+
+#include "../../../pando/framework/gateway/pando_channel.h"
+#include "../../../pando/framework/protocol/common_functions.h"
+#include "../../../pando/framework/protocol/sub_device_protocol.h"
+#include "../../../pando/framework/subdevice/pando_object.h"
+#include "../platform/include/pando_sys.h"
 
 #define CMD_QUERY_STATUS (65528)
 
@@ -19,7 +21,7 @@ decode_data(struct sub_device_buffer *device_buffer)
         pando_object* obj = find_pando_object(data_body.property_num);
         if( NULL == obj )
         {
-            pd_printf("object [%d] not found in list\n", data_body.property_num);
+        	pd_printf("object [%d] not found in list\n", data_body.property_num);
         }
 
         obj->unpack(object_param);
@@ -33,7 +35,7 @@ send_current_status()
     data_buffer = create_data_package(0);
     if(NULL == data_buffer)
     {
-        pd_printf("create data package error\n");
+    	pd_printf("create data package error\n");
         return;
     }
 
@@ -43,7 +45,7 @@ send_current_status()
         PARAMS* params =  create_params_block();
         if (params == NULL)
         {
-            pd_printf("Create params block failed.\n");
+        	pd_printf("Create params block failed.\n");
             return;
         }
         obj->pack(params);
@@ -51,7 +53,7 @@ send_current_status()
 
         if (ret != 0)
         {
-            pd_printf("add_next_property failed.");
+        	pd_printf("add_next_property failed.");
         }
 
         delete_params_block(params);
@@ -68,9 +70,9 @@ decode_command(struct sub_device_buffer *device_buffer)
 {
     struct pando_command cmd_body;
     PARAMS *cmd_param = get_sub_device_command(device_buffer, &cmd_body);
-    if(CMD_QUERY_STATUS == cmd_body.command_id)
+    if(CMD_QUERY_STATUS == cmd_body.command_num)
     {
-        pd_printf("receive a get request\n");
+    	pd_printf("receive a get request\n");
         send_current_status();
     }
 }
@@ -102,7 +104,7 @@ pando_subdevice_recv(uint8_t * buffer, uint16_t length)
         decode_command(device_buffer);
         break;
     default:
-        pd_printf("unsuported paload type : %d", payload_type);
+    	pd_printf("unsuported paload type : %d", payload_type);
         break;
     }
 

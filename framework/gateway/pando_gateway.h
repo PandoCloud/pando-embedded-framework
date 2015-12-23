@@ -12,7 +12,7 @@
 #ifndef __PANDO_GATEWAY_H__
 #define __PANDO_GATEWAY_H__
 
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
 
 typedef enum {
     GATEWAY_INIT = 0,

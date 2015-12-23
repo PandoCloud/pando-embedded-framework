@@ -10,6 +10,7 @@
  *********************************************************/
  
 #include "common_functions.h"
+#include "../platform/include/pando_sys.h"
 
 void FUNCTION_ATTRIBUTE show_package(uint8_t *buffer, uint16_t length)
 {

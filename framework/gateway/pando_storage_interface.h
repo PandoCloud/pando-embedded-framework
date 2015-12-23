@@ -11,7 +11,7 @@
 #ifndef __PANDO_STORAGE_INTERFACE_H__
 #define __PANDO_STORAGE_INTERFACE_H__
 
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
 
 typedef enum {
     CHANGE_SAVE_OK = 0,

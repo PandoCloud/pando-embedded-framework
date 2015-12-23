@@ -14,20 +14,31 @@
 
 #include "pando_types.h"
 
-struct net_tcp_addr {
-    char ip[16];
-    uint16 port;
-    bool security;
+
+struct data_buf
+{
+    uint16_t length;
+    char *data;
 };
 
-typedef void (* net_connected_callback)(sint8_t errno);
-typedef void (* net_sent_callback)(sint8_t errno);
-typedef void (* net_recv_callback)(struct sys_buf);
-typedef void (* net_disconnected_callback)(sint8_t errno);
-typedef void (* net_server_recv_callback)(int fd, struct sy_buf);
-typedef void (* net_accepted_callback)(void* arg);
-typedef void (* net_server_sent_callback)(sint8_t fd, sint8_t errno);
-typedef void (* net_server_disconnected_callback)(sint8_t fd, sint8_t errno);
+typedef void (* net_tcp_connected_callback)(void *tcp_conn, int8_t errno);
+typedef void (* net_tcp_sent_callback)(void *tcp_conn, int8_t errno);
+typedef void (* net_tcp_recv_callback)(void *tcp_conn, struct data_buf *buffer);
+typedef void (* net_tcp_disconnected_callback)(void *tcp_conn, int8_t errno);
+
+struct pando_tcp_conn {
+	uint8_t secure;
+	uint32_t remote_ip;
+	uint16_t remote_port;
+	uint32_t local_ip;
+	uint16_t local_port;
+	uint16_t fd;
+	net_tcp_connected_callback connected_callback;
+	net_tcp_recv_callback recv_callback;
+	net_tcp_sent_callback sent_callback;
+	net_tcp_disconnected_callback disconnected_callback;
+    void *reverse;
+};
 
 /******************************************************************************
  * FunctionName : net_tcp_connect
@@ -36,7 +47,7 @@ typedef void (* net_server_disconnected_callback)(sint8_t fd, sint8_t errno);
  * 				  timeout: the connect timeout set value.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_connect(struct net_tcp_addr addr, uint16 timeout);
+void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout);
 
 /******************************************************************************
  * FunctionName : net_tcp_register_connect_callback
@@ -44,7 +55,7 @@ void net_tcp_connect(struct net_tcp_addr addr, uint16 timeout);
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_connected_callback(net_connected_callback connected_cb);
+void net_tcp_register_connected_callback(struct pando_tcp_conn *conn , net_tcp_connected_callback  connected_cb);
 
 
 /******************************************************************************
@@ -54,7 +65,7 @@ void net_tcp_register_connected_callback(net_connected_callback connected_cb);
  * 				  timeout: the sent timeout set value.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_send(struct sys_buf buf, uint16 timeout);
+void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t timeout);
 
 
 /******************************************************************************
@@ -63,7 +74,7 @@ void net_tcp_send(struct sys_buf buf, uint16 timeout);
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_sent_callback(net_sent_callback sent_cb);
+void net_tcp_register_sent_callback(struct pando_tcp_conn *conn, net_tcp_sent_callback sent_cb);
 
 /******************************************************************************
  * FunctionName : net_tcp_register_recv_callback
@@ -71,7 +82,7 @@ void net_tcp_register_sent_callback(net_sent_callback sent_cb);
  * Parameters   : recv_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_recv_callback(net_recv_callback recv_cb);
+void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_callback recv_cb);
 
 /******************************************************************************
  * FunctionName : net_tcp_disconnect
@@ -79,7 +90,7 @@ void net_tcp_register_recv_callback(net_recv_callback recv_cb);
  * Parameters   : none.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_disconnect();
+void net_tcp_disconnect(struct pando_tcp_conn *conn);
 
 /******************************************************************************
  * FunctionName : net_tcp_register_disconnected_callback
@@ -87,7 +98,7 @@ void net_tcp_disconnect();
  * Parameters   : connected_cb: the specify function.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_register_disconnected_callback(net_disconnected_callback disconnected_cb);
+void net_tcp_register_disconnected_callback(struct pando_tcp_conn *conn, net_tcp_disconnected_callback disconnected_cb);
 
 /******************************************************************************
  * FunctionName : net_tcp_seriver_listen
@@ -95,48 +106,14 @@ void net_tcp_register_disconnected_callback(net_disconnected_callback disconnect
  * Parameters   : addr: the listen addr.
  * Returns      : the listen result.
 *******************************************************************************/
-sint8_t net_tcp_server_listen(struct net_tcp_addr addr);
+int8_t net_tcp_server_listen(struct pando_tcp_conn *conn);
 
 /******************************************************************************
- * FunctionName : net_tcp_seriver_register_accepted_callback
- * Description  : it is used to specify the function that should be called when connect accepted.
- * Parameters   : accept_cb: the specify function.
- * Returns      : none.
-*******************************************************************************/
-void net_tcp_server_register_accepted_callback(net_accepted_callback accept_cb);
-
-/******************************************************************************
- * FunctionName : net_tcp_seriver_register_recv_callback
- * Description  : it is used to specify the function that should be called when received package.
- * Parameters   : recv_cb: the specify function.
- * Returns      : the listen result.
-*******************************************************************************/
-void net_tcp_seriver_register_recv_callback(net_server_recv_callback recv_cb);
-
-/******************************************************************************
- * FunctionName : net_tcp_seriver_send
- * Description  : The tcp send function.
- * Parameters   : fd: the specify descriptor.
- * 				  buf: the send buffer.
+ * FunctionName : net_tcp_server_accept
+ * Description  : accept the connect.
+ * Parameters   : conn: the accept parameter.
  * Returns      : none
 *******************************************************************************/
-void net_tcp_seriver_send(int fd, struct sys_buf buf);
-
-
-/******************************************************************************
- * FunctionName : net_tcp_server_disconnect
- * Description  : it is used to disconnect specify connect.
- * Parameters   : fd: the specify connect descriptor.
- * Returns      : none
-*******************************************************************************/
-void net_tcp_server_disconnect(int fd);
-
-/******************************************************************************
- * FunctionName : net_tcp_server_register_disconnected_callback.
- * Description  : it is used to specify the function that should be called when disconnected.
- * Parameters   : fd: the specify connect descriptor.
- * Returns      : none
-*******************************************************************************/
-void net_tcp_server_register_disconnected_callback(net_server_disconnected_callback disconnected_cb);
+void net_tcp_server_accept(struct pando_tcp_conn *conn);
 
 #endif /* _PANDO_NET_TCP_H_ */

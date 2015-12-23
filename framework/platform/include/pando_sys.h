@@ -16,19 +16,51 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef ESP8266_PLANTFORM
+
+#include "mem.h"
+#include "osapi.h"
+#include "user_interface.h"
+
+#define pd_malloc       os_malloc
+#define pd_free         os_free
+
+#define pd_memcpy       os_memcpy
+#define pd_memcmp       os_memcmp
+#define pd_memset       os_memset
+
+#define pd_strlen       os_strlen
+#define pd_strncpy      os_strncpy
+#define pd_strcmp       os_strcmp
+#define pd_strncmp      os_strncmp
+#define pd_strchr		os_strchr
+
+#define pd_sprintf      os_sprintf
+
+#define pd_printf       os_printf
+
+#else
+
+#include "string.h"
+#include "stdio.h"
+
 #define pd_malloc       malloc
 #define pd_free         free
 
 #define pd_memcpy       memcpy
-#define pd_memcmp       memcmp
+#define pd_memcmp      	memcmp
 #define pd_memset       memset
 
 #define pd_strlen       strlen
 #define pd_strncpy      strncpy
 #define pd_strcmp       strcmp
+#define pd_strncmp      strncmp
+#define pd_strchr		strchr
 
 #define pd_sprintf      sprintf
 
 #define pd_printf       printf
+
+#endif
 
 #endif /* _PANDO_SYS_H_ */

@@ -11,7 +11,7 @@
 #ifndef PANDO_SUBDEVICE_H_
 #define PANDO_SUBDEVICE_H_
 
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
 
 /******************************************************************************
  * FunctionName : pando_subdevice_recv.

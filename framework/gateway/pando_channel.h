@@ -12,7 +12,7 @@
 #ifndef __PANDO_CHANNEL_H__
 #define __PANDO_CHANNEL_H__
 
-#include "platform/include/pando_types.h"
+#include "../platform/include/pando_types.h"
 
 typedef enum {
     PANDO_CHANNEL_PORT_0 = 0,

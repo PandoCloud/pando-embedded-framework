@@ -1,4 +1,5 @@
 #include "pando_json.h"
+#include "../platform/include/pando_types.h"
 
 static char *json_buf;
 static int json_buf_len;
@@ -16,7 +17,7 @@ json_putchar(int c)
     return 0;
 }
 
-int FUNCTION_ATTRIBUTE 
+int FUNCTION_ATTRIBUTE
 pando_json_print(struct jsontree_value * json_value, char * dst, int len)
 {
     if( dst == NULL) 
