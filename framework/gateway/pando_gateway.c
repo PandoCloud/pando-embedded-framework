@@ -17,6 +17,7 @@
 #include "../platform/include/pando_sys.h"
 #include "pando_zero_device.h"
 #include "../platform/include/pando_timer.h"
+#include "../gateway/mqtt/debug.h"
 
 #include "user_interface.h"
 #include "../../../user/wifi_config.h"
@@ -166,7 +167,7 @@ gateway_error_process()
 void FUNCTION_ATTRIBUTE
 pando_gateway_init()
 {
-    pd_printf("PANDO gateway initial....\n");
+	pd_printf("PANDO gateway initial....\n");
 
     gateway_status = GATEWAY_INIT;
     PRINTF("Enter into pando_gateway_init...,gateway_states:%d\n",gateway_status);

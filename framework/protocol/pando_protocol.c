@@ -104,7 +104,7 @@ int FUNCTION_ATTRIBUTE pando_protocol_encode(struct pando_buffer *pdbuf, uint16_
     
     if ((position += DEV_HEADER_LEN) > buffer_end)
     {
-        pd_printf("Incorrect encode buffer length.\n");
+    	pd_printf("Incorrect encode buffer length.\n");
         return -1;
     }
 
@@ -217,12 +217,12 @@ int FUNCTION_ATTRIBUTE pando_protocol_set_sub_device_id(struct pando_buffer *buf
     
 	if (buf == NULL || sub_device_id > 127*128)
 	{
-		pd_printf("subdevice null, subdevice id :%d\n", sub_device_id);
+		INFO("subdevice null, subdevice id :%d\n", sub_device_id);
 		return -1;
 	}
 	else
 	{
-		pd_printf("sub_device_id %d\n", sub_device_id);
+		INFO("sub_device_id %d\n", sub_device_id);
 
         do
     	{

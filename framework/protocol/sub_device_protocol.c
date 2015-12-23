@@ -197,7 +197,7 @@ int FUNCTION_ATTRIBUTE add_next_param(struct TLVs *params_block, uint16_t next_t
     {
         if(next_length != get_type_length(next_type))
         {
-            pd_printf("Param type dismatch with the input length\n");
+        	pd_printf("Param type dismatch with the input length\n");
             return -1;
         }
     }
@@ -580,7 +580,7 @@ uint8_t FUNCTION_ATTRIBUTE is_tlv_need_length(uint16_t type)
             break;
             
         default:
-            pd_printf("Unknow data type.\n");
+        	pd_printf("Unknow data type.\n");
             return -1;
             break;
     }
@@ -616,7 +616,7 @@ uint8_t FUNCTION_ATTRIBUTE get_type_length(uint16_t type)
             break;
             
         default:
-            pd_printf("Unknow data type.\n");
+        	pd_printf("Unknow data type.\n");
             return -1;
             break;
     }

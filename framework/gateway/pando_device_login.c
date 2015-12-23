@@ -8,6 +8,7 @@
 #include "../lib/json/jsontree.h"
 #include "../lib/pando_json.h"
 #include "../platform/include/pando_net_http.h"
+#include "mqtt/debug.h"
 
 #include "pando_gateway.h"
 
@@ -89,7 +90,7 @@ http_callback_login(char * response)
 
     if(code != 0)
     {
-        pd_printf("device login failed: %s\n", message);
+    	pd_printf("device login failed: %s\n", message);
         if(device_login_callback != NULL) 
         {
             device_login_callback(PANDO_LOGIN_FAIL);
@@ -119,7 +120,7 @@ http_callback_login(char * response)
 void FUNCTION_ATTRIBUTE
 pando_device_login(gateway_callback callback)
 {
-    pd_printf("begin login device...\n");
+	pd_printf("begin login device...\n");
     if(callback != NULL)
     {
         device_login_callback = callback;
@@ -133,7 +134,7 @@ pando_device_login(gateway_callback callback)
     if(str_device_id == NULL || str_device_secret == NULL) 
     {
         // has not registered
-        pd_printf("login failed ! device has not been registerd...\n");
+    	pd_printf("login failed ! device has not been registerd...\n");
         device_login_callback(PANDO_NOT_REGISTERED);
         return;
     }

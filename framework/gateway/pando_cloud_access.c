@@ -63,14 +63,14 @@ pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
 
     if (gateway_data_buffer->buffer == NULL)
     {
-        pd_printf("%s:malloc failed.\n", __func__);
+    	pd_printf("%s:malloc failed.\n", __func__);
         return;
     }
 
     pd_memcpy(gateway_data_buffer->buffer + gateway_data_buffer->offset, buffer, length);
     if (pando_protocol_encode(gateway_data_buffer, &payload_type))
     {
-        pd_printf("pando_protocol_encode error.\n");
+    	pd_printf("pando_protocol_encode error.\n");
         return;
     }
 
@@ -89,7 +89,7 @@ pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
             pd_memcpy(topic, "d", 2);
             break;
         default:
-            pd_printf("error payload type\n");
+        	pd_printf("error payload type\n");
             pando_buffer_delete(gateway_data_buffer);
             return;
     }
@@ -101,14 +101,14 @@ static void FUNCTION_ATTRIBUTE
 mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *data, uint32_t data_len)
 {
 	pd_printf("mqtt_data_cb\n");
-    pd_printf("mqtt topic length: %d\n", topic_len);
-    pd_printf("mqtt data length: %d\n", data_len);
+	pd_printf("mqtt topic length: %d\n", topic_len);
+	pd_printf("mqtt data length: %d\n", data_len);
 
     uint16_t sub_device_id = 0;
 
     if((topic == NULL) || (data == NULL))
     {
-        pd_printf("no needed mqtt package!");
+    	pd_printf("no needed mqtt package!");
         return;
     }
     char *topic_buf = (char*)pd_malloc(topic_len+1);
@@ -137,14 +137,14 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
     pd_buffer = (struct pando_buffer *)pd_malloc(sizeof(struct pando_buffer));
     if(pd_buffer == NULL)
     {
-        pd_printf("malloc error!\n");
+    	pd_printf("malloc error!\n");
         return;
     }
     pd_buffer->buff_len = data_len;
     pd_buffer->buffer = (uint8_t*)pd_malloc(data_len);
     if(pd_buffer->buffer == NULL)
     {
-        pd_printf("malloc error!\n");
+    	pd_printf("malloc error!\n");
         return;
     }
     pd_memcpy(pd_buffer->buffer, data, data_len);
@@ -155,7 +155,7 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
     show_package(pd_buffer->buffer, pd_buffer->buff_len);
     if(pando_protocol_decode(pd_buffer, payload_type) != 0)
     {
-        pd_printf("the data from server is wrong!\n");
+    	pd_printf("the data from server is wrong!\n");
         return;
     }
 
@@ -167,7 +167,7 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
 
     if(sub_device_id == 1 || sub_device_id == 65535) //65535 is broadcast id.
     {
-        pd_printf("transfer data to sub device: %d\n", sub_device_id);
+    	pd_printf("transfer data to sub device: %d\n", sub_device_id);
         channel_send_to_subdevice(PANDO_CHANNEL_PORT_1, device_buffer->buffer,device_buffer->buffer_length);
     }
 
@@ -181,7 +181,7 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
 static void FUNCTION_ATTRIBUTE
 mqtt_published_cb(uint32_t *arg)
 {
-    pd_printf("MQTT: Published\r\n");
+	pd_printf("MQTT: Published\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
 
 }
@@ -189,7 +189,7 @@ mqtt_published_cb(uint32_t *arg)
 static void FUNCTION_ATTRIBUTE
 mqtt_connect_cb(uint32_t* arg)
 {
-    pd_printf("MQTT: Connected\r\n");
+	pd_printf("MQTT: Connected\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
     on_device_channel_recv(PANDO_CHANNEL_PORT_1, pando_publish_data_channel1);
 }
@@ -197,13 +197,13 @@ mqtt_connect_cb(uint32_t* arg)
 static void FUNCTION_ATTRIBUTE
 mqtt_disconnect_cb(uint32_t* arg)
 {
-    pd_printf("MQTT: Disconnected\r\n");
+	pd_printf("MQTT: Disconnected\r\n");
     MQTT_Client* client = (MQTT_Client*)arg;
 }
 static void FUNCTION_ATTRIBUTE
 mqtt_error_cb(uint32_t* arg)
 {
-    pd_printf("MQTT: connecting error\r\n");
+	pd_printf("MQTT: connecting error\r\n");
     if(error_callback != NULL)
     {
         error_callback(PANDO_ACCESS_ERR);
@@ -219,9 +219,9 @@ mqtt_error_cb(uint32_t* arg)
 void FUNCTION_ATTRIBUTE
 pando_cloud_access(gateway_callback callback)
 {
-    pd_printf("PANDO: begin access cloud...\n");
+	pd_printf("PANDO: begin access cloud...\n");
 
-    pd_printf("before access:\n");
+	pd_printf("before access:\n");
     if(callback != NULL)
     {
         error_callback = callback;
@@ -230,7 +230,7 @@ pando_cloud_access(gateway_callback callback)
     char* access_addr = pando_data_get(DATANAME_ACCESS_ADDR);
     if( NULL == access_addr )
     {
-        pd_printf("no access server address found...\n");
+    	pd_printf("no access server address found...\n");
         error_callback(PANDO_ACCESS_ERR);
 		return;
     }
@@ -239,7 +239,7 @@ pando_cloud_access(gateway_callback callback)
     uint8_t ip_string[16];
     if(0 != (conv_addr_str(access_addr, ip_string, &port)))
     {
-        pd_printf("wrong access server address...\n");
+    	pd_printf("wrong access server address...\n");
         error_callback(PANDO_ACCESS_ERR);
 		return;
     }

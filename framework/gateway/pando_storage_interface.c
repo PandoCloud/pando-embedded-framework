@@ -12,6 +12,7 @@
 #include "pando_storage_interface.h"
 #include "../platform/include/pando_types.h"
 #include "../platform/include/pando_sys.h"
+#include "mqtt/debug.h"
 
 //#include "../../peripherl/driver/stmflash.h"
 
@@ -33,7 +34,7 @@ static struct data_pair * head = NULL;
 static void FUNCTION_ATTRIBUTE
 save_data_to_flash()
 {
-    pd_printf("saving data to flash...\n");
+	pd_printf("saving data to flash...\n");
     int32 magic = PANDO_CONFIG_MAGIC;
     //STMFLASH_Write(PANDO_CONFIG_ADDRESS, (uint16 *)(&magic), sizeof(int32));
     struct data_pair * cur;
@@ -54,7 +55,7 @@ save_data_to_flash()
 void FUNCTION_ATTRIBUTE
 load_data_from_flash()
 {
-    pd_printf("loading config data from flash...\n");
+	pd_printf("loading config data from flash...\n");
     int32 cnt, i;
     int32 magic = 0;
     pd_printf("loading config data from flash...\n");
@@ -63,7 +64,7 @@ load_data_from_flash()
     pd_printf("read magic : %x\n", magic);
     if(magic != PANDO_CONFIG_MAGIC)
     {
-        pd_printf("flash config data not initialized!\n");
+    	pd_printf("flash config data not initialized!\n");
         return;
     }
 	////TODO: add system data storage interface.

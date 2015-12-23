@@ -14,7 +14,7 @@
 
 #include "../platform/include/pando_types.h"
 
-#define PANDO_API_URL "http://api.pandocloud.com"
+#define PANDO_API_URL "https://api.pandocloud.com"
 #define DATANAME_DEVICE_ID "pando_device_id"
 #define DATANAME_DEVICE_SECRET "pando_device_secret"
 #define DATANAME_DEVICE_KEY "pando_device_key"

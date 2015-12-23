@@ -144,7 +144,7 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 }
 void connected_cb1(void *arg)
  {
-	 pd_printf("enter into connected_cb1...\n");
+	pd_printf("enter into connected_cb1...\n");
 
  }
 

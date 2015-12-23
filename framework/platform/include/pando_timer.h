@@ -23,6 +23,7 @@ struct pd_timer
     uint16_t interval;
     //whether repeat
     uint8_t repeated;
+    uint8_t timer_no;
     //the function pointer to callback if expiry
     expiry_cb timer_cb;
     void* arg;
@@ -34,7 +35,7 @@ struct pd_timer
  * Parameters   : timer_cfg: the config timer.
  * Returns      : 
  ******************************************************************************/
-void timer1_init(struct pd_timer timer_cfg);
+void pando_timer_init(struct pd_timer * timer);
 
 /******************************************************************************
  * FunctionName : timer1_start
@@ -42,7 +43,7 @@ void timer1_init(struct pd_timer timer_cfg);
  * Parameters   : 
  * Returns      : 
  ******************************************************************************/
-void timer1_start(void);
+void pando_timer_start(struct pd_timer * timer);
 
 /******************************************************************************
  * FunctionName : timer1_stop
@@ -50,6 +51,6 @@ void timer1_start(void);
  * Parameters   : 
  * Returns      : 
  ******************************************************************************/
-void timer1_stop(void);
+void pando_timer_stop(struct pd_timer * timer);
 
 #endif /* _PANDO_TIMER_H_ */

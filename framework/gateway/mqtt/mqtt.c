@@ -95,20 +95,14 @@ READPACKET:
 		msg_type = mqtt_get_type(client->mqtt_state.in_buffer);
 		msg_qos = mqtt_get_qos(client->mqtt_state.in_buffer);
 		msg_id = mqtt_get_id(client->mqtt_state.in_buffer, client->mqtt_state.in_buffer_length);
-		PRINTF("client->connstate:%d, type:%d, Qos:%d, id:%d\n", client->connState, msg_type, msg_qos, msg_id);
+		INFO("client->connstate:%d, type:%d, Qos:%d, id:%d\n", client->connState, msg_type, msg_qos, msg_id);
 		switch(client->connState){
 		case MQTT_CONNECT_SENDING:
 			if(msg_type == MQTT_MSG_TYPE_CONNACK){
 				if(client->mqtt_state.pending_msg_type != MQTT_MSG_TYPE_CONNECT){
 					INFO("MQTT: Invalid packet\r\n");
-					if(client->security){
-						//espconn_secure_disconnect(client->pCon);
-                        net_tcp_disconnect(client->pCon);
-					}
-					else {
-						//espconn_disconnect(client->pCon);
-						net_tcp_disconnect(client->pCon);
-					}
+					net_tcp_disconnect(client->pCon);
+
 				} else {
 					INFO("MQTT: Connected to %s:%d\r\n", client->host, client->port);
 					client->connState = MQTT_DATA;
@@ -230,7 +224,7 @@ mqtt_tcpclient_sent_cb(void *arg, int8_t errorno)
 
 void FUNCTION_ATTRIBUTE mqtt_timer(void *arg)
 {
-	pd_printf("enter into mqtt timer!!!\n");
+	INFO("enter into mqtt timer!!!\n");
 	MQTT_Client* client = (MQTT_Client*)arg;
     struct data_buf buffer;
 	if(client->connState == MQTT_DATA)
@@ -248,17 +242,9 @@ void FUNCTION_ATTRIBUTE mqtt_timer(void *arg)
             buffer.length = client->mqtt_state.outbound_message->length;
             buffer.data = client->mqtt_state.outbound_message->data;
 			INFO("MQTT: Sending, type: %d, id: %04X\r\n",client->mqtt_state.pending_msg_type, client->mqtt_state.pending_msg_id);
-			if(client->security){
-				//espconn_secure_sent(client->pCon, client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
-                net_tcp_send(client->pCon, buffer, client->sendTimeout);
-            }
-			else{
-				net_tcp_send(client->pCon, buffer, client->sendTimeout);
-			}
-
-			client->mqtt_state.outbound_message = NULL;
-
-			client->keepAliveTick = 0;
+            net_tcp_send(client->pCon, buffer, client->sendTimeout);
+  			client->mqtt_state.outbound_message = NULL;
+  			client->keepAliveTick = 0;
 			MQTT_Task(client);
 		}
 
@@ -303,7 +289,7 @@ mqtt_tcpclient_discon_cb(void *arg, int8_t errno)
 void FUNCTION_ATTRIBUTE
 mqtt_tcpclient_connect_cb(void *arg , int8_t errno)
 {
-	pd_printf("enter into mqtt_tcpclient_connect_cb\n");
+	INFO("enter into mqtt_tcpclient_connect_cb\n");
 	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)arg;
 	MQTT_Client* client = (MQTT_Client *)pCon->reverse;
 
@@ -325,16 +311,8 @@ mqtt_tcpclient_connect_cb(void *arg , int8_t errno)
     buffer.length = client->mqtt_state.outbound_message->length;
     buffer.data = client->mqtt_state.outbound_message->data;
     INFO("MQTT: Sending, type: %d, id: %04X\r\n",client->mqtt_state.pending_msg_type, client->mqtt_state.pending_msg_id);
-	if(client->security){
-        net_tcp_send(pCon, buffer, client->sendTimeout);
-        //espconn_secure_sent(client->pCon, client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
-	}
-	else{
-        net_tcp_send(pCon, buffer, client->sendTimeout);
-		//espconn_sent(client->pCon, client->mqtt_state.outbound_message->data, client->mqtt_state.outbound_message->length);
-	}
-
-	client->mqtt_state.outbound_message = NULL;
+    net_tcp_send(pCon, buffer, client->sendTimeout);
+ 	client->mqtt_state.outbound_message = NULL;
 	client->connState = MQTT_CONNECT_SENDING;
 	MQTT_Task(client);
 }
@@ -389,7 +367,7 @@ MQTT_Publish(MQTT_Client *client, const char* topic, const char* data, int data_
 			return FALSE;
 		}
 	}
-	pd_printf("client->mqtt_state.outbound_message->length:%d",client->mqtt_state.outbound_message->length);
+	INFO("client->mqtt_state.outbound_message->length:%d",client->mqtt_state.outbound_message->length);
 	MQTT_Task(client);
 	return TRUE;
 }
@@ -565,10 +543,6 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	mqtt_msg_init(&mqttClient->mqtt_state.mqtt_connection, mqttClient->mqtt_state.out_buffer, mqttClient->mqtt_state.out_buffer_length);
 
 	QUEUE_Init(&mqttClient->msgQueue, QUEUE_BUFFER_SIZE);
-#if 0
-	system_os_task(MQTT_Task, MQTT_TASK_PRIO, mqtt_procTaskQueue, MQTT_TASK_QUEUE_SIZE);
-	system_os_post(MQTT_TASK_PRIO, 0, (os_param_t)mqttClient);
-#endif
     MQTT_Task(mqttClient);
 }
 
@@ -601,64 +575,36 @@ MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, ui
 void FUNCTION_ATTRIBUTE
 MQTT_Connect(MQTT_Client *mqttClient)
 {
-	INFO("MQTT_Connect start..\n");
+    INFO("MQTT_Connect start..\n");
 	MQTT_Disconnect(mqttClient);
-#if 0   
-	mqttClient->pCon = (struct espconn *)os_zalloc(sizeof(struct espconn));
-	mqttClient->pCon->type = ESPCONN_TCP;
-	mqttClient->pCon->state = ESPCONN_NONE;
-	mqttClient->pCon->proto.tcp = (esp_tcp *)os_zalloc(sizeof(esp_tcp));
-	mqttClient->pCon->proto.tcp->local_port = espconn_port();
-	mqttClient->pCon->proto.tcp->remote_port = mqttClient->port;
-	mqttClient->pCon->reverse = mqttClient;
-	espconn_regist_connectcb(mqttClient->pCon, mqtt_tcpclient_connect_cb);
-	espconn_regist_reconcb(mqttClient->pCon, mqtt_tcpclient_recon_cb);
-#endif
     mqttClient->pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
     pd_memset(mqttClient->pCon, 0, sizeof(struct pando_tcp_conn));
-
-
 
 	mqttClient->pCon->local_port = espconn_port();
 	mqttClient->pCon->remote_port = mqttClient->port;
 	mqttClient->pCon->reverse = mqttClient;
 	mqttClient->pCon->secure = 0;
-	//mqttClient->pCon->reverse = mqttClient;
-	PRINTF("MQTT_Connect_mqttClient->pCon->reverse:%d\n",mqttClient->pCon->reverse);
+
+	INFO("MQTT_Connect_mqttClient->pCon->reverse:%d\n",mqttClient->pCon->reverse);
     net_tcp_register_connected_callback(mqttClient->pCon, mqtt_tcpclient_connect_cb);
     //no reconnection call back. TODO
     
-
 	mqttClient->keepAliveTick = 0;
 	mqttClient->reconnectTick = 0;
 
-#if 0
-	os_timer_disarm(&mqttClient->mqttTimer);
-	os_timer_setfn(&mqttClient->mqttTimer, (os_timer_func_t *)mqtt_timer, mqttClient);
-	os_timer_arm(&mqttClient->mqttTimer, 1000, 1);
-#endif
-	INFO("timer1 init statrt...");
 	mqttClient->mqttTimer.interval = 1000;
 	mqttClient->mqttTimer.repeated = 1;
+	mqttClient->mqttTimer.timer_no = 1;
 	mqttClient->mqttTimer.arg = mqttClient;
 	mqttClient->mqttTimer.timer_cb = mqtt_timer;
-    timer1_init(mqttClient->mqttTimer);
-    timer1_stop();
-    timer1_start();
-    INFO("timer1 init end...");
+    pando_timer_init(&mqttClient->mqttTimer);
+    pando_timer_stop(&mqttClient->mqttTimer);
+    pando_timer_start(&mqttClient->mqttTimer);
     
 	if(UTILS_StrToIP(mqttClient->host, &mqttClient->pCon->remote_ip)) {
 		INFO("TCP: Connect to ip  %s:%d\r\n", mqttClient->host, mqttClient->port);
-		if(mqttClient->security){
-			//espconn_secure_connect(mqttClient->pCon);
-			//need a connect time out? TODO
-			net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
-		}
-		else {
-			//espconn_connect(mqttClient->pCon);
-            //need to distinguish secure and non secure? TODO
-			net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
-		}
+		net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
+
 	}
 	else {
 		INFO("TCP: Connect to domain %s:%d\r\n", mqttClient->host, mqttClient->port);
@@ -673,16 +619,11 @@ MQTT_Disconnect(MQTT_Client *mqttClient)
 {
 	if(mqttClient->pCon){
 		INFO("Free memory\r\n");
-        #if 0
-		if(mqttClient->pCon->proto.tcp)
-			pd_free(mqttClient->pCon->proto.tcp);
-        #endif
 		pd_free(mqttClient->pCon);
 		mqttClient->pCon = NULL;
 	}
 
-   // timer1_stop();
-	os_timer_disarm(&mqttClient->mqttTimer);
+    pando_timer_stop(&mqttClient->mqttTimer);
 }
 void FUNCTION_ATTRIBUTE
 MQTT_OnConnected(MQTT_Client *mqttClient, MqttCallback connectedCb)

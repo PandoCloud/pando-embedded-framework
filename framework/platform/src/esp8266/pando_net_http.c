@@ -408,11 +408,11 @@ void net_http_post(const char* url, const char* data, http_callback http_cb)
 		char hostname[128] = "";
 		int port = 443;
 		PRINTF("URL is %s\n", url);
-		if (pd_strncmp(url, "http://", pd_strlen("http://")) != 0) {
-			PRINTF("URL is not HTTP %s\n", url);
+		if (pd_strncmp(url, "https://", pd_strlen("https://")) != 0) {
+			PRINTF("URL is not HTTPS %s\n", url);
 			return;
 		}
-		url += pd_strlen("http://"); // Get rid of the protocol.
+		url += pd_strlen("https://"); // Get rid of the protocol.
 
 		char * path = pd_strchr(url, '/');
 		if (path == NULL) {
