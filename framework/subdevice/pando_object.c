@@ -11,6 +11,8 @@
 
 #include "pando_object.h"
 #include "../platform/include/pando_sys.h"
+//#include "../platform/include/pando_types.h"
+//#include "os_type.h"
 #include "../protocol/pando_machine.h"
 
 #define MAX_OBJECTS 16
