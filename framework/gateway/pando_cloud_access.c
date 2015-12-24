@@ -1,5 +1,5 @@
 #include "pando_cloud_access.h"
-#include "pando_storage_interface.h"
+#include "../platform/include/pando_storage_interface.h"
 #include "../platform/include/pando_types.h"
 #include "gateway_defs.h"
 #include "pando_channel.h"

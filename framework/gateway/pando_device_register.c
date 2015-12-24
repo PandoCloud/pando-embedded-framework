@@ -1,5 +1,5 @@
 #include "pando_device_register.h"
-#include "pando_storage_interface.h"
+#include "platform/include/pando_storage_interface.h"
 #include "platform/include/pando_sys.h"
 #include "platform/include/pando_types.h"
 #include "lib/json/jsonparse.h"
@@ -133,10 +133,10 @@ void pando_device_register(gateway_callback callback)
     str_device_key = pando_data_get(DATANAME_DEVICE_KEY);
 
     char str_device_serial[DEVICE_SERIAL_BUF_LEN];
-	// TODO: device unique indentify will be delivered by the framwork_init.
-    //gprs_get_imei(char* str_device_serial);
+    get_device_serial(str_device_serial);
     str_device_serial[DEVICE_SERIAL_BUF_LEN - 1] = 0;
     pd_printf("device_serial:%s\n", str_device_serial);
+
     // try register device via HTTP
     struct jsontree_string json_product_key = JSONTREE_STRING("");
     struct jsontree_string json_device_code = JSONTREE_STRING(str_device_serial);
