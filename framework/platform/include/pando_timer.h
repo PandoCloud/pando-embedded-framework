@@ -28,7 +28,12 @@ struct pd_timer
     expiry_cb timer_cb;
     void* arg;
 };
-
+typedef enum {
+	NET_CONNECT_FAIL = 0,
+	NET_CONNECT_ERROR,
+	NET_CONNECT_CONNECTING,
+	NET_CONNECT_OK
+}NET_CONNECT_STATUS;
 /******************************************************************************
  * FunctionName : timer1_init
  * Description  : init timer1.
@@ -53,4 +58,6 @@ void pando_timer_start(struct pd_timer * timer);
  ******************************************************************************/
 void pando_timer_stop(struct pd_timer * timer);
 
+
+NET_CONNECT_STATUS net_connect_check(void);
 #endif /* _PANDO_TIMER_H_ */
