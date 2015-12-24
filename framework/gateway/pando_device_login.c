@@ -1,5 +1,5 @@
 #include "pando_device_login.h"
-#include "pando_storage_interface.h"
+#include "../platform/include/pando_storage_interface.h"
 #include "gateway_defs.h"
 #include "../platform/include/pando_sys.h"
 #include "../platform/include/pando_types.h"

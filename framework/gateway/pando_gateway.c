@@ -16,6 +16,7 @@
 #include "platform/include/pando_sys.h"
 #include "pando_zero_device.h"
 #include "platform/include/pando_timer.h"
+#include "platform/include/platform_miscellaneous_interface.h"
 
 //extern load_data_from_flash();
 
@@ -77,7 +78,7 @@ gateway_cb(sint8 result)
 static void FUNCTION_ATTRIBUTE
 device_connect_check()
 {
-	if(net_connect_check() == OK);
+	if(net_connect_check() == 1);
 	{
 		gateway_status = GATEWAY_LOGIN;
 		pando_device_login(gateway_cb);
