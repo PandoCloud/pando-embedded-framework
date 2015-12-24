@@ -21,6 +21,8 @@
 #define DATANAME_ACCESS_TOKEN "pando_access_token"
 #define DATANAME_ACCESS_ADDR "pando_access_addr"
 
+#define PANDO_KEEPALIVE_TIME  30
+
 #define PANDO_DEVICE_MODULE "SIM800_GPRS"
 
 #define PANDO_SDK_VERSION "0.0.1"

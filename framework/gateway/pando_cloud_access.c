@@ -27,7 +27,7 @@ conv_addr_str(const char * ip_str, uint8_t * str_ip_addr, int * port)
         return -1;
     }
     // ip address
-    size_t ip_len = colon - ip_str;
+    uint32_t ip_len = colon - ip_str;
     pd_strncpy(str_ip_addr, ip_str, ip_len);
     str_ip_addr[ip_len] = '\0';
 
@@ -252,13 +252,11 @@ pando_cloud_access(gateway_callback callback)
 
     MQTT_InitConnection(&mqtt_client, ip_string, port, 0);
 
-   // MQTT_Connect(&mqtt_client);
-
     char access_token_str[64];
     char* token_str = pando_data_get(DATANAME_ACCESS_TOKEN);
-    pd_memcpy(access_token_str, token_str, pd_strlen(token_str));
-    MQTT_InitClient(&mqtt_client, str_device_id_hex, "", access_token_str, 30, 1);
-    pd_printf("access str_device_id_hex:%s\n",&str_device_id_hex);
+    pd_memcpy(access_token_str, token_str, pd_strlen(token_str) + 1);
+    MQTT_InitClient(&mqtt_client, str_device_id_hex, "", access_token_str, PANDO_KEEPALIVE_TIME, 1);
+    pd_printf("access str_device_id_hex:%s\n", &str_device_id_hex);
     MQTT_OnConnected(&mqtt_client, mqtt_connect_cb);
     MQTT_OnDisconnected(&mqtt_client, mqtt_disconnect_cb);
     MQTT_OnPublished(&mqtt_client, mqtt_published_cb);

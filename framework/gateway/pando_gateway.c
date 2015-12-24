@@ -13,9 +13,13 @@
 #include "pando_device_login.h"
 #include "pando_cloud_access.h"
 #include "gateway_defs.h"
-#include "../platform/include/pando_sys.h"
+#include "platform/include/pando_sys.h"
 #include "pando_zero_device.h"
+<<<<<<< HEAD
 #include "../platform/include/pando_timer.h"
+=======
+#include "platform/include/pando_timer.h"
+>>>>>>> master
 
 //extern load_data_from_flash();
 
@@ -77,11 +81,18 @@ gateway_cb(sint8 result)
 static void FUNCTION_ATTRIBUTE
 device_connect_check()
 {
+<<<<<<< HEAD
 	if(net_connect_check() == NET_CONNECT_OK)
 	{
 		gateway_status = GATEWAY_LOGIN;
 		pando_device_login(gateway_cb);
 		pando_timer_stop(&gateway_timer);
+=======
+	if(net_connect_check() == OK);
+	{
+		gateway_status = GATEWAY_LOGIN;
+		pando_device_login(gateway_cb);
+>>>>>>> master
 	}
 	else
 	{
@@ -106,8 +117,11 @@ pando_gateway_init()
 
     //pando_system_time_init();
 
+<<<<<<< HEAD
     load_data_from_flash();
 
+=======
+>>>>>>> master
     pando_zero_device_init();
 
     gateway_timer.interval = 5000;
