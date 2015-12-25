@@ -292,17 +292,11 @@ uint16_t FUNCTION_ATTRIBUTE mqtt_get_id(uint8_t* buffer, uint16_t length)
 mqtt_message_t* FUNCTION_ATTRIBUTE mqtt_msg_connect(mqtt_connection_t* connection, mqtt_connect_info_t* info)
 {
   struct mqtt_connect_variable_header* variable_header;
-
   init_message(connection);
-
   if(connection->message.length + sizeof(*variable_header) > connection->buffer_length)
-  {
     return fail_message(connection);
-  }
-
   variable_header = (void*)(connection->buffer + connection->message.length);
   connection->message.length += sizeof(*variable_header);
-
   variable_header->lengthMsb = 0;
 #if defined(PROTOCOL_NAMEv31)
   variable_header->lengthLsb = 6;
@@ -315,55 +309,37 @@ mqtt_message_t* FUNCTION_ATTRIBUTE mqtt_msg_connect(mqtt_connection_t* connectio
 #else
 #error "Please define protocol name"
 #endif
-
   variable_header->flags = 0;
   variable_header->keepaliveMsb = info->keepalive >> 8;
   variable_header->keepaliveLsb = info->keepalive & 0xff;
 
   if(info->clean_session)
-  {
     variable_header->flags |= MQTT_CONNECT_FLAG_CLEAN_SESSION;
-  }
-
   if(info->client_id != NULL && info->client_id[0] != '\0')
   {
     if(append_string(connection, info->client_id, strlen(info->client_id)) < 0)
-    {
       return fail_message(connection);
-    }
   }
   else
-  {
     return fail_message(connection);
-  }
 
   if(info->will_topic != NULL && info->will_topic[0] != '\0')
   {
     if(append_string(connection, info->will_topic, strlen(info->will_topic)) < 0)
-    {
       return fail_message(connection);
-    }
 
     if(append_string(connection, info->will_message, strlen(info->will_message)) < 0)
-    {
       return fail_message(connection);
-    }
 
     variable_header->flags |= MQTT_CONNECT_FLAG_WILL;
     if(info->will_retain)
-    {
       variable_header->flags |= MQTT_CONNECT_FLAG_WILL_RETAIN;
-    }
     variable_header->flags |= (info->will_qos & 3) << 3;
   }
-
   if(info->username != NULL && info->username[0] != '\0')
   {
-
     if(append_string(connection, info->username, strlen(info->username)) < 0)
-    {
       return fail_message(connection);
-    }
 
     variable_header->flags |= MQTT_CONNECT_FLAG_USERNAME;
   }
@@ -371,9 +347,7 @@ mqtt_message_t* FUNCTION_ATTRIBUTE mqtt_msg_connect(mqtt_connection_t* connectio
   if(info->password != NULL && info->password[0] != '\0')
   {
     if(append_string(connection, info->password, strlen(info->password)) < 0)
-    {
       return fail_message(connection);
-    }
 
     variable_header->flags |= MQTT_CONNECT_FLAG_PASSWORD;
   }
