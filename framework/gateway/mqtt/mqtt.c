@@ -511,7 +511,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 		temp = pd_strlen(client_user);
 		mqttClient->connect_info.username = (uint8_t*)pd_malloc(temp + 1);
         pd_memset(mqttClient->connect_info.username, 0, temp + 1);
-		pd_strncpy(mqttClient->connect_info.username, client_user);
+        pd_strncpy(mqttClient->connect_info.username, client_user);
 		mqttClient->connect_info.username[temp] = 0;
 	}
 	if(client_pass == NULL)

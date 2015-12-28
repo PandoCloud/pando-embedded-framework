@@ -1,5 +1,5 @@
 /*******************************************************
- * File name: platform_misceelaneous_interface.h
+ * File name: platform_miscellaneous_interface.h
  * Author: Chongguang Li
  * Versions: 1.0
  * Description:This module includes platform relationship api.
@@ -8,8 +8,8 @@
  *     Author: Chongguang Li
  *     Modification:    
  *********************************************************/
-#ifndef _PLATFORM_MISCEELANEOUS_INTERFACE_H
-#define _PLATFORM_MISCEELANEOUS_INTERFACE_H
+#ifndef _PLATFORM_MISCELLANEOUS_INTERFACE_H
+#define _PLATFORM_MISCELLANEOUS_INTERFACE_H
 
 /******************************************************************************
  * FunctionName : net_connect_check

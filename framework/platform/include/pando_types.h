@@ -12,8 +12,7 @@
 #ifndef _PANDO_TYPES_H_
 #define _PANDO_TYPES_H_
 
-//define data handler callback
-typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
+
 
 #ifndef NULL
 #define NULL (void *)0
@@ -21,7 +20,7 @@ typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
 
 #define BIT(nr)                 (1UL << (nr))
 
-#ifdef ESP8266_PLANTFORM
+#ifdef ESP8266_PLATFORM
 #define FUNCTION_ATTRIBUTE ICACHE_FLASH_ATTR
 #include "c_types.h"
 #else
@@ -38,6 +37,9 @@ typedef unsigned char   bool;
 #define FALSE           false
 
 #endif /* !__cplusplus */
+
+//define data handler callback
+typedef void (* data_handler_callback)(uint8_t *buffer, uint16_t length);
 
 #endif /* _PANDO_TYPES_H_ */
 

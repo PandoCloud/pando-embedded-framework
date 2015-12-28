@@ -16,11 +16,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef ESP8266_PLANTFORM
+#ifdef ESP8266_PLATFORM
 
 #include "mem.h"
 #include "osapi.h"
 #include "user_interface.h"
+#include "../../../../user/device_config.h"
 
 #define pd_malloc       os_malloc
 #define pd_free         os_free

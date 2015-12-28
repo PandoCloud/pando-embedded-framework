@@ -1,11 +1,11 @@
 #include "pando_device_register.h"
-#include "platform/include/pando_storage_interface.h"
-#include "platform/include/pando_sys.h"
-#include "platform/include/pando_types.h"
-#include "lib/json/jsonparse.h"
-#include "lib/json/jsontree.h"
-#include "lib/pando_json.h"
-#include "platform/include/pando_net_http.h"
+#include "../platform/include/pando_storage_interface.h"
+#include "../platform/include/pando_sys.h"
+#include "../platform/include/pando_types.h"
+#include "../lib/json/jsonparse.h"
+#include "../lib/json/jsontree.h"
+#include "../lib/pando_json.h"
+#include "../platform/include/pando_net_http.h"
 
 #define MAX_BUF_LEN 256
 #define DEVICE_SERIAL_BUF_LEN 16
@@ -138,7 +138,7 @@ void pando_device_register(gateway_callback callback)
     pd_printf("device_serial:%s\n", str_device_serial);
 
     // try register device via HTTP
-    struct jsontree_string json_product_key = JSONTREE_STRING("");
+    struct jsontree_string json_product_key = JSONTREE_STRING(PANDO_PRODUCT_KEY);
     struct jsontree_string json_device_code = JSONTREE_STRING(str_device_serial);
     struct jsontree_int json_device_type = JSONTREE_INT(1);
     struct jsontree_string json_device_module = JSONTREE_STRING(PANDO_DEVICE_MODULE);

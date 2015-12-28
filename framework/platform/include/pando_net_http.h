@@ -14,6 +14,8 @@
 
 #include "pando_types.h"
 
+#define BUFFER_SIZE_MAX  5000
+
 typedef void (* http_callback)(char* response);
 
 /******************************************************************************
