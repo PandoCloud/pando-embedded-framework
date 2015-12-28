@@ -12,7 +12,6 @@
 #include "../../include/pando_storage_interface.h"
 #include "../../include/pando_types.h"
 #include "../../include/pando_sys.h"
-#include "../../../gateway/mqtt/debug.h"
 #include "spi_flash.h"
 #include "mem.h"
 #include "osapi.h"
