@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include "../../include/pando_timer.h"
 #include "os_type.h"
 #include "osapi.h"
 #include "espconn.h"
