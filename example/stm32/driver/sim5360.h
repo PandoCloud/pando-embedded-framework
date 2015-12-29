@@ -74,6 +74,14 @@ int8_t  get_module_status(void);
 *******************************************************************************/
 void set_module_status(int8_t status);
 
+/******************************************************************************
+ * FunctionName : inquire_signal_quality
+ * Description  : inquire the signal quality.
+ * Parameters   : none.
+ * Returns      : the signal quality.
+ // TODO: the acquired signal quality is not the current value, but the last inquired value.
+*******************************************************************************/
+uint8_t inquire_signal_quality(void);
 
 uint8_t module_system_start(void);
 
