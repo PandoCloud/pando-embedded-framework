@@ -29,4 +29,6 @@ pando-embedded-framwork is different in that, it abstracts the common gateway bu
 #how to
 If you want to use this framework in your own project, what you need to do is to implement the interface in `include` directory, and to add your own devices which are defined in `subdevice`. We will offer examples for you to refer to.   
 If you want to know more about the whole framework, you can follow the project [pando-cloud](https://github.com/PandoCloud/pando-cloud) to learn about the cloud. And the project [tisan-kit](https://github.com/tisan-kit) contains more examples about the framework by our development board `tisan`.   
-We also appreciate you to share your implementation on your platform or improve this framework. If you want to do so, there is [a coding style](doc/coding-style.md) for you to read first in order to cooperate better.
+We also appreciate you to share your implementation on your platform or improve this framework. If you want to do so, there is [a coding style](doc/coding-style.md) for you to read first in order to cooperate better. 
+#Example 
+[stm32+3G](doc/eg-stm32-3g.md)
