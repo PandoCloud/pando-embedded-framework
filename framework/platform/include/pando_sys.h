@@ -37,7 +37,6 @@
 #define pd_strchr		os_strchr
 
 #define pd_sprintf      os_sprintf
-
 #define pd_printf       os_printf
 
 #else
@@ -53,13 +52,13 @@
 #define pd_memset       memset
 
 #define pd_strlen       strlen
+#define pd_strcpy       strcpy
 #define pd_strncpy      strncpy
 #define pd_strcmp       strcmp
 #define pd_strncmp      strncmp
 #define pd_strchr		strchr
 
 #define pd_sprintf      sprintf
-
 #define pd_printf       printf
 
 #endif

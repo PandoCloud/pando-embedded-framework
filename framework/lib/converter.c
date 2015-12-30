@@ -41,7 +41,7 @@ char2bin(char a)
  * Returns      : none.
 *******************************************************************************/
 void FUNCTION_ATTRIBUTE
-hex2bin(uint8 * dst, char * hex_str)
+hex2bin(uint8_t * dst, char * hex_str)
 {
     char * p = NULL;
     int i=0;

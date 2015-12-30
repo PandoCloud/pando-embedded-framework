@@ -44,7 +44,7 @@ char * pando_data_get(char* key);
  * Parameters   : 
  * Returns      : the space left for pando data saving.
 *******************************************************************************/
-uint16 pando_storage_space_left(void);
+uint16_t pando_storage_space_left(void);
 
 /******************************************************************************
  * FunctionName : pando_storage_clean.

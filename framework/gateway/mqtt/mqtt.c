@@ -415,6 +415,7 @@ MQTT_Task(MQTT_Client *client)
 	case TCP_RECONNECT_REQ:
 		break;
 	case TCP_RECONNECT:
+		
 		MQTT_Connect(client);
 		INFO("TCP: Reconnect to: %s:%d\r\n", client->host, client->port);
 		client->connState = TCP_CONNECTING;
@@ -433,20 +434,9 @@ MQTT_Task(MQTT_Client *client)
 			client->sendTimeout = MQTT_SEND_TIMOUT;
 			buffer.data = dataBuffer;
 			buffer.length = dataLen;
-
 			INFO("MQTT: Sending, type: %d, id: %04X\r\n",client->mqtt_state.pending_msg_type, client->mqtt_state.pending_msg_id);
-			if(client->security){
-                net_tcp_send(client->pCon, buffer, client->sendTimeout);
-                //espconn_secure_sent(client->pCon, dataBuffer, dataLen);
-			}
-			else{
-				INFO("net_tcp_send\n");
-				INFO("client:%d",client);
-
-                net_tcp_send(client->pCon, buffer, client->sendTimeout);
-				//espconn_sent(client->pCon, dataBuffer, dataLen);
-			}
-
+            
+			net_tcp_send(client->pCon, buffer, client->sendTimeout);
 			client->mqtt_state.outbound_message = NULL;
 			break;
 		}
@@ -471,11 +461,11 @@ MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32_t port, uint8
 	temp = pd_strlen(host);
 	mqttClient->host = (uint8_t*)pd_malloc(temp + 1);
     pd_memset(mqttClient->host, 0, temp + 1);
-	pd_strncpy(mqttClient->host, host);
+	pd_strcpy(mqttClient->host, host);
 	mqttClient->host[temp] = 0;
 	mqttClient->port = port;
 	mqttClient->security = security;
-	PRINTF("MQTT_InitConnection END...\n");
+	INFO("MQTT_InitConnection END...\n");
 }
 
 /**
@@ -498,7 +488,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 	temp = pd_strlen(client_id);
 	mqttClient->connect_info.client_id = (uint8_t*)pd_malloc(temp + 1);
     pd_memset(mqttClient->connect_info.client_id, 0, temp + 1);
-	pd_strncpy(mqttClient->connect_info.client_id, client_id);
+	pd_strcpy(mqttClient->connect_info.client_id, client_id);
 	mqttClient->connect_info.client_id[temp] = 0;
 
 	if(client_user == NULL)
@@ -511,12 +501,12 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 		temp = pd_strlen(client_user);
 		mqttClient->connect_info.username = (uint8_t*)pd_malloc(temp + 1);
         pd_memset(mqttClient->connect_info.username, 0, temp + 1);
-        pd_strncpy(mqttClient->connect_info.username, client_user);
+        pd_strcpy(mqttClient->connect_info.username, client_user);
 		mqttClient->connect_info.username[temp] = 0;
 	}
 	if(client_pass == NULL)
 	{
-		PRINTF("client_pass == NULL...\n");
+		INFO("client_pass == NULL...\n");
 		mqttClient->connect_info.password = NULL;
 	}
 
@@ -525,7 +515,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
 		temp = pd_strlen(client_pass);
 		mqttClient->connect_info.password = (uint8_t*)pd_malloc(temp + 1);
         pd_memset(mqttClient->connect_info.password, 0, temp + 1);
-		pd_strncpy(mqttClient->connect_info.password, client_pass);
+		pd_strcpy(mqttClient->connect_info.password, client_pass);
 		mqttClient->connect_info.password[temp] = 0;
 	}
 
@@ -553,14 +543,14 @@ MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, ui
 	temp = pd_strlen(will_topic);
 	mqttClient->connect_info.will_topic = (uint8_t*)pd_malloc(temp + 1);
     pd_memset(mqttClient->connect_info.will_topic, 0, temp + 1);
-	pd_strncpy(mqttClient->connect_info.will_topic, will_topic);
+	pd_strcpy(mqttClient->connect_info.will_topic, will_topic);
 	mqttClient->connect_info.will_topic[temp] = 0;
 
 	temp = pd_strlen(will_msg);
 	mqttClient->connect_info.will_message = (uint8_t*)pd_malloc(temp + 1);
     pd_memset(mqttClient->connect_info.will_message, 0, temp + 1);
     
-	pd_strncpy(mqttClient->connect_info.will_message, will_msg);
+	pd_strcpy(mqttClient->connect_info.will_message, will_msg);
 	mqttClient->connect_info.will_message[temp] = 0;
 
 
@@ -579,8 +569,6 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	MQTT_Disconnect(mqttClient);
     mqttClient->pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
     pd_memset(mqttClient->pCon, 0, sizeof(struct pando_tcp_conn));
-
-	mqttClient->pCon->local_port = espconn_port();
 	mqttClient->pCon->remote_port = mqttClient->port;
 	mqttClient->pCon->reverse = mqttClient;
 	mqttClient->pCon->secure = 0;

@@ -25,7 +25,7 @@
 #include "c_types.h"
 #else
 #define FUNCTION_ATTRIBUTE
-#include "stdint.h"
+#include <stdint.h>
 #endif
 
 #ifndef __cplusplus

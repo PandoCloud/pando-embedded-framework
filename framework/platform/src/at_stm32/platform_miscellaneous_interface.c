@@ -1,3 +1,7 @@
+#include "../include/pando_sys.h"
+#include "../include/pando_types.h"
+#include "sim5360.h"
+
 extern uint8_t g_imei_buf[16];
 
 /******************************************************************************
@@ -10,7 +14,7 @@ extern uint8_t g_imei_buf[16];
 bool net_connect_check(void)
 {
 	// TODO: the acquired signal quality is not the current value, but the last inquired value.
-	if(inquire_signal_quality() > 15)
+	if(inquire_signal_quality() > MIN_SIGNAL_QUAILTY)
 	{
 		return 1;
 	}
@@ -28,7 +32,7 @@ bool net_connect_check(void)
 *******************************************************************************/
 void get_device_serial(char* serial_buf)
 {
-	strcpy(serial_buf, g_imei_buf);
+	pd_memcpy(serial_buf, g_imei_buf, sizeof(g_imei_buf));
 }
 
 

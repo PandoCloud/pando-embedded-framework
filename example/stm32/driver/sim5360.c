@@ -28,7 +28,7 @@
 // Suport different Content-Type header
 #define HTTP_HEADER_CONTENT_TYPE "application/json"
 
-extern uint8_t g_imei_buf[16];
+uint8_t g_imei_buf[16];
 
 struct module_buffer{
 	uint8_t *buffer;

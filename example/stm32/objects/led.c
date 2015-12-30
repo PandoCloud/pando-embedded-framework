@@ -11,6 +11,7 @@
 #include "pando_object.h"
 #include "stdint.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 #define LED_OBJECT_NO 1
 

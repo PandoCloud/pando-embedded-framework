@@ -20,7 +20,7 @@
 static gateway_callback device_login_callback = NULL;
 static char * request = NULL;
 
-extern uint8 pando_device_token[ACCESS_TOKEN_LEN];
+extern uint8_t pando_device_token[ACCESS_TOKEN_LEN];
 
 static void FUNCTION_ATTRIBUTE
 http_callback_login(char * response)
