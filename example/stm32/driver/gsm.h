@@ -12,7 +12,6 @@
 #define __GSM_H
 
 #include "platform/include/pando_types.h"
-#include "pando_net_tcp.h"
 
 #define GSM_OFF_LINE -1
 #define GSM_START 0

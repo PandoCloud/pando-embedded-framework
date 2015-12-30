@@ -33,7 +33,7 @@ struct pd_timer gateway_timer;
  * Returns      : none
 *******************************************************************************/
 void FUNCTION_ATTRIBUTE
-gateway_cb(sint8 result)
+gateway_cb(int8_t result)
 {
     switch(gateway_status)
     {

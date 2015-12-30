@@ -36,7 +36,7 @@
  *         Niclas Finne <nfi@sics.se>
  *         Joakim Eriksson <joakime@sics.se>
  */
-#ifdef JSON_FORMAT
+ 
 //#include "contiki.h"
 #include "jsontree.h"
 #include "jsonparse.h"
@@ -103,9 +103,9 @@ jsontree_write_int(const struct jsontree_context *js_ctx, int value)
 
 /*---------------------------------------------------------------------------*/
 void FUNCTION_ATTRIBUTE
-jsontree_write_int_array(const struct jsontree_context *js_ctx, const int *text, uint32 length)
+jsontree_write_int_array(const struct jsontree_context *js_ctx, const int *text, uint32_t length)
 {
-  uint32 i = 0;
+  uint32_t i = 0;
   if(text == NULL) {
     js_ctx->putchar('0');
   } else {
@@ -292,5 +292,4 @@ jsontree_find_next(struct jsontree_context *js_ctx, int type)
   return js_ctx->path < js_ctx->depth ? v : NULL;
 }
 /*---------------------------------------------------------------------------*/
-#endif
 

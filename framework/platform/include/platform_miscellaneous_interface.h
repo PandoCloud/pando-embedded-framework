@@ -11,6 +11,8 @@
 #ifndef _PLATFORM_MISCELLANEOUS_INTERFACE_H
 #define _PLATFORM_MISCELLANEOUS_INTERFACE_H
 
+#include "pando_types.h"
+
 /******************************************************************************
  * FunctionName : net_connect_check
  * Description  : check whether the platform connect the net.
