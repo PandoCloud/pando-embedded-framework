@@ -41,7 +41,7 @@
 #define __JSONTREE_H__
 
 #include "../../platform/include/pando_types.h"
-#include "json/json.h"
+#include "json.h"
 
 #ifdef JSONTREE_CONF_MAX_DEPTH
 #define JSONTREE_MAX_DEPTH JSONTREE_CONF_MAX_DEPTH
@@ -133,7 +133,7 @@ const char *jsontree_path_name(const struct jsontree_context *js_ctx,
                                int depth);
 
 void jsontree_write_int(const struct jsontree_context *js_ctx, int value);
-void jsontree_write_int_array(const struct jsontree_context *js_ctx, const int *text, uint32 length);
+void jsontree_write_int_array(const struct jsontree_context *js_ctx, const int *text, uint32_t length);
 
 void jsontree_write_atom(const struct jsontree_context *js_ctx,
                          const char *text);

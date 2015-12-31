@@ -11,8 +11,13 @@
 
 #ifndef EXAMPLE_STM32_DRIVER_SIM5360_H_
 #define EXAMPLE_STM32_DRIVER_SIM5360_H_
-#include "platform/include/pando_types.h"
-#include "pando_net_tcp.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include <stdint.h>
 
 #define MODULE_OFF_LINE -1
 #define MODULE_START 0
@@ -20,6 +25,8 @@
 #define MODULE_INIT  2
 #define MODULE_GET_IP  3
 #define MODULE_INIT_DONE 4
+	
+#define MIN_SIGNAL_QUAILTY 15
 
 typedef void(*module_tcp_connected_callback)(int16_t fd, int8_t error_no);
 typedef void(* module_tcp_sent_callback)(int16_t fd, int8_t errno);
@@ -74,6 +81,14 @@ int8_t  get_module_status(void);
 *******************************************************************************/
 void set_module_status(int8_t status);
 
+/******************************************************************************
+ * FunctionName : inquire_signal_quality
+ * Description  : inquire the signal quality.
+ * Parameters   : none.
+ * Returns      : the signal quality.
+ // TODO: the acquired signal quality is not the current value, but the last inquired value.
+*******************************************************************************/
+uint8_t inquire_signal_quality(void);
 
 uint8_t module_system_start(void);
 
@@ -93,5 +108,9 @@ void add_send_at_command(char* name_buffer, char* cmd_buffer);
  * Returns      : none.
 *******************************************************************************/
 int8_t module_data_handler(void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EXAMPLE_STM32_DRIVER_module_H_ */

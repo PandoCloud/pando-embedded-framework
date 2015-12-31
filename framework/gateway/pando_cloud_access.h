@@ -11,6 +11,11 @@
 #ifndef __PANDO_CLOUD_ACCESS_H
 #define __PANDO_CLOUD_ACCESS_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "gateway_defs.h"
 
  /******************************************************************************
@@ -20,5 +25,9 @@
  * Returns      : 
 *******************************************************************************/
 void pando_cloud_access(gateway_callback callback);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

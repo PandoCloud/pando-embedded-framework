@@ -28,7 +28,7 @@
 // Suport different Content-Type header
 #define HTTP_HEADER_CONTENT_TYPE "application/json"
 
-extern uint8_t g_imei_buf[16];
+uint8_t g_imei_buf[16];
 
 struct module_buffer{
 	uint8_t *buffer;
@@ -42,6 +42,8 @@ static module_tcp_recv_callback tcp_recv_cb = NULL;
 static module_tcp_disconnected_callback tcp_disconnected_cb = NULL;
 static module_http_callback s_http_cb = NULL;
 
+static uint8_t s_csq_value = 0;
+
 typedef int8_t (*AT_cmdHandle)(bool *urc, char* buf);
 typedef struct
 {
@@ -52,6 +54,7 @@ typedef struct
 // general handle.
 static int8_t at_handle( bool *urc, char* buf);
 static int8_t ate_handle(bool *urc, char* buf);
+static int8_t csq_handle(bool *urc, char*buf);
 
 // net open handle.
 static int8_t net_open_hanle( bool *urc, char* buf);
@@ -78,7 +81,7 @@ AtcHandleType  atCmdTable[ ] =
         {"ATE",  ate_handle},
         {"AT+IFC",  at_handle},
         {"AT+CPIN",   at_handle},
-        {"AT+CSQ",  at_handle},
+        {"AT+CSQ",  csq_handle},
 		{"AT+GSN", gsn_handle},
 		{"AT+CGSOCKCONT", at_handle},
 		{"AT+CIPMODE", at_handle},
@@ -258,6 +261,56 @@ static int8_t ate_handle(bool *urc, char* buf)
 	return s_at_status;
 }
 
+static int8_t csq_handle(bool *urc, char*buf)
+{
+	// TODO: deal with urc
+	char *rep_str[ ] = {"OK","ERROR", "+CSQ: "};
+	int8_t res = -1;
+	char *p;
+	uint8_t  i = 0;
+	p= (char *)buf;
+
+	while ( '\r' == *p || '\n' == *p)
+	{
+		p++;
+	}
+
+	for (i = 0; i < sizeof(rep_str) / sizeof(rep_str[0]); i++)
+	{
+		if (strstr( p,rep_str[i]))
+	    {
+			res = i;
+	        break;
+	    }
+	}
+
+	switch (res)
+	{
+		case 0:  // OK
+	    {
+	    	s_at_status = ATC_RSP_FINISH;
+	    }
+	    break;
+
+	    case 1: // ERROR
+	    {
+	    	//TODO: error process.
+	        s_at_status = ATC_RSP_FINISH;
+	    }
+	    break;
+
+	    case 2:
+	    {
+	    	s_csq_value = atol(p + sizeof("+CSQ: "));
+	    }
+	    break;
+
+	    default:
+	    break;
+	}
+	return s_at_status;
+}
+
 static int8_t gsn_handle(bool *urc, char*buf)
 {
 	// TODO: deal with urc
@@ -311,7 +364,7 @@ static int8_t gsn_handle(bool *urc, char*buf)
 
 static int8_t net_open_hanle( bool *urc, char* buf)
 {
-	/// TODO: deal with urc
+	// TODO: deal with urc
 	char *rep_str[ ] = {"OK","ERROR", "+NETOPEN: 0"};
 	int8_t res = -1;
 	char *p;
@@ -1086,6 +1139,19 @@ void module_send_data(uint16_t fd, uint8_t *buf, uint16_t len)
 	add_send_at_command("AT+CIPSEND", command_buffer);
 	fifo_put_data(&s_at_fifo, tcp_data_buffer);
 	printf("%s, 33, %d\n", __func__, len);
+}
+
+/******************************************************************************
+ * FunctionName : inquire_signal_quality
+ * Description  : inquire the signal quality.
+ * Parameters   : none.
+ * Returns      : the signal quality.
+ // TODO: the acquired signal quality is not the current value, but the last inquired value.
+*******************************************************************************/
+uint8_t inquire_signal_quality(void)
+{
+	add_send_at_command("AT+CSQ", "AT+CSQ\r\n");
+	return s_csq_value;
 }
 
 void module_http_post(const char *url, const char *data, module_http_callback http_cb)

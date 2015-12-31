@@ -1,9 +1,8 @@
-#include "../../../pando/framework/subdevice/pando_subdevice.h"
-
-#include "../../../pando/framework/gateway/pando_channel.h"
-#include "../../../pando/framework/protocol/common_functions.h"
-#include "../../../pando/framework/protocol/sub_device_protocol.h"
-#include "../../../pando/framework/subdevice/pando_object.h"
+#include "../subdevice/pando_subdevice.h"
+#include "../gateway/pando_channel.h"
+#include "../protocol/common_functions.h"
+#include "../protocol/sub_device_protocol.h"
+#include "../subdevice/pando_object.h"
 #include "../platform/include/pando_sys.h"
 
 #define CMD_QUERY_STATUS (65528)
@@ -90,11 +89,11 @@ pando_subdevice_recv(uint8_t * buffer, uint16_t length)
 
     struct sub_device_buffer *device_buffer = (struct sub_device_buffer *)pd_malloc(sizeof(struct sub_device_buffer));
     device_buffer->buffer_length = length;
-    device_buffer->buffer = (uint8 *)pd_malloc(length);
+    device_buffer->buffer = (uint8_t *)pd_malloc(length);
 
     pd_memcpy(device_buffer->buffer, buffer, length);
 
-    uint16 payload_type = get_sub_device_payloadtype(device_buffer);
+    uint16_t payload_type = get_sub_device_payloadtype(device_buffer);
 
     switch (payload_type) {
     case PAYLOAD_TYPE_DATA:

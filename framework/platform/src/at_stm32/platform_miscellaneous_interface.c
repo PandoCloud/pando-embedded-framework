@@ -1,17 +1,8 @@
-/*******************************************************
- * File name: platform_miscellaneous_interface.h
- * Author: Chongguang Li
- * Versions: 1.0
- * Description:This module includes platform relationship api.
- * History:
- *   1.Date: initial code
- *     Author: Chongguang Li
- *     Modification:    
- *********************************************************/
-#ifndef _PLATFORM_MISCELLANEOUS_INTERFACE_H
-#define _PLATFORM_MISCELLANEOUS_INTERFACE_H
+#include "../include/pando_sys.h"
+#include "../include/pando_types.h"
+#include "sim5360.h"
 
-#include "pando_types.h"
+extern uint8_t g_imei_buf[16];
 
 /******************************************************************************
  * FunctionName : net_connect_check
@@ -20,7 +11,18 @@
  * Returns      : 1: the platform connect the net OK.
  * 				  0: the platform dose not connect the net.
 *******************************************************************************/
-bool net_connect_check(void);
+bool net_connect_check(void)
+{
+	// TODO: the acquired signal quality is not the current value, but the last inquired value.
+	if(inquire_signal_quality() > MIN_SIGNAL_QUAILTY)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 /******************************************************************************
  * FunctionName : get_device_serial
@@ -28,8 +30,9 @@ bool net_connect_check(void);
  * Parameters   : serial_buf: the buf storage the serial.
  * Returns      : none.
 *******************************************************************************/
-void get_device_serial(char* serial_buf);
+void get_device_serial(char* serial_buf)
+{
+	pd_memcpy(serial_buf, g_imei_buf, sizeof(g_imei_buf));
+}
 
 
-
-#endif

@@ -34,7 +34,8 @@ net_connect_check(void)
 	}
 }
 
-void get_device_serial(char* serial_buf)
+void ICACHE_FLASH_ATTR
+get_device_serial(char* serial_buf)
 {
     char device_sta_mac[6];
     wifi_get_macaddr(STATION_IF,device_sta_mac);
