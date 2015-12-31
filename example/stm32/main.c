@@ -10,7 +10,7 @@
 #include "led.h"
 
 char* g_product_key_buf = "d9db7e6a7e11bcd81da5230ad1e3647947f1fb4bf1ff7efa949cea17bab780f3";
-#define SERVER_ADDRESS "https://api.pandocloud.com"
+char* g_server_url = "https://120.24.222.147";
 
 int main(void)
 {
@@ -20,6 +20,7 @@ int main(void)
 	delay_init();
 	mem_init();
 	task *task;
+	printf("system start\n");
 	while(1)
 	{		
 		if(MODULE_OFF_LINE == get_module_status())

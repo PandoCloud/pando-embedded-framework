@@ -157,7 +157,7 @@ int FUNCTION_ATTRIBUTE init_sub_device(struct sub_device_base_params params)
 	return 0;
 }
 
-struct TLVs * FUNCTION_ATTRIBUTE create_params_block()
+struct TLVs * FUNCTION_ATTRIBUTE create_params_block(void)
 {
 	struct TLVs *tlv_block = NULL;
     uint8_t need_length;

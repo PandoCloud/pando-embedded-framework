@@ -15,6 +15,8 @@
 #define MSG_BUF_LEN 32
 
 extern char* g_product_key_buf;
+extern char* g_server_url;
+
 static gateway_callback device_register_callback = NULL;
 static char* request = NULL;
 
@@ -154,14 +156,12 @@ void pando_device_register(gateway_callback callback)
         JSONTREE_PAIR("version", &json_version));
     request = (char *)pd_malloc(MAX_BUF_LEN);
     int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
-
     pd_printf("device register request:::\n%s\n(end)\n", request);
 
-    net_http_post(PANDO_API_URL
-        "/v1/devices/registration",
-        request,
-        http_callback_register);    
-
+	char post_url[128] = "";
+	pd_sprintf(post_url, "%s/v1/devices/registration", g_server_url); 
+	
+    net_http_post(post_url, request, http_callback_register);    
     if(request != NULL)
     {
         pd_free(request);

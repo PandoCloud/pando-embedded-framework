@@ -20,6 +20,7 @@
 static gateway_callback device_login_callback = NULL;
 static char * request = NULL;
 
+extern char* g_server_url;
 extern uint8_t pando_device_token[ACCESS_TOKEN_LEN];
 
 static void FUNCTION_ATTRIBUTE
@@ -153,13 +154,12 @@ pando_device_login(gateway_callback callback)
 
     request = (char *)pd_malloc(MAX_BUF_LEN);
     int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
-
     pd_printf("device login request:::\n%s\n(end)\n", request);
 
-    net_http_post(PANDO_API_URL
-        "/v1/devices/authentication",
-        request,
-        http_callback_login);    
+	char post_url[128] = "";
+	pd_sprintf(post_url, "%s/v1/devices/authentication", g_server_url); 
+	
+    net_http_post(post_url, request, http_callback_login);      
     if(request != NULL)
     {
         pd_free(request);
