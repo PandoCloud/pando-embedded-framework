@@ -20,6 +20,9 @@
 #include "wifi_config.h"
 #include "espconn.h"
 
+char* g_product_key_buf = "8e5be54e561811fa9b403b5387add08ba184855227df729b0998d6898de57a9b";
+#define SERVER_ADDRESS "https://api.pandocloud.com"
+
 static void ICACHE_FLASH_ATTR
 user_key_long_press_cb()
 {
