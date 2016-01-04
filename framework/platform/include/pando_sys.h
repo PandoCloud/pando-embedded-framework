@@ -32,6 +32,7 @@
 
 #define pd_strlen       os_strlen
 #define pd_strncpy      os_strncpy
+#define pd_strcpy      os_strcpy
 #define pd_strcmp       os_strcmp
 #define pd_strncmp      os_strncmp
 #define pd_strchr		os_strchr

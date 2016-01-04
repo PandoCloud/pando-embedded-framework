@@ -2,6 +2,10 @@
 #include "osapi.h"
 #include "espconn.h"
 #include "user_interface.h"
+
+char* g_product_key_buf = "8e5be54e561811fa9b403b5387add08ba184855227df729b0998d6898de57a9b";
+#define SERVER_ADDRESS "https://api.pandocloud.com"
+
 /******************************************************************************
  * FunctionName : wifi_connect_check
  * Description  : check the wifi connect status. if device has connected the wifi,
