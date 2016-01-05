@@ -51,7 +51,7 @@ gateway_cb(int8_t result)
             }
             else
             {
-            	device_connect_check();
+            	pando_timer_start(&gateway_timer);
             }
         break;
         case GATEWAY_REGISTER:
@@ -61,11 +61,11 @@ gateway_cb(int8_t result)
             }
             else
             {
-            	device_connect_check();
+            	pando_timer_start(&gateway_timer);
             }
         break;
         default:
-        	device_connect_check();
+        	pando_timer_start(&gateway_timer);
     }
 }
 
@@ -82,8 +82,8 @@ device_connect_check()
 	if(net_connect_check() == 1)
 	{
 		gateway_status = GATEWAY_LOGIN;
-		pando_device_login(gateway_cb);
 		pando_timer_stop(&gateway_timer);
+		pando_device_login(gateway_cb);
 	}
 	else
 	{

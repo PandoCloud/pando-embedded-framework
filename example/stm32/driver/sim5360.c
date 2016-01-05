@@ -27,6 +27,7 @@
 
 // Suport different Content-Type header
 #define HTTP_HEADER_CONTENT_TYPE "application/json"
+#define MAX_HTTP_SIZE 1000
 
 uint8_t g_imei_buf[16];
 
@@ -43,6 +44,7 @@ static module_tcp_disconnected_callback tcp_disconnected_cb = NULL;
 static module_http_callback s_http_cb = NULL;
 
 static uint8_t s_csq_value = 0;
+static char s_http_buffer[MAX_HTTP_SIZE];
 
 typedef int8_t (*AT_cmdHandle)(bool *urc, char* buf);
 typedef struct
@@ -288,6 +290,10 @@ static int8_t csq_handle(bool *urc, char*buf)
 	{
 		case 0:  // OK
 	    {
+			printf("csq:%s\n", p);
+			p = strstr(p, "+CSQ: ");
+	    	s_csq_value = atol(p + strlen("+CSQ: "));
+			printf("%d\n", s_csq_value);
 	    	s_at_status = ATC_RSP_FINISH;
 	    }
 	    break;
@@ -301,11 +307,13 @@ static int8_t csq_handle(bool *urc, char*buf)
 
 	    case 2:
 	    {
+			printf("csq:%s", p);
 	    	s_csq_value = atol(p + sizeof("+CSQ: "));
 	    }
 	    break;
 
 	    default:
+			
 	    break;
 	}
 	return s_at_status;
@@ -365,7 +373,7 @@ static int8_t gsn_handle(bool *urc, char*buf)
 static int8_t net_open_hanle( bool *urc, char* buf)
 {
 	// TODO: deal with urc
-	char *rep_str[ ] = {"OK","ERROR", "+NETOPEN: 0"};
+	char *rep_str[ ] = {"OK","ERROR", /*"+NETOPEN: 0"*/ "+NETOPEN:"};
 	int8_t res = -1;
 	char *p;
 	uint8_t  i = 0;
@@ -465,14 +473,13 @@ static int8_t cch_open_handle(bool *urc, char*buf)
 
 static int8_t cch_send_handle(bool *urc, char*buf)
 {
-	// TODO: deal with urc.
-	// TODO: free heap when send failed.
-	char *rep_str[ ] = {"+CCHRECV", ">", "OK", "ERROR", "+CCHSEND:"};
+	char *rep_str[ ] = {"+CCHRECV", ">", "OK", "ERROR", "+CCHSEND:", "+CCH_PEER_CLOSED:"};
 	int8_t res = -1;
 	char *p;
 	uint8_t  i = 0;
+	static  uint16_t s_http_data_len = 0;
 	p= (char *)buf;
-
+	
 	while ( '\r' == *p || '\n' == *p)
 	{
 		p++;
@@ -486,15 +493,15 @@ static int8_t cch_send_handle(bool *urc, char*buf)
 	        break;
 	    }
 	}
-
+	
 	switch (res)
 	{
 		case 0:  // +HTTPSRECV:
 	    {
 	    	// check response length.
-	    	char *len_position = strstr(p, "+HTTPSRECV:DATA,1,");
-	    	len_position = len_position + strlen("+HTTPSRECV:DATA,1,");
-	    	int response_len = atoi(len_position);
+	    	p = strstr(p, "+CCHRECV: DATA,1,");
+	    	p = p + strlen("+CCHRECV: DATA,1,");
+	    	int response_len = atoi(p);
 	    	if(response_len>1000)
 	    	{
 	    		printf("response size is illegal:%d!\n", response_len);
@@ -504,12 +511,58 @@ static int8_t cch_send_handle(bool *urc, char*buf)
 	    		}
 	    		s_at_status = ATC_RSP_FINISH;
 	    		return -1;
-	    		}
+	    	}
+			p = strstr(p, "\r\n");
+			p = p + strlen("\r\n");
+			memcpy(s_http_buffer + s_http_data_len, p, response_len);
+			s_http_data_len += response_len;		
+	    }
+	    break;
+	    case 1: // OK
+	    {
+			struct fifo_data* http_post_data;
+	        http_post_data = fifo_get_data(&s_at_fifo);
+	        if(http_post_data != NULL)
+	        {
+	        	printf("sending.....\n");
+	        	usart2_send(http_post_data->buf, http_post_data->length);
+	        	if(http_post_data->buf != NULL)
+	        	{
+	        		myfree(http_post_data->buf);
+	        		http_post_data->buf = NULL;
+	        	}
+	        	myfree(http_post_data);
+	        	http_post_data = NULL;
+	        }
+	    }
+	    break;
 
-	    	// check http protocol.
-	        char* http_response_buffer = NULL;
-	        const char * version = "HTTP/1.1 ";
-	        p = strstr(p, version);
+	    case 2:
+	    {
+
+	    }
+	    break;
+
+	    case 3:
+	    {
+			//TODO: consider error situation.
+	        s_at_status = ATC_RSP_FINISH;
+	    }
+	    break;
+
+	    case 4:
+	    {
+
+	    }
+	    break;
+			
+		case 5:
+		{
+			// check http protocol.
+			char* http_response_buffer = NULL;
+			const char * version = "HTTP/1.1 ";
+			printf("receive:%s\n", s_http_buffer);
+			p = strstr(s_http_buffer, version);
 	        if (p == NULL)
 	        {
 	        	printf("Invalid version in %s\n", p);
@@ -535,269 +588,19 @@ static int8_t cch_send_handle(bool *urc, char*buf)
 	        }
 
 	        http_response_buffer = (char *)strstr(p, "\r\n\r\n") + 4;
-
+			s_http_data_len = 0;
 	        s_at_status = ATC_RSP_FINISH;
 	        if(s_http_cb != NULL)
 	        {
 	        	s_http_cb(http_response_buffer);
 	        }
-	    	}
-	    	break;
-	        case 1: // OK
-	        {
-	        	struct fifo_data* http_post_data;
-	        	http_post_data = fifo_get_data(&s_at_fifo);
-	        	if(http_post_data != NULL)
-	        	{
-	        		printf("sending.....\n");
-	        		usart2_send(http_post_data->buf, http_post_data->length);
-	        		if(http_post_data->buf != NULL)
-	        		{
-	        			myfree(http_post_data->buf);
-	        			http_post_data->buf = NULL;
-	        		}
-	        		myfree(http_post_data);
-	        		http_post_data = NULL;
-	        	}
-	        }
-	        break;
-
-	        case 2:
-	        {
-
-	        }
-	        break;
-
-	        case 3:
-	        {
-	        	//TODO: consider error situation.
-	        	s_at_status = ATC_RSP_FINISH;
-	        }
-	        break;
-
-	        case 4:
-	        {
-
-	        }
-	        break;
-
-	        default:
-	        break;
-	    }
-	   	return s_at_status;
+		}
+    
+		default:
+	    break;
+	}
+	return s_at_status;
 }
-
-/*static int8_t http_read_handle(bool *urc, char*buf)
-{
-	// TODO: deal with urc
-    char *rep_str[ ] = {"+HTTPSRECV:","OK","ERROR"};
-	int8_t res = -1;
-	char *p;
-	uint8_t  i = 0;
-    p= (char *)buf;
-
-    while ( '\r' == *p || '\n' == *p)
-    {
-       p++;
-    }
-
-    for (i = 0; i < sizeof(rep_str) / sizeof(rep_str[0]); i++)
-    {
-    	if (strstr( p,rep_str[i]))
-       {
-           res = i;
-           break;
-       }
-    }
-
-    switch (res)
-    {
-		case 0:  // +HTTPSRECV:
-    	{
-    		// check response length.
-    		char *len_position = strstr(p, "+HTTPSRECV:DATA,");
-    		int response_len = atoi(len_position);
-    		if(response_len>1000)
-    		{
-    			printf("response size is illegal:%d!\n", response_len);
-    			if(s_http_cb != NULL)
-    			{
-    				s_http_cb(NULL);
-    			}
-    			s_at_status = ATC_RSP_FINISH;
-    			return -1;
-    		}
-
-    		// check http protocol.
-        	char* http_response_buffer = NULL;
-        	const char * version = "HTTP/1.1 ";
-        	p = strstr(p, version);
-        	if (p == NULL)
-        	{
-        		printf("Invalid version in %s\n", p);
-        		if(s_http_cb != NULL)
-        		{
-        			s_http_cb(NULL);
-        		}
-        		s_at_status = ATC_RSP_FINISH;
-        		return -1;
-        	}
-
-        	// check http status.
-        	int http_status = atoi(p + strlen(version));
-        	if(http_status != 200)
-        	{
-        		printf("Invalid version in %s\n", p);
-        		if(s_http_cb != NULL)
-        		{
-        			s_http_cb(NULL);
-        		}
-        		s_at_status = ATC_RSP_FINISH;
-        		return -1;
-        	}
-
-        	http_response_buffer = (char *)strstr(p, "\r\n\r\n") + 4;
-
-        	s_at_status = ATC_RSP_FINISH;
-        	if(s_http_cb != NULL)
-        	{
-        		s_http_cb(http_response_buffer);
-        	}
-    	}
-    	break;
-        case 1: // OK
-        {
-
-        }
-        break;
-
-        case 2:
-        {
-        	//TODO: consider error situation.
-        	s_at_status = ATC_RSP_FINISH;
-        }
-        break;
-        default:
-        break;
-    }
-   	return s_at_status;
-}*/
-
-/*int8_t http_send_handle(bool *urc, char*buf)
-{
-	// TODO: deal with urc
-	char *rep_str[ ] = {"OK","ERROR", ">", "+CHTTPS:RECV EVENT", "+CHTTPSNOTIFY: PEER CLOSED"};
-	int8_t res = -1;
-	char *p;
-	uint8_t  i = 0;
-    p= (char *)buf;
-
-
-	while ( '\r' == *p || '\n' == *p)
-	{
-		p++;
-	}
-
-	for (i = 0; i < sizeof(rep_str) / sizeof(rep_str[0]); i++)
-	{
-		if (strstr( p,rep_str[i]))
-	    {
-			res = i;
-			break;
-	    }
-	}
-
-	switch (res)
-	{
-		case 0:  // OK
-	    {
-	    	s_at_status = ATC_RSP_FINISH;
-	    }
-	    break;
-
-	    case 1: //ERROR
-	    {
-	    	if(s_http_cb != NULL)
-	    	{
-	    		s_http_cb(NULL);
-	    	}
-	    	s_at_status = ATC_RSP_FINISH;
-	    }
-	    break;
-
-	    case 2:
-	    {
-	    	if(s_http_buf != NULL)
-	    	{
-	    		printf("sending.....\n");
-	    		usart2_send(s_http_buf, strlen(s_http_buf));
-	    	}
-	    }
-	    break;
-
-	    case 3:
-	    {
-
-	    }
-	    break;
-
-	    case 4:
-	    {
-	    	s_at_status = ATC_RSP_FINISH;
-	    }
-	    break;
-
-	    default:
-	    break;
-	 }
-	   	return s_at_status;
-}*/
-/*static int8_t cch_start_handle(bool *urc, char*buf)
-{
-
-	// TODO: deal with urc
-	char *rep_str[ ] = {"+CCHSTART", "ERROR", "OK"};
-	int8_t res = -1;
-	char *p;
-	uint8_t  i = 0;
-    p= (char *)buf;
-    while ( '\r' == *p || '\n' == *p)
-    {
-       p++;
-    }
-    for (i = 0; i < sizeof(rep_str) / sizeof(rep_str[0]); i++)
-    {
-    	if (strstr( p,rep_str[i]))
-       {
-           res = i;
-           break;
-       }
-    }
-
-    switch (res)
-    {
-        case 0:  // +CCHSTART.
-    	{
-    		s_at_status = ATC_RSP_FINISH;
-    	}
-    	break;
-        case 1: // ERROR
-        {
-        	s_at_status = ATC_RSP_FINISH;
-        }
-        break;
-        case 2:
-        {
-
-        }
-        break;
-        default:
-        //urc = TRUE;
-        break;
-    }
-
-   	return s_at_status;
-}*/
 
 static int8_t tcp_connect_handle(bool *urc, char*buf)
 {
@@ -1188,45 +991,6 @@ void module_http_post(const char *url, const char *data, module_http_callback ht
 
 	printf("host_name:%s\n", host_name);
 	printf("http_path:%s\n", http_path);
-
-	/************************************************************
-	 use https api, can't recevie data, AT+CHTTPSRECV return error.
-	 ***********************************************************/
-    /*// AT+CHTTPSSTART
-	add_send_at_command("AT+CHTTPSSTART", "AT+CHTTPSSTART\r\n");
-
-	// AT+CHTTPSOPSE
-	char http_url[64];
-	memset(http_url, 0x0, sizeof(http_url));
-	sprintf(http_url, "AT+CCHOPEN=%d,\"%s\",%d\r\n", 1, host_name, 443);
-	printf("http_para:%s\n", http_url);
-	add_send_at_command("AT+CHTTPSOPSE", http_url);
-
-	// AT+HTTPSSEND
-	char post_headers[128] = "";
-	char at_send_buffer[20] = "";
-	sprintf(post_headers,
-					   "Content-Type:"
-					   HTTP_HEADER_CONTENT_TYPE
-					   "\r\n"
-					   "Content-Length: %d\r\n", strlen(data));
-	memset(s_http_buf, 0 , sizeof(s_http_buf));
-	int len = sprintf(s_http_buf,
-							 "POST %s HTTP/1.1\r\n"
-							 "Host: %s:%d\r\n"
-							 "Connection: close\r\n"
-							 "User-Agent: SIM5360\r\n"
-							 "%s"
-							 "\r\n%s",
-							 http_path, host_name, 443, post_headers, data);
-	printf("http post:%s", s_http_buf);
-	sprintf(at_send_buffer, "AT+CHTTPSSEND=%d\r\n", len);
-	add_send_at_command("AT+CHTTPSSEND", at_send_buffer);
-	add_send_at_command("AT+CHTTPSRECV", "AT+CHTTPSRECV=1\r\n");
-	// close https connection.
-	add_send_at_command("AT+CHTTPSCLSE", "AT+CHTTPSCLSE\r\n");
-	// release https stack.
-	add_send_at_command("AT+CHTTPSSTOP", "AT+CHTTPSSTOP\r\n");*/
 
 	// AT+CCHSET.
 	add_send_at_command("AT+CCHSET", "AT+CCHSET=1\r\n");

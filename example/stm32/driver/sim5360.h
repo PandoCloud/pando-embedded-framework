@@ -26,7 +26,7 @@ extern "C"
 #define MODULE_GET_IP  3
 #define MODULE_INIT_DONE 4
 	
-#define MIN_SIGNAL_QUAILTY 15
+#define MIN_SIGNAL_QUAILTY 12
 
 typedef void(*module_tcp_connected_callback)(int16_t fd, int8_t error_no);
 typedef void(* module_tcp_sent_callback)(int16_t fd, int8_t errno);

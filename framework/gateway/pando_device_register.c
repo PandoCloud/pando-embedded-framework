@@ -39,7 +39,11 @@ static void http_callback_register(char * response)
     }
 
     pd_printf("response=%s\n(end)\n", response);
-
+	uint16_t response_len = pd_strlen(response) + 1;
+    char* register_response = (char*)pd_malloc(response_len);
+	pd_memset(register_response, 0, response_len);
+	pd_memcpy(register_response, response, response_len);
+	
     struct jsonparse_state json_state;
     jsonparse_setup(&json_state, response, pd_strlen(response));
     uint8_t code;
@@ -94,7 +98,11 @@ static void http_callback_register(char * response)
             }
         }
     }
-
+	if(register_response != NULL)
+	{
+		pd_free(register_response);
+	}
+	
     if(code != 0)
     {
         pd_printf("device register failed: %s\n", message);

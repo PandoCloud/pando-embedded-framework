@@ -39,9 +39,14 @@ http_callback_login(char * response)
     }
     
     pd_printf("response=%s\n(end)\n", response);
-    
+	
+	uint16_t response_len = pd_strlen(response) + 1;
+    char* login_response = (char*)pd_malloc(response_len);
+	pd_memset(login_response, 0, response_len);
+	pd_memcpy(login_response, response, response_len);
+	
     struct jsonparse_state json_state;
-    jsonparse_setup(&json_state, response, pd_strlen(response));
+    jsonparse_setup(&json_state, login_response, pd_strlen(login_response));
     int code;
     char message[MSG_BUF_LEN];
     char access_token[ACCESS_TOKEN_LEN*2 + 16];
@@ -87,6 +92,11 @@ http_callback_login(char * response)
                 }
             }
         }
+    }
+
+    if(login_response != NULL)
+    {
+    	pd_free(login_response);
     }
 
     if(code != 0)
