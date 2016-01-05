@@ -12,6 +12,7 @@
 #include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "sub_device_protocol.h"
 
 #define LED_OBJECT_NO 1
 

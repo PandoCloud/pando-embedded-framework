@@ -14,7 +14,9 @@ extern uint8_t g_imei_buf[16];
 bool net_connect_check(void)
 {
 	// TODO: the acquired signal quality is not the current value, but the last inquired value.
-	if(inquire_signal_quality() > MIN_SIGNAL_QUAILTY)
+	uint8_t signal_quality = 0;
+	signal_quality = inquire_signal_quality();
+	if( signal_quality> MIN_SIGNAL_QUAILTY)
 	{
 		return 1;
 	}

@@ -128,7 +128,7 @@ int init_sub_device(struct sub_device_base_params base_params);
  * param
  * return: Buffer of params block.
  *********************************************************/
-struct TLVs *create_params_block();
+struct TLVs *create_params_block(void);
 
 /*******************************************************
  * Description: Create package buffer, need add params block to finish package.

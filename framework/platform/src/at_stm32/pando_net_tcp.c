@@ -11,7 +11,7 @@
 #include "pando_net_tcp.h"
 #include "sim5360.h"
 #include "pando_sys.h"
-#include "common_functions.h"
+#include "../../protocol/common_functions.h"
 
 #define MAX_CONNECT_NUM 10
 

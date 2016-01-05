@@ -22,7 +22,7 @@
 
 //内存参数设定.
 #define MEM_BLOCK_SIZE			32  	  						//内存块大小为32字节
-#define MEM_MAX_SIZE			42*1024  						//最大管理内存 42K
+#define MEM_MAX_SIZE			12*1024  						//最大管理内存 42K
 #define MEM_ALLOC_TABLE_SIZE	MEM_MAX_SIZE/MEM_BLOCK_SIZE 	//内存表大小
  
 		 
