@@ -9,8 +9,12 @@
 #include "malloc.h"
 #include "led.h"
 
-char* g_product_key_buf = "d9db7e6a7e11bcd81da5230ad1e3647947f1fb4bf1ff7efa949cea17bab780f3";
-#define SERVER_ADDRESS "https://api.pandocloud.com"
+char* g_product_key_buf = "d0375b4180f1ddc44c89a2046e8b841a7d2b642303a026bfc101aa0e448b6dee";
+//char* g_product_key_buf = "fedf2397677f5a03e4cd0e18994e54aeeada7a4fe514bcbaf03c4d2c6f19317e" ;
+//char* g_product_key_buf = "b4d967f08c43636cf78c1c6bb1e5835a1795483802b66826f853fe5640ef16ab";
+
+char* g_server_url = "https://120.24.222.147";
+//char* g_server_url = "https://api.pandocloud.com";
 
 int main(void)
 {
@@ -20,6 +24,7 @@ int main(void)
 	delay_init();
 	mem_init();
 	task *task;
+	printf("system start\n");
 	while(1)
 	{		
 		if(MODULE_OFF_LINE == get_module_status())

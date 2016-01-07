@@ -12,6 +12,6 @@
 #ifndef OBJECTS_LED_H_
 #define OBJECTS_LED_H_
 
-void led_object_init();
+void led_object_init(void);
 
 #endif /* APP_USER_OBJECTS_LED_H_ */

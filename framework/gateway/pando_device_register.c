@@ -15,6 +15,8 @@
 #define MSG_BUF_LEN 32
 
 extern char* g_product_key_buf;
+extern char* g_server_url;
+
 static gateway_callback device_register_callback = NULL;
 static char* request = NULL;
 
@@ -37,7 +39,11 @@ static void http_callback_register(char * response)
     }
 
     pd_printf("response=%s\n(end)\n", response);
-
+	uint16_t response_len = pd_strlen(response) + 1;
+    char* register_response = (char*)pd_malloc(response_len);
+	pd_memset(register_response, 0, response_len);
+	pd_memcpy(register_response, response, response_len);
+	
     struct jsonparse_state json_state;
     jsonparse_setup(&json_state, response, pd_strlen(response));
     uint8_t code;
@@ -92,7 +98,11 @@ static void http_callback_register(char * response)
             }
         }
     }
-
+	if(register_response != NULL)
+	{
+		pd_free(register_response);
+	}
+	
     if(code != 0)
     {
         pd_printf("device register failed: %s\n", message);
@@ -154,14 +164,12 @@ void pando_device_register(gateway_callback callback)
         JSONTREE_PAIR("version", &json_version));
     request = (char *)pd_malloc(MAX_BUF_LEN);
     int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
-
     pd_printf("device register request:::\n%s\n(end)\n", request);
 
-    net_http_post(PANDO_API_URL
-        "/v1/devices/registration",
-        request,
-        http_callback_register);    
-
+	char post_url[128] = "";
+	pd_sprintf(post_url, "%s/v1/devices/registration", g_server_url); 
+	
+    net_http_post(post_url, request, http_callback_register);    
     if(request != NULL)
     {
         pd_free(request);
