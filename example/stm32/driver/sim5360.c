@@ -94,14 +94,6 @@ AtcHandleType  atCmdTable[ ] =
 		{"AT+SAPBR_APN", at_handle},
 		{"AT+SAPBR_OPEN", net_open_hanle},
 
-		// https
-		/*{"AT+CCHSTART", at_handle},
-		{"AT+CHTTPSOPSE", at_handle},
-		{"AT+CHTTPSSEND", http_send_handle},
-		{"AT+CHTTPSRECV", http_read_handle},
-		{"AT+CHTTPSCLSE", at_handle},
-		{"AT+CHTTPSSTOP", at_handle},*/
-
 		// https use CCH.
 		{"AT+CCHSET", at_handle},
 		{"AT+CCHSTART", at_handle},
@@ -115,8 +107,11 @@ AtcHandleType  atCmdTable[ ] =
 		{"AT+CIPOPEN", tcp_connect_handle},
         {"AT+CIPSEND", ipsend_handle},
         {"AT+CIPCLOSE", at_handle},
-		{"AT+CIPSRIP", at_handle}
+		{"AT+CIPSRIP", at_handle},
 
+        // tls
+        {"AT+CCHOPEN_TLS", tcp_connect_handle},
+		{"AT+CCHSEND_TLS", ipsend_handle}
 };
 
 // urc table,
@@ -518,7 +513,7 @@ static int8_t cch_send_handle(bool *urc, char*buf)
 			s_http_data_len += response_len;		
 	    }
 	    break;
-	    case 1: // OK
+	    case 1: // >
 	    {
 			struct fifo_data* http_post_data;
 	        http_post_data = fifo_get_data(&s_at_fifo);
@@ -605,7 +600,7 @@ static int8_t cch_send_handle(bool *urc, char*buf)
 static int8_t tcp_connect_handle(bool *urc, char*buf)
 {
 	// TODO: deal with urc
-	char *rep_str[ ] = {"+CIPOPEN", "ERROR", "OK"};
+	char *rep_str[ ] = {"+CCHOPEN", "ERROR", "OK"};
 	int8_t res = -1;
 	char *p;
 	uint8_t  i = 0;
@@ -657,7 +652,7 @@ int8_t ipsend_handle(bool *urc, char*buf)
 {
 	// TODO: deal with urc,
 	// TODO: free heap when send failed.
-	char *rep_str[ ] = {"OK", "ERROR", ">", "+CIPSEND:"};
+	char *rep_str[ ] = {"+CCHSEND:", "ERROR", ">", "OK"};
 	int8_t res = -1;
 	char *p;
 	uint8_t  i = 0;
@@ -681,7 +676,21 @@ int8_t ipsend_handle(bool *urc, char*buf)
 	{
 		case 0:  //OK
 	    {
-
+	    	if(module_send_data_buffer != NULL)
+	    	{
+	    		if(module_send_data_buffer->buffer != NULL)
+	    		{
+	    			myfree(module_send_data_buffer->buffer);
+	    			module_send_data_buffer->buffer = NULL;
+	    		}
+	    	}
+	    	myfree(module_send_data_buffer);
+	    	module_send_data_buffer = NULL;
+	    	s_at_status = ATC_RSP_FINISH;
+	    	if(tcp_sent_cb != NULL)
+	    	{
+	    		tcp_sent_cb(0,0);
+	    	}
 	    }
 	    break;
 
@@ -716,21 +725,7 @@ int8_t ipsend_handle(bool *urc, char*buf)
 
 	    case 3:
 	    {
-	    	if(module_send_data_buffer != NULL)
-	    	{
-	    		if(module_send_data_buffer->buffer != NULL)
-	    		{
-	    			myfree(module_send_data_buffer->buffer);
-	    		    module_send_data_buffer->buffer = NULL;
-	    		}
-	    	}
-	    	myfree(module_send_data_buffer);
-	    	module_send_data_buffer = NULL;
-	    	s_at_status = ATC_RSP_FINISH;
-	    	if(tcp_sent_cb != NULL)
-	    	{
-	    		tcp_sent_cb(0,0);
-	    	}
+
 	    }
 	    break;
 
@@ -748,11 +743,16 @@ void module_tcp_connect(uint16_t fd, uint32_t ip, uint16_t port)
 	ip2 = ((uint8_t*)(&ip))[1];
 	ip3 = ((uint8_t*)(&ip))[2];
 	ip4 = ((uint8_t*)(&ip))[3];
-	add_send_at_command("AT+CIPHEAD", "AT+CIPHEAD=0\r\n");
-	add_send_at_command("AT+CIPSRIP", "AT+CIPSRIP=0\r\n");
-	sprintf(connect_buf, "AT+CIPOPEN=0,\"TCP\",\"%d.%d.%d.%d\",%d\r\n", ip1, ip2, ip3, ip4, port);
-	printf("tcp connect:%s\n", connect_buf);
-	add_send_at_command("AT+CIPOPEN", connect_buf);
+	// AT+CCHSET.
+	add_send_at_command("AT+CCHSET", "AT+CCHSET=1\r\n");
+
+	// AT+CCHSTART.
+	add_send_at_command("AT+CCHSTART", "AT+CCHSTART\r\n");
+
+	// AT+CCHOPEN.
+	sprintf(connect_buf, "AT+CCHOPEN=%d,\"%d.%d.%d.%d\",%d, 2\r\n", 1, ip1, ip2, ip3, ip4, port);
+	printf("tcp connecting:%s\n", connect_buf);
+	add_send_at_command("AT+CCHOPEN_TLS", connect_buf);
 }
 
 //TODO: close callback.
@@ -937,9 +937,9 @@ void module_send_data(uint16_t fd, uint8_t *buf, uint16_t len)
 	memcpy(tcp_data_buffer->buf, buf, len);
 
 	char command_buffer[48];
-	sprintf(command_buffer, "AT+CIPSEND=%d,%d\r\n", fd, len);
+	sprintf(command_buffer, "AT+CCHSEND=%d,%d\r\n", 1, len);
 	printf("%s, 22, %d\n", __func__, len);
-	add_send_at_command("AT+CIPSEND", command_buffer);
+	add_send_at_command("AT+CCHSEND_TLS", command_buffer);
 	fifo_put_data(&s_at_fifo, tcp_data_buffer);
 	printf("%s, 33, %d\n", __func__, len);
 }
@@ -1054,6 +1054,27 @@ static int8_t urc_process(uint8_t* data)
 	return -1;
 }
 
+static int8_t data_process(struct module_buf *buf)
+{
+	struct module_buf *data_buf = buf;
+	uint8_t *p = data_buf->buf;
+	if(strncmp(data_buf->buf, "\r\n+CCHRECV:", strlen("\r\n+CCHRECV:")) == 0)
+	{
+		p = strstr(data_buf->buf, "+CCHRECV: DATA,1,");
+		p += strlen("+CCHRECV: DATA,1,");
+		data_buf->length = atol(p);
+		p = strstr(p, "\r\n");
+		p = p + strlen("\r\n");
+		memcpy(data_buf->buf, p , data_buf->length);
+		return 1;
+	}
+
+	else
+	{
+		return 0;
+	}
+}
+
 int8_t module_data_handler(void* data)
 {
 
@@ -1094,6 +1115,7 @@ int8_t module_data_handler(void* data)
 	        {
 				if(!strcmp(s_current_at_command->at_name, atCmdTable[i].name))
 	            {
+
 					s_at_status =atCmdTable[i].at_cmd_handle(&urc, module_data->buf);
 
 	                if (ATC_RSP_FINISH ==s_at_status)
@@ -1108,14 +1130,19 @@ int8_t module_data_handler(void* data)
 		}
 		else
 		{
-			if(urc_process(module_data->buf) == -1) // not urc.
+			if(data_process(module_data) == 1)
 			{
 				printf("%s\n", __func__);
 				show_package(module_data->buf, module_data->length);
 				if(tcp_recv_cb != NULL)
 				{
-					tcp_recv_cb(0, module_data->buf, (module_data->length)-1); // -1 for identifier of string end.
+					tcp_recv_cb(0, module_data->buf, module_data->length);
 				}
+			}
+
+			else
+			{
+				printf("the data is urc\n");
 			}
 
 		}
@@ -1131,6 +1158,7 @@ int8_t module_data_handler(void* data)
 		free(module_data);
 		module_data = NULL;
 	}
+
 	return 0;
 }
 
