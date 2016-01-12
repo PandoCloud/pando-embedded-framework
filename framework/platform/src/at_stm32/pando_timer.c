@@ -16,7 +16,7 @@ void timer2_stop(void);
 
 void pando_timer_init(struct pd_timer * timer)
 {
-	if(timer->timer_no == 1)
+	if(timer->timer_no == 3)
 	{
 		g_timer3_config = timer;
 		timer3_init(timer);
@@ -34,7 +34,7 @@ void pando_timer_init(struct pd_timer * timer)
 
 void pando_timer_start(struct pd_timer * timer)
 {
-	if(timer->timer_no == 1)
+	if(timer->timer_no == 3)
 	{
 		timer3_start();
 
@@ -52,7 +52,7 @@ void pando_timer_start(struct pd_timer * timer)
 
 void pando_timer_stop(struct pd_timer * timer)
 {
-	if(timer->timer_no == 1)
+	if(timer->timer_no == 3)
 	{
 		timer3_stop();
 

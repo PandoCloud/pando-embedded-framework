@@ -16,15 +16,26 @@ char* g_product_key_buf = "d0375b4180f1ddc44c89a2046e8b841a7d2b642303a026bfc101a
 char* g_server_url = "https://120.24.222.147";
 //char* g_server_url = "https://api.pandocloud.com";
 
+void delay_test(u16 time)
+{
+    u16 i,j;
+    for(i=0; i<time; i++)
+    {
+        for(j=0; j < 100 ; j++);
+    }
+}
+
 int main(void)
 {
+    delay_init();
 	usart1_init();
 	usart2_init();
-	led_object_init();
-	delay_init();
+	led_object_init();	
 	mem_init();
 	task *task;
 	printf("system start\n");
+    
+
 	while(1)
 	{		
 		if(MODULE_OFF_LINE == get_module_status())

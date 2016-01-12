@@ -105,9 +105,7 @@ typedef struct  {
 	struct pd_timer mqttTimer;
 	uint32_t keepAliveTick;
 	uint32_t reconnectTick;
-	uint32_t connectTick;
 	uint32_t sendTimeout;
-	uint32_t heart_beat_flag;
 	tConnState connState;
 	QUEUE msgQueue;
 	void* user_data;
@@ -134,7 +132,7 @@ void  MQTT_InitConnection(MQTT_Client *mqttClient, uint8_t* host, uint32_t port,
 void  MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_user, uint8_t* client_pass, uint32_t keepAliveTime, uint8_t cleanSession);
 void  MQTT_InitLWT(MQTT_Client *mqttClient, uint8_t* will_topic, uint8_t* will_msg, uint8_t will_qos, uint8_t will_retain);
 void  MQTT_OnConnected(MQTT_Client *mqttClient, MqttCallback connectedCb);
-void  MQTT_OnConnect_Error(MQTT_Client *mqttClient, MqttCallback error_cb);
+void MQTT_OnConnect_Error(MQTT_Client *mqttClient, MqttCallback error_cb);
 void  MQTT_OnDisconnected(MQTT_Client *mqttClient, MqttCallback disconnectedCb);
 void  MQTT_OnPublished(MQTT_Client *mqttClient, MqttCallback publishedCb);
 void  MQTT_OnData(MQTT_Client *mqttClient, MqttDataCallback dataCb);

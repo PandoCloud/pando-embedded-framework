@@ -45,8 +45,8 @@
 #include "string.h"
 #include "stdio.h"
 
-#define pd_malloc       malloc
-#define pd_free         free
+#define pd_malloc       mymalloc    //malloc
+#define pd_free         myfree      //free
 
 #define pd_memcpy       memcpy
 #define pd_memcmp      	memcmp
