@@ -74,6 +74,11 @@ decode_command(struct sub_device_buffer *device_buffer)
     	pd_printf("receive a get request\n");
         send_current_status();
     }
+    else
+    {
+        pd_printf("\nReceive a command:%d\n", cmd_body.command_num);
+        //TODO: add cmd_handler
+    }
 }
 
 void FUNCTION_ATTRIBUTE

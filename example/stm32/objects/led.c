@@ -14,7 +14,6 @@
 #include "stdlib.h"
 #include "sub_device_protocol.h"
 
-#define LED_OBJECT_NO 1
 
 struct led {
 	uint8_t red;
@@ -107,7 +106,7 @@ void led_object_init()
 
 	// register the object
 	pando_object led_object = {
-		LED_OBJECT_NO,
+		3,
 		led_object_pack,
 		led_object_unpack,
 	};
