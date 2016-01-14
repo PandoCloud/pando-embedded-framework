@@ -66,7 +66,7 @@ void usart1_init(void)
 	usart_structure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(USART1, &usart_structure);
 
-	USART_ITConfig(USART1, USART_IT_IDLE, ENABLE); // enable idle irq
+//	USART_ITConfig(USART1, USART_IT_IDLE, ENABLE); // enable idle irq
 
 //	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 //	DMA_DeInit(DMA1_Channel5);
@@ -127,3 +127,4 @@ void usart1_putchar(unsigned char ch)
 		USART_ITConfig(USART1, USART_IT_TXE, DISABLE);    //绂佹鍙戠紦鍐插櫒绌轰腑鏂�
 	}
 }*/
+

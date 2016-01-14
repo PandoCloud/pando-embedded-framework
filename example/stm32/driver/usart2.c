@@ -112,7 +112,7 @@ uint16_t usart2_send(uint8_t *buffer, uint16_t length)
 
 void USART2_IRQHandler(void)      //����2 �жϷ������
 {
-	uint8_t tmp = 0;
+	uint8_t tmp;
 	task * uart2_task;
 	struct uart_buffer *uart2_buf;
 	uint16_t length = 0;
