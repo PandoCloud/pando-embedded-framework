@@ -86,7 +86,7 @@ pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
             pd_memcpy(topic, "e", 2);
             break;
         case PAYLOAD_TYPE_DATA:
-            pd_memcpy(topic, "d", 2);
+            pd_memcpy(topic, "s", 2);
             break;
         default:
         	pd_printf("error payload type\n");
@@ -120,14 +120,17 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
     uint8_t payload_type = 0;
     switch(*topic_buf)
     {
-        case 'd':
-            payload_type = PAYLOAD_TYPE_DATA;
-            break;
+    	case 's':
+    		payload_type = PAYLOAD_TYPE_DATA;
+    		break;
         case 'c':
             payload_type = PAYLOAD_TYPE_COMMAND;
             break;
         case 'e':
             payload_type = PAYLOAD_TYPE_EVENT;
+            break;
+        case 'd':
+            payload_type = PAYLOAD_TYPE_DATA;
             break;
         default:
             return;

@@ -38,34 +38,36 @@ gateway_cb(int8_t result)
     switch(gateway_status)
     {
         case GATEWAY_LOGIN:
-            if(result == PANDO_NOT_REGISTERED)
-            {
-                gateway_status = GATEWAY_REGISTER;
-                pando_device_register(gateway_cb);
+        if(result == PANDO_NOT_REGISTERED)
+        {
+        	gateway_status = GATEWAY_REGISTER;
+            pando_device_register(gateway_cb);
 
-            }
-            else if(result == PANDO_LOGIN_OK)
-            {
-                gateway_status = GATEWAY_ACCESS;
-                pando_cloud_access(gateway_cb);
-            }
-            else
-            {
-            	device_connect_check();
-            }
+        }
+        else if(result == PANDO_LOGIN_OK)
+        {
+        	gateway_status = GATEWAY_ACCESS;
+            pando_cloud_access(gateway_cb);
+        }
+        else
+        {
+        	pando_timer_start(&gateway_timer);
+        }
         break;
+
         case GATEWAY_REGISTER:
-            if(result == PANDO_REGISTER_OK)
-            {
-                pando_cloud_access(gateway_cb);
-            }
-            else
-            {
-            	device_connect_check();
-            }
+        if(result == PANDO_REGISTER_OK)
+        {
+        	pando_cloud_access(gateway_cb);
+        }
+        else
+        {
+        	pando_timer_start(&gateway_timer);
+        }
         break;
+
         default:
-        	device_connect_check();
+        pando_timer_start(&gateway_timer);
     }
 }
 
@@ -82,8 +84,8 @@ device_connect_check()
 	if(net_connect_check() == 1)
 	{
 		gateway_status = GATEWAY_LOGIN;
-		pando_device_login(gateway_cb);
 		pando_timer_stop(&gateway_timer);
+		pando_device_login(gateway_cb);
 	}
 	else
 	{

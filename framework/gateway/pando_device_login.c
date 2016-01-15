@@ -20,6 +20,7 @@
 static gateway_callback device_login_callback = NULL;
 static char * request = NULL;
 
+extern char* g_server_url;
 extern uint8_t pando_device_token[ACCESS_TOKEN_LEN];
 
 static void FUNCTION_ATTRIBUTE
@@ -38,9 +39,14 @@ http_callback_login(char * response)
     }
     
     pd_printf("response=%s\n(end)\n", response);
-    
+	
+	uint16_t response_len = pd_strlen(response) + 1;
+    char* login_response = (char*)pd_malloc(response_len);
+	pd_memset(login_response, 0, response_len);
+	pd_memcpy(login_response, response, response_len);
+	
     struct jsonparse_state json_state;
-    jsonparse_setup(&json_state, response, pd_strlen(response));
+    jsonparse_setup(&json_state, login_response, pd_strlen(login_response));
     int code;
     char message[MSG_BUF_LEN];
     char access_token[ACCESS_TOKEN_LEN*2 + 16];
@@ -86,6 +92,11 @@ http_callback_login(char * response)
                 }
             }
         }
+    }
+
+    if(login_response != NULL)
+    {
+    	pd_free(login_response);
     }
 
     if(code != 0)
@@ -153,13 +164,12 @@ pando_device_login(gateway_callback callback)
 
     request = (char *)pd_malloc(MAX_BUF_LEN);
     int ret = pando_json_print((struct jsontree_value*)(&device_info), request, MAX_BUF_LEN);
-
     pd_printf("device login request:::\n%s\n(end)\n", request);
 
-    net_http_post(PANDO_API_URL
-        "/v1/devices/authentication",
-        request,
-        http_callback_login);    
+	char post_url[128] = "";
+	pd_sprintf(post_url, "%s/v1/devices/authentication", g_server_url); 
+	
+    net_http_post(post_url, request, http_callback_login);      
     if(request != NULL)
     {
         pd_free(request);
