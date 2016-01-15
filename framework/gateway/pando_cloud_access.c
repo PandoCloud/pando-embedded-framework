@@ -253,7 +253,7 @@ pando_cloud_access(gateway_callback callback)
     pd_sprintf(str_device_id_hex, "%x", device_id);
     init_gateway_info();
 
-    MQTT_InitConnection(&mqtt_client, ip_string, port, 0);
+    MQTT_InitConnection(&mqtt_client, ip_string, port, 1);
 
     char access_token_str[64];
     char* token_str = pando_data_get(DATANAME_ACCESS_TOKEN);

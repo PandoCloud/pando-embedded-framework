@@ -134,10 +134,11 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 
 	if(conn->secure==1)
 	{
+		pd_printf("espconn_secure_connect...\n");
 		espconn_secure_connect(econn);
 	}
 	else
-	{
+	{pd_printf("espconn_connect...\n");
 		error = espconn_connect(econn);
 	}
 	//pd_free(econn.proto.tcp);
@@ -204,8 +205,16 @@ void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t 
 
 
 	econn->reverse = conn->reverse ;
+	if(conn->secure==1)
+		{
+		pd_printf("espconn_secure_send...\n");
+			espconn_secure_send(econn,buffer.data,buffer.length);
+		}
+		else
+		{pd_printf("espconn_send...\n");
+			espconn_send(econn,buffer.data,buffer.length);
 
-	espconn_send(econn,buffer.data,buffer.length);
+		}
 
 
 }
@@ -249,8 +258,15 @@ void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_ca
 *******************************************************************************/
 void net_tcp_disconnect(struct pando_tcp_conn *conn)
 {
+	if(conn->secure==1)
+			{
+				espconn_secure_disconnect(econn);
+			}
+			else
+			{
+				espconn_disconnect(econn);
+			}
 
-	espconn_disconnect(econn);
 	//pd_free(econn.proto.tcp);
 }
 
