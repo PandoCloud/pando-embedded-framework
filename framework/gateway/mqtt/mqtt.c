@@ -38,7 +38,7 @@
 #include "../../platform/include/pando_timer.h"
 #include "../../platform/include/pando_net_tcp.h"
 #include "utils.h"
-#include "common_functions.h"
+#include "../../protocol/common_functions.h"
 
 #define MQTT_BUF_SIZE		1024
 #define MQTT_RECONNECT_TIMEOUT 5
@@ -288,7 +288,7 @@ void FUNCTION_ATTRIBUTE mqtt_timer(void *arg)
 {
 	MQTT_Client* client = (MQTT_Client*)arg;
     struct data_buf buffer;
-    printf("%s, %d\n", __func__, client->connState);
+    INFO("%s, %d\n", __func__, client->connState);
 	if(client->connState == MQTT_DATA){
 		client->keepAliveTick ++;
 		if(client->keepAliveTick > client->mqtt_state.connect_info->keepalive){

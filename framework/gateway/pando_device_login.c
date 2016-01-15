@@ -31,20 +31,20 @@ http_callback_login(char * response)
         pd_free(request);
         request = NULL;
     }
-    
+
     if(response == NULL)
     {
         device_login_callback(PANDO_LOGIN_FAIL);
         return;
     }
-    
+
     pd_printf("response=%s\n(end)\n", response);
-	
+
 	uint16_t response_len = pd_strlen(response) + 1;
     char* login_response = (char*)pd_malloc(response_len);
 	pd_memset(login_response, 0, response_len);
 	pd_memcpy(login_response, response, response_len);
-	
+
     struct jsonparse_state json_state;
     jsonparse_setup(&json_state, login_response, pd_strlen(login_response));
     int code;
@@ -56,9 +56,9 @@ http_callback_login(char * response)
     int type;
     while ((type = jsonparse_next(&json_state)) != 0)
     {
-        if (type == JSON_TYPE_PAIR_NAME) 
+        if (type == JSON_TYPE_PAIR_NAME)
         {
-            if(jsonparse_strcmp_value(&json_state, "code") == 0) 
+            if(jsonparse_strcmp_value(&json_state, "code") == 0)
             {
                 jsonparse_next(&json_state);
                 jsonparse_next(&json_state);
@@ -76,7 +76,7 @@ http_callback_login(char * response)
                 {
                     if(type == JSON_TYPE_PAIR_NAME)
                     {
-                        if(jsonparse_strcmp_value(&json_state, "access_token") == 0) 
+                        if(jsonparse_strcmp_value(&json_state, "access_token") == 0)
                         {
                             jsonparse_next(&json_state);
                             jsonparse_next(&json_state);
@@ -102,7 +102,7 @@ http_callback_login(char * response)
     if(code != 0)
     {
     	pd_printf("device login failed: %s\n", message);
-        if(device_login_callback != NULL) 
+        if(device_login_callback != NULL)
         {
             device_login_callback(PANDO_LOGIN_FAIL);
         }
@@ -116,7 +116,7 @@ http_callback_login(char * response)
 
     pando_data_set(DATANAME_ACCESS_ADDR, access_addr);
     pando_data_set(DATANAME_ACCESS_TOKEN, access_token);
-    if(device_login_callback != NULL) 
+    if(device_login_callback != NULL)
     {
         device_login_callback(PANDO_LOGIN_OK);
     }
@@ -139,10 +139,10 @@ pando_device_login(gateway_callback callback)
 
     char * str_device_id = NULL;
     char * str_device_secret = NULL;
-    
+
     str_device_id = pando_data_get(DATANAME_DEVICE_ID);
     str_device_secret = pando_data_get(DATANAME_DEVICE_SECRET);
-    if(str_device_id == NULL || str_device_secret == NULL) 
+    if(str_device_id == NULL || str_device_secret == NULL)
     {
         // has not registered
     	pd_printf("login failed ! device has not been registerd...\n");
@@ -157,7 +157,7 @@ pando_device_login(gateway_callback callback)
     struct jsontree_string json_device_secret = JSONTREE_STRING(str_device_secret);
     struct jsontree_string json_protocol = JSONTREE_STRING("mqtt");
 
-    JSONTREE_OBJECT_EXT(device_info, 
+    JSONTREE_OBJECT_EXT(device_info,
         JSONTREE_PAIR("device_id", &json_device_id),
         JSONTREE_PAIR("device_secret", &json_device_secret),
         JSONTREE_PAIR("protocol", &json_protocol));
@@ -167,9 +167,9 @@ pando_device_login(gateway_callback callback)
     pd_printf("device login request:::\n%s\n(end)\n", request);
 
 	char post_url[128] = "";
-	pd_sprintf(post_url, "%s/v1/devices/authentication", g_server_url); 
-	
-    net_http_post(post_url, request, http_callback_login);      
+	pd_sprintf(post_url, "%s/v1/devices/authentication", g_server_url);
+
+    net_http_post(post_url, request, http_callback_login);
     if(request != NULL)
     {
         pd_free(request);
