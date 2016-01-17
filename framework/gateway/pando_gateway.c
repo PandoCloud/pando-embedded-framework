@@ -68,6 +68,7 @@ gateway_cb(int8_t result)
 
         default:
         pando_timer_start(&gateway_timer);
+        break;
     }
 }
 
