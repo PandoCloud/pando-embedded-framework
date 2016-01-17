@@ -96,7 +96,7 @@ mqtt_tcpclient_recv(void *arg, struct data_buf *buffer)
 		return;
 	}
 
-	pd_memcpy(client->mqtt_state.in_buffer, buffer->data, buffer->length);
+	pd_memcpy(client->mqtt_state.in_buffer + client->mqtt_state.message_length_read, buffer->data, buffer->length);
 	client->mqtt_state.message_length_read += buffer->length;
 
 READPACKET:
@@ -107,16 +107,19 @@ READPACKET:
 	}
 
 	client->mqtt_state.message_length = mqtt_get_total_length(client->mqtt_state.in_buffer, client->mqtt_state.message_length_read);
+	INFO("message length:%d\n", client->mqtt_state.message_length);
 
+	show_package(client->mqtt_state.in_buffer, client->mqtt_state.message_length_read);
+	
 	if(client->mqtt_state.message_length > client->mqtt_state.message_length_read)
 	{
 		INFO("not enough data.\n");
 		return;
 	}
-
+	
 	msg_type = mqtt_get_type(client->mqtt_state.in_buffer);
 	msg_qos = mqtt_get_qos(client->mqtt_state.in_buffer);
-	msg_id = mqtt_get_id(client->mqtt_state.in_buffer, client->mqtt_state.in_buffer_length);
+	msg_id = mqtt_get_id(client->mqtt_state.in_buffer, client->mqtt_state.message_length);
 	INFO("client->connstate:%d, type:%d, Qos:%d, id:%d, message length:%d\n", client->connState, msg_type, msg_qos, \
 			msg_id, client->mqtt_state.message_length);
 	switch(client->connState)
@@ -212,7 +215,8 @@ READPACKET:
 			break;
 
 			case MQTT_MSG_TYPE_PINGRESP:
-			client->heart_beat_flag  = 0;
+			INFO("receive a heart beat response!");
+			client->heart_beat_flag  = 1;
 			break;
 		}
 
@@ -220,19 +224,19 @@ READPACKET:
 	}
 
 	// process package adhesive.
-	uint16_t remain_length = client->mqtt_state.message_length_read - client->mqtt_state.message_length -2;
+	uint16_t remain_length = client->mqtt_state.message_length_read - client->mqtt_state.message_length;
+	client->mqtt_state.message_length_read = remain_length;
 	INFO("client->mqtt_state.message_length_read = %d\n", client->mqtt_state.message_length_read);
 	INFO("client->mqtt_state.message_length = %d\n", client->mqtt_state.message_length);
 	INFO("the package is\n");
-	show_package(client->mqtt_state.in_buffer, 2);
-	show_package(client->mqtt_state.in_buffer + 2, client->mqtt_state.message_length);
+	show_package(client->mqtt_state.in_buffer, client->mqtt_state.message_length);
 	if(remain_length > 0)
 	{
 		int i = 0;
 		for(i = 0; i< remain_length; i++)
 		{
 			client->mqtt_state.in_buffer[i] = \
-					client->mqtt_state.in_buffer[client->mqtt_state.message_length_read -remain_length + i];
+					client->mqtt_state.in_buffer[client->mqtt_state.message_length_read - remain_length + i];
 		}
 
 		INFO("Get another published message\r\n");
@@ -612,6 +616,7 @@ MQTT_InitClient(MQTT_Client *mqttClient, uint8_t* client_id, uint8_t* client_use
     pd_memset(mqttClient->mqtt_state.out_buffer, 0, MQTT_BUF_SIZE);
     mqttClient->mqtt_state.out_buffer_length = MQTT_BUF_SIZE;
 	mqttClient->mqtt_state.connect_info = &mqttClient->connect_info;
+	mqttClient->mqtt_state.message_length_read = 0;
 
 	mqtt_msg_init(&mqttClient->mqtt_state.mqtt_connection, mqttClient->mqtt_state.out_buffer, mqttClient->mqtt_state.out_buffer_length);
 	QUEUE_Init(&mqttClient->msgQueue, QUEUE_BUFFER_SIZE);
