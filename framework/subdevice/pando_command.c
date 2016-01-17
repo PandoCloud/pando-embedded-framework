@@ -3,9 +3,9 @@
 #include "../platform/include/pando_sys.h"
 #include "../protocol/pando_machine.h"
 
-#define MAX_OBJECTS 16
+#define MAX_COMMANDS 16
 
-static pd_command s_pando_command_list[MAX_OBJECTS];
+static pd_command s_pando_command_list[MAX_COMMANDS];
 static int s_pando_command_list_idx = 0;
 
 /******************************************************************************
@@ -17,7 +17,7 @@ static int s_pando_command_list_idx = 0;
 void FUNCTION_ATTRIBUTE
 register_pando_command(pd_command cmd)
 {
-	if(s_pando_command_list_idx > MAX_OBJECTS - 1)
+	if(s_pando_command_list_idx > MAX_COMMANDS - 1)
 	{
 		return;
 	}
