@@ -42,7 +42,7 @@
 
 #define MQTT_BUF_SIZE		1024
 #define MQTT_RECONNECT_TIMEOUT 5
-#define MQTT_CONNECT_TIMEOUT   10
+#define MQTT_CONNECT_TIMEOUT   20
 
 #define MQTT_TASK_PRIO        		0
 #define MQTT_TASK_QUEUE_SIZE    	1
@@ -658,8 +658,9 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	mqttClient->reconnectTick = 0;
 	mqttClient->connectTick = 0;
 	mqttClient->heart_beat_flag = 1;
+
 	mqttClient->mqttTimer.interval = 1000;
-	mqttClient->mqttTimer.timer_no = 2;
+	mqttClient->mqttTimer.timer_no = 1;
 	mqttClient->mqttTimer.repeated = 1;
 	mqttClient->mqttTimer.arg = mqttClient;
 	mqttClient->mqttTimer.timer_cb = mqtt_timer;
@@ -667,8 +668,9 @@ MQTT_Connect(MQTT_Client *mqttClient)
 	pando_timer_stop(&(mqttClient->mqttTimer));
 	pando_timer_start(&(mqttClient->mqttTimer));
 
+	(mqttClient->pCon)->remote_port = mqttClient->port;
 	if(UTILS_StrToIP(mqttClient->host, &mqttClient->pCon->remote_ip)) {
-		INFO("TCP: Connect to ip  %s:%d\r\n", mqttClient->host, mqttClient->port);
+		INFO("TCP: Connect to ip %s:%d\r\n", mqttClient->host, mqttClient->port);
 		net_tcp_connect(mqttClient->pCon, mqttClient->sendTimeout);
 
 	}
