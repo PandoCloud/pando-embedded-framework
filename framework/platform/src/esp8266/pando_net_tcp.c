@@ -131,7 +131,12 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 	{
 		econn->proto.tcp->remote_ip[i] =(uint8)(conn->remote_ip>>8*i) ;
 	}
+	econn->proto.tcp->remote_port = (int)conn->remote_port;
 
+	pd_printf("remote_port:%d\n",econn->proto.tcp->remote_port);
+	pd_printf("remote_ip0:%d,remote_ip1:%d,remote_ip2:%d,remote_ip3:%d\n",
+			(econn->proto.tcp->remote_ip)[0],(econn->proto.tcp->remote_ip)[1],
+			(econn->proto.tcp->remote_ip)[2],(econn->proto.tcp->remote_ip)[3]);
 	if(conn->secure==1)
 	{
 		pd_printf("espconn_secure_connect...\n");
