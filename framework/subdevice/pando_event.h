@@ -21,7 +21,6 @@ typedef struct {
     uint8_t no;
     uint8_t priority;
     void (*pack)(PARAMS*);
-    void (*unpack)(PARAMS*);
 }pd_event;
 
 /******************************************************************************
