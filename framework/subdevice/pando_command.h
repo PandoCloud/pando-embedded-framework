@@ -21,11 +21,7 @@ typedef struct {
     uint8_t no;
     uint8_t priority;
     void (*unpack)(PARAMS*);
-}pando_command;
-
-typedef struct {
-	uint8_t cur;
-}pando_commands_iterator;
+}pd_command;
 
 /******************************************************************************
  * FunctionName : register_pando_command.
@@ -33,7 +29,7 @@ typedef struct {
  * Parameters   : a pando command.
  * Returns      : none.
 *******************************************************************************/
-void register_pando_command(pando_command cmd);
+void register_pando_command(pd_command cmd);
 
 /******************************************************************************
  * FunctionName : find_pando_command.
@@ -41,17 +37,7 @@ void register_pando_command(pando_command cmd);
  * Parameters   : the command no.
  * Returns      : the pando command of specified no, NULL if not found.
 *******************************************************************************/
-pando_command* find_pando_command(uint8_t no);
-
-/******************************************************************************
- * FunctionName : create_pando_objects_iterator, delete_pando_objects_iterator.
- * Description  : iterator for pando object list.
- * Parameters   : .
- * Returns      : .
-*******************************************************************************/
-//pando_commands_iterator* create_pando_commands_iterator(void);
-//void delete_pando_commands_iterator(pando_commands_iterator*);
-//pando_command* pando_commands_iterator_next(pando_commands_iterator*);
+pd_command* find_pando_command(uint8_t no);
 
 #endif /* PANDO_OBJECTS_H_ */
 

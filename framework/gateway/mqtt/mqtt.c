@@ -215,7 +215,7 @@ READPACKET:
 			break;
 
 			case MQTT_MSG_TYPE_PINGRESP:
-			INFO("receive a heart beat response!");
+			INFO("receive a heart beat response!\n");
 			client->heart_beat_flag  = 1;
 			break;
 		}

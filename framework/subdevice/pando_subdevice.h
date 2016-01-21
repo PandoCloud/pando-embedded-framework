@@ -21,4 +21,12 @@
 *******************************************************************************/
 void pando_subdevice_recv(uint8_t * buffer, uint16_t length);
 
+/******************************************************************************
+ * FunctionName : report_event.
+ * Description  : report the specify event.
+ * Parameters   : no: the event no.
+ * Returns      : none.
+*******************************************************************************/
+void report_event(uint8_t no);
+
 #endif /* PANDO_SUBDEVICE_H_ */

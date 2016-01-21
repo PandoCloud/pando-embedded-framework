@@ -20,12 +20,9 @@ typedef struct TLVs PARAMS;
 typedef struct {
     uint8_t no;
     uint8_t priority;
+    void (*pack)(PARAMS*);
     void (*unpack)(PARAMS*);
-}pando_event;
-
-typedef struct {
-	uint8_t cur;
-}pando_events_iterator;
+}pd_event;
 
 /******************************************************************************
  * FunctionName : register_pando_event.
@@ -33,7 +30,7 @@ typedef struct {
  * Parameters   : a pando event.
  * Returns      : none.
 *******************************************************************************/
-void register_pando_event(pando_event event);
+void register_pando_event(pd_event event);
 
 /******************************************************************************
  * FunctionName : find_pando_event.
@@ -41,16 +38,6 @@ void register_pando_event(pando_event event);
  * Parameters   : the event no.
  * Returns      : the pando event of specified no, NULL if not found.
 *******************************************************************************/
-pando_event* find_pando_event(uint8_t no);
+pd_event* find_pando_event(uint8_t no);
 
-/******************************************************************************
- * FunctionName : create_pando_events_iterator, delete_pando_events_iterator.
- * Description  : iterator for pando event list.
- * Parameters   : .
- * Returns      : .
-*******************************************************************************/
-//pando_events_iterator* create_pando_events_iterator(void);
-//void delete_pando_events_iterator(pando_events_iterator*);
-//pando_event* pando_events_iterator_next(pando_events_iterator*);
-
-#endif /* PANDO_OBJECTS_H_ */
+#endif /* PANDO_EVENT_H_ */
