@@ -23,15 +23,14 @@
 #UNIVERSAL_TARGET_DEFINES =		\
 
 ifndef PDIR
-GEN_LIBS = libperipheral.a
-SUBDIRS=    \
-	driver
+GEN_LIBS = libobjects.a
 endif
 
 # Other potential configuration flags include:
 #	-DTXRX_TXBUF_DEBUG
 #	-DTXRX_RXBUF_DEBUG
 #	-DWLAN_CONFIG_CCX
+
 
 #############################################################
 # Recursion Magic - Don't touch this!!

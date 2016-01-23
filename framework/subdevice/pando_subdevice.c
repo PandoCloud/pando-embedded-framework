@@ -141,7 +141,7 @@ report_event(uint8_t no)
 {
     struct sub_device_buffer* event_buffer;
 	event_buffer = create_event_package(0);
-	if(NULL == data_buffer)
+	if(NULL == event_buffer)
 	{
 		pd_printf("create event package error\n");
 		return;
