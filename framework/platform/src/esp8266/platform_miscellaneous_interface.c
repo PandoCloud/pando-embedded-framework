@@ -1,12 +1,7 @@
-#include <stdlib.h>
-#include "../../include/pando_timer.h"
 #include "os_type.h"
 #include "osapi.h"
 #include "espconn.h"
 #include "user_interface.h"
-
-char* g_product_key_buf = "8e5be54e561811fa9b403b5387add08ba184855227df729b0998d6898de57a9b";
-#define SERVER_ADDRESS "https://api.pandocloud.com"
 
 /******************************************************************************
  * FunctionName : wifi_connect_check

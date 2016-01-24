@@ -38,7 +38,7 @@
 #include "../../platform/include/pando_timer.h"
 #include "../../platform/include/pando_net_tcp.h"
 #include "utils.h"
-#include "common_functions.h"
+#include "../../protocol/common_functions.h"
 
 #define MQTT_BUF_SIZE		1024
 #define MQTT_RECONNECT_TIMEOUT 5
