@@ -15,21 +15,35 @@
 
 #2, 将pando_embedded_framework放在app的目录下  
    ---app 
+    
    			--pando 
+   			 
    			--example 
+   			 
    					--esp8266 
+   					 
    							--peripheral 
+   							 
    							--user 
+   							 
    							--util 
-   							makefile 
+   							 
+   							makefile  
+   							
    	---bin 
-   	---include 
-   	---ld 
-   	---lib 
-   	---tools 
+   	 
+   	---include  
    	
-#3, 将 目录 app-pando-example-esp8266下的 peripheral，user，util，makefile 复制粘贴到app的根目录下，与pando同级，如下图所示 
----app 
+   	---ld  
+   	
+   	---lib  
+   	
+   	---tools  
+   	
+   	
+#3, 将 目录 app-pando-example-esp8266下的 peripheral，user，util，makefile 复制粘贴到app的根目录下，与pando同级，如下图所示  
+
+---app  
 		--pando（网关） 
 				--example 
 						--esp8266 
@@ -53,7 +67,8 @@
 ---include 
 ---ld 
 ---lib 
----tools 
+---tools  
+
 至此pando框架在esp8266平台移植成功。
 
 
