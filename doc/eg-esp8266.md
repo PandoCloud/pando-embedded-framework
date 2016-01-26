@@ -13,11 +13,11 @@
 ---tools (编译工具)  
 
 
-#2, 将pando_embedded_framework放在app的目录下 
- 
-	---app 
-	  
-	  	--pando 
+#2, 将pando_embedded_framework改名为pando放在app的目录下
+ 	
+	 ---app   
+	 
+	  	--pando
 	  	  
 	  		--example 
 	  		
@@ -81,7 +81,7 @@
 	  	  
 	   	 --util		（工具函数）  
 	   	 
-	    	 makefile  
+	      makefile  
 	    	
 	---bin  
 	

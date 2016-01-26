@@ -11,7 +11,7 @@
 			---ld    （编译文件）
 			---lib
 			---tools （编译工具）
-		2, 将pando_embedded_framework放在app的目录下
+		2, 将pando_embedded_framework改名为pando放在app的目录下
 		
 			---app
 					--pando
