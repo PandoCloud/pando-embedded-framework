@@ -13,33 +13,35 @@
 ---tools (编译工具)  
 
 
-#2, 将pando_embedded_framework放在app的目录下  
-   ---app 
-    
-   			--pando 
-   			 
-   			--example 
-   			 
-   					--esp8266 
-   					 
-   							--peripheral 
-   							 
-   							--user 
-   							 
-   							--util 
-   							 
-   							makefile  
-   							
-   	---bin 
-   	 
-   	---include  
-   	
-   	---ld  
-   	
-   	---lib  
-   	
-   	---tools  
-   	
+#2, 将pando_embedded_framework放在app的目录下 
+ 
+	---app 
+	  
+	  	--pando 
+	  	  
+	  		--example 
+	  		
+	  			--esp8266 
+	  			
+	  				--peripheral 
+	  				
+	  				 --user 
+	  				 
+	  				 --util 
+	  				 
+	  				 makefile
+	  				
+   					  
+	---bin  
+	 
+	---include   
+	
+	---ld  
+	
+	---lib   
+	
+	---tools 
+	 
    	
 #3, 将 目录 app-pando-example-esp8266下的 peripheral，user，util，makefile 复制粘贴到app的根目录下，与pando同级，如下图所示  
 	---app   
@@ -75,11 +77,11 @@
 							
 	   	 --peripheral（硬件驱动）  
 	   	 
-	  	  --user		（程序入口）  
+	  	 --user		（程序入口）  
 	  	  
 	   	 --util		（工具函数）  
 	   	 
-	    	makefile  
+	    	 makefile  
 	    	
 	---bin  
 	
