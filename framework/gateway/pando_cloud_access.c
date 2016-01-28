@@ -118,7 +118,10 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
     pd_printf("the topic is: %s\n", topic_buf);
 
     uint8_t payload_type = 0;
-    switch(*topic_buf)
+    uint8_t topic_temp = *topic_buf;
+    pd_free(topic_buf);
+    pd_printf("the topic is: %c\n", topic_temp);
+    switch(topic_temp)
     {
     	case 's':
     		payload_type = PAYLOAD_TYPE_DATA;
