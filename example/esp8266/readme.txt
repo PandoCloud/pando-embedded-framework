@@ -3,17 +3,15 @@
                              PANDO框架移植至ESP8266平台
                                          
 ************************************************************************************************/
-		1, 从乐鑫官网下载esp_iot_sdk工程文件包,目录如下
+		1, 从Github下载tisan_dmeo工程文件包,目录如下
 		
 			---app（框架植入的位置）
 			---bin（编译生成的固件）
-			---document（可忽略）
-			---examples（可忽略）
 			---include（乐鑫库文件）
 			---ld    （编译文件）
 			---lib
 			---tools （编译工具）
-		2, 将pando_embedded_framework放在app的目录下并修改文件名为pando
+		2, 将pando_embedded_framework改名为pando放在app的目录下
 		
 			---app
 					--pando
@@ -25,8 +23,6 @@
 											makefile
 									
 			---bin
-			---document
-			---examples
 			---include
 			---ld
 			---lib
@@ -58,8 +54,6 @@
 					makefile
 									
 			---bin
-			---document
-			---examples
 			---include
 			---ld
 			---lib

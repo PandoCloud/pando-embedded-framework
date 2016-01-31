@@ -13,21 +13,23 @@
 #include "pando_types.h"
 #include "../include/pando_net_tcp.h"
 #include "../include/pando_sys.h"
+#include "../../../gateway/mqtt/mqtt.h"
 #include "espconn.h"
 struct espconn *econn =  NULL;
 static net_tcp_connected_callback   temp1 = NULL;
 static net_tcp_sent_callback		temp2 = NULL;
 static net_tcp_recv_callback		temp3 = NULL;
 static net_tcp_disconnected_callback temp4 = NULL;
-
+extern MQTT_Client mqtt_client;
 
 void FUNCTION_ATTRIBUTE temp1_function(void *arg)
 {
 	uint8 i;
 	PRINTF("enter into temp1_function...\n");
 	econn = (struct espconn *)arg;
-	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
-	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	//struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	struct pando_tcp_conn *pCon = mqtt_client.pCon;
+	//pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
 	pCon->local_port = econn->proto.tcp->local_port;
 	pCon->remote_port = econn->proto.tcp->remote_port;
 
@@ -40,6 +42,8 @@ void FUNCTION_ATTRIBUTE temp1_function(void *arg)
 		pCon->remote_ip += ((uint32_t)(econn->proto.tcp->remote_ip[i]))<<8*i;
 	}
 	pCon->reverse = econn->reverse ;
+	pd_printf("econn : %d\n",econn);
+	pd_printf("pCon : %d\n",pCon);
 	temp1(pCon, 0);
 }
 
@@ -49,8 +53,9 @@ void FUNCTION_ATTRIBUTE temp2_function(void *arg)
 	PRINTF("enter into temp2_function...");
 	uint8 i;
 	econn = (struct espconn *)arg;
-	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
-	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	//struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	struct pando_tcp_conn *pCon = mqtt_client.pCon;
+	//pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
 	pCon->local_port = econn->proto.tcp->local_port;
 	pCon->remote_port = econn->proto.tcp->remote_port;
 
@@ -71,8 +76,9 @@ void FUNCTION_ATTRIBUTE temp3_function(void *arg, char *pdata, unsigned short le
 	PRINTF("enter into temp3_function...\n");
 	uint8 i;
 	econn = (struct espconn *)arg;
-	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
-	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	//struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	//pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	struct pando_tcp_conn *pCon = mqtt_client.pCon;
 	pCon->local_port = econn->proto.tcp->local_port;
 	pCon->remote_port = econn->proto.tcp->remote_port;
 
@@ -96,8 +102,9 @@ void FUNCTION_ATTRIBUTE temp4_function(void *arg)
 	PRINTF("enter into temp4_function...");
 	uint8 i;
 	econn = (struct espconn *)arg;
-	struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
-	pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	//struct pando_tcp_conn *pCon = (struct pando_tcp_conn *)pd_malloc(sizeof(struct pando_tcp_conn));
+	//pd_memset(pCon, 0, sizeof(struct pando_tcp_conn));
+	struct pando_tcp_conn *pCon = mqtt_client.pCon;
 	pCon->local_port = econn->proto.tcp->local_port;
 	pCon->remote_port = econn->proto.tcp->remote_port;
 
@@ -127,17 +134,24 @@ void net_tcp_connect(struct pando_tcp_conn *conn, uint16_t timeout)
 {
 	sint8 error;
 	uint8 i;
-	for(i=0;i<4;i++)
-	{
-		econn->proto.tcp->remote_ip[i] =(uint8)(conn->remote_ip>>8*i) ;
-	}
-
+	//for(i=0;i<4;i++)
+	//{
+	//	econn->proto.tcp->remote_ip[3-i] =(uint8)(conn->remote_ip>>8*i) ;
+	//}
+	pd_memcpy(econn->proto.tcp->remote_ip,&(conn->remote_ip),sizeof(int));
+	econn->proto.tcp->remote_port = conn->remote_port;
+	econn->proto.tcp->local_port = espconn_port();
+	pd_printf("remote_port:%d\n",econn->proto.tcp->remote_port);
+	pd_printf("remote_ip0:%d,remote_ip1:%d,remote_ip2:%d,remote_ip3:%d\n",
+			(econn->proto.tcp->remote_ip)[0],(econn->proto.tcp->remote_ip)[1],
+			(econn->proto.tcp->remote_ip)[2],(econn->proto.tcp->remote_ip)[3]);
 	if(conn->secure==1)
 	{
+		pd_printf("espconn_secure_connect...\n");
 		espconn_secure_connect(econn);
 	}
 	else
-	{
+	{pd_printf("espconn_connect...\n");
 		error = espconn_connect(econn);
 	}
 	//pd_free(econn.proto.tcp);
@@ -190,7 +204,7 @@ void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t 
 	uint8 i;
 	//econn->type = ESPCONN_TCP;
 	//econn->state = ESPCONN_NONE;
-	econn->proto.tcp->local_port = conn->local_port ;
+	//econn->proto.tcp->local_port = conn->local_port ;
 	econn->proto.tcp->remote_port = conn->remote_port ;
 
 		for(i=0;i<4;i++)
@@ -204,8 +218,16 @@ void net_tcp_send(struct pando_tcp_conn *conn, struct data_buf buffer, uint16_t 
 
 
 	econn->reverse = conn->reverse ;
+	if(conn->secure==1)
+		{
+		pd_printf("espconn_secure_send...\n");
+			espconn_secure_send(econn,buffer.data,buffer.length);
+		}
+		else
+		{pd_printf("espconn_send...\n");
+			espconn_send(econn,buffer.data,buffer.length);
 
-	espconn_send(econn,buffer.data,buffer.length);
+		}
 
 
 }
@@ -249,8 +271,15 @@ void net_tcp_register_recv_callback(struct pando_tcp_conn *conn, net_tcp_recv_ca
 *******************************************************************************/
 void net_tcp_disconnect(struct pando_tcp_conn *conn)
 {
+	if(conn->secure==1)
+			{
+				espconn_secure_disconnect(econn);
+			}
+			else
+			{
+				espconn_disconnect(econn);
+			}
 
-	espconn_disconnect(econn);
 	//pd_free(econn.proto.tcp);
 }
 
