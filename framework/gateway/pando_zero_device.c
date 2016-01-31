@@ -41,6 +41,7 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
     if(device_buffer->buffer == NULL)
     {
     	pd_printf("%s:malloc error!\n", __func__);
+    	pd_free(device_buffer);
         return;
     }
     pd_memcpy(device_buffer->buffer, buffer, length);
@@ -52,6 +53,18 @@ zero_device_data_process(uint8_t * buffer, uint16_t length)
         uint64_t time = get_next_uint64(cmd_param);
         show_package((uint8_t*)(&time), sizeof(time));
        // pando_set_system_time(time);
+    }
+
+    if( device_buffer->buffer != NULL)
+    {
+    	pd_free( device_buffer->buffer);
+    	device_buffer->buffer = NULL;
+    }
+
+    if(device_buffer != NULL)
+    {
+    	pd_free(device_buffer);
+    	device_buffer = NULL;
     }
 }
 
