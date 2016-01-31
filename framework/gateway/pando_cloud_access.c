@@ -136,6 +136,12 @@ mqtt_data_cb(uint32_t *args, const char* topic, uint32_t topic_len, const char *
             return;
     }
 
+    if(topic_buf != NULL)
+    {
+    	pd_free(topic_buf);
+    	topic_buf = NULL;
+    }
+
     struct pando_buffer* pd_buffer;
     pd_buffer = (struct pando_buffer *)pd_malloc(sizeof(struct pando_buffer));
     if(pd_buffer == NULL)
