@@ -652,7 +652,7 @@ int8_t ipsend_handle(bool *urc, char*buf)
 {
 	// TODO: deal with urc,
 	// TODO: free heap when send failed.
-	char *rep_str[ ] = {"+CCHSEND:", "ERROR", ">", "OK"};
+	char *rep_str[ ] = {"+CCHSEND:", "ERROR", ">", "OK", "+CCH_PEER_CLOSED:"};
 	int8_t res = -1;
 	char *p;
 	uint8_t  i = 0;
@@ -674,7 +674,7 @@ int8_t ipsend_handle(bool *urc, char*buf)
 
 	switch (res)
 	{
-		case 0:  //OK
+		case 0:  //+CCHSEND:
 	    {
 	    	if(module_send_data_buffer != NULL)
 	    	{
@@ -723,17 +723,28 @@ int8_t ipsend_handle(bool *urc, char*buf)
 	    }
 	    break;
 
-	    case 3:
+	    case 3: //OK
 	    {
 
 	    }
 	    break;
+
+        case 4: //+CCH_PEER_CLOSED
+        {
+            if(tcp_sent_cb != NULL)
+	    	{
+	    		tcp_sent_cb(0,-1);
+	    	}
+	    	s_at_status = ATC_RSP_FINISH;
+        }
+        break;
 
 	    default:
 	    break;
 	 }
 	   	return s_at_status;
 }
+
 
 void module_tcp_connect(uint16_t fd, uint32_t ip, uint16_t port)
 {

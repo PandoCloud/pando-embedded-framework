@@ -93,7 +93,16 @@ pando_publish_data_channel1(uint8_t* buffer, uint16_t length)
             pando_buffer_delete(gateway_data_buffer);
             return;
     }
-    MQTT_Publish(&mqtt_client, topic, gateway_data_buffer->buffer, gateway_data_buffer->buff_len, 1, 0);
+
+    if(mqtt_client.connState == MQTT_DATA)
+    {
+    	MQTT_Publish(&mqtt_client, topic, gateway_data_buffer->buffer, gateway_data_buffer->buff_len, 1, 0);
+    }
+    else
+    {
+    	pd_printf("MQTT state is not avaiable for publish/n");
+    }
+
     pando_buffer_delete(gateway_data_buffer);
 }
 
